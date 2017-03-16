@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Install: dk/gruppe7/core/Installer.class
+OpenIDE-Module-Localizing-Bundle: dk/gruppe7/core/Bundle.properties
+
