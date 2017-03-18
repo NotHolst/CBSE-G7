@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: dk/gruppe7/silentupdater/Bundle.properties
+OpenIDE-Module-Install: dk/gruppe7/silentupdater/UpdateActivator.class
+OpenIDE-Module-Layer: dk/gruppe7/silentupdater/layer.xml
+
+

@@ -29,11 +29,6 @@
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-core-startup</artifactId>
             <version>${netbeans.version}</version>
-        </dependency>        
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>CBSE-G7-branding</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- NbModuleSuite functional in RELEASE70 or later: -->
         <dependency>
@@ -50,6 +45,11 @@
             <scope>test</scope>
         </dependency>
         -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Core</artifactId>
