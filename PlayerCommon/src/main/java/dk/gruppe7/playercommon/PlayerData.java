@@ -5,6 +5,7 @@
  */
 package dk.gruppe7.playercommon;
 
+import java.util.UUID;
 import javax.swing.text.html.parser.Entity;
 
 /**
@@ -13,20 +14,20 @@ import javax.swing.text.html.parser.Entity;
  */
 public class PlayerData
 {
-    private static Entity _player;
+    private static UUID playerUUID;
 
-    public static Entity getPlayer()
+    public static UUID getPlayerUUID()
     {
-        return _player;
+        return playerUUID;
     }
 
-    public static void setPlayer(Entity player)
+    public static void setPlayerUUID(UUID playerUuid)
     {
-        _player = player;
+        playerUUID = playerUuid;
     }
     
     public static boolean existingPlayer()
     {
-        return _player != null;
+        return playerUUID != null;
     }
 }

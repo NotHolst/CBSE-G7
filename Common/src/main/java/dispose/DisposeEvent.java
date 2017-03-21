@@ -3,29 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dk.gruppe7.shootingcommon;
+package dispose;
 
+import collision.*;
 import dk.gruppe7.common.Entity;
+import java.util.UUID;
 
 /**
  *
  * @author Mathies H
  */
-public class ShootingEvent
+public class DisposeEvent
 {
-    private BulletBluePrint blueprint;
+    private UUID target;
 
-    public ShootingEvent(BulletBluePrint bluePrint)
+    public DisposeEvent(UUID target, UUID other)
     {
-        this.blueprint = bluePrint;
+        this.target = target;
     }
 
-    public BulletBluePrint getBlueprint()
+    public UUID getTargetEntity()
     {
-        return blueprint;
+        return target;
     }
-    
-    
-    
-    
+
 }

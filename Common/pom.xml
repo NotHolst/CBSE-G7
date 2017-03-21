@@ -19,6 +19,8 @@
                     <publicPackages>
                         <publicPackage>dk.gruppe7.common</publicPackage>
                         <publicPackage>dk.gruppe7.common.data</publicPackage>
+                        <publicPackage>collision</publicPackage>
+                        <publicPackage>dispose</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

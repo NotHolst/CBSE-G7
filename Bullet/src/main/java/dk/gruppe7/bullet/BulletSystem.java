@@ -10,6 +10,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.shootingcommon.BulletBluePrint;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class BulletSystem implements IProcess
     {
         while(events.size() > 0)
         {
-            makeBullet(events.get(0).gunner, world);
+            makeBullet(events.get(0).getBlueprint(), world);
             events.remove(0);
         }
         
@@ -59,11 +60,10 @@ public class BulletSystem implements IProcess
         System.out.println(bullets.size());
     }
     
-    private void makeBullet(Entity gunner, World world)
+    private void makeBullet(BulletBluePrint bluePrint, World world)
     {
         Entity bullet = new Entity();
-        bullet.setPosition(gunner.getPosition());
-        bullet.setRotation(gunner.getRotation());
+        bullet.setPosition(bluePrint.getPosition());
         bullet.setVelocity(new Vector2(10, 10));
         
         world.addEntity(bullet);

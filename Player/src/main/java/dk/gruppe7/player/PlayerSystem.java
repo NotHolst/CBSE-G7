@@ -10,6 +10,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.shootingcommon.BulletBluePrint;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.util.List;
@@ -43,7 +44,6 @@ public class PlayerSystem implements IProcess
     @Override
     public void process(GameData gameData, World world)
     {
-        events.add(new ShootingEvent(player));
     }
     
     private void makePlayer()

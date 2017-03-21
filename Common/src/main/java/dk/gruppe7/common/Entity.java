@@ -1,7 +1,7 @@
 package dk.gruppe7.common;
 
+import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
-import java.awt.Rectangle;
 import java.util.UUID;
 
 /**
@@ -20,6 +20,7 @@ public class Entity {
     private float maxVelocity;
     private Rectangle bounds;
     private boolean collidable;
+    
 
     public UUID getId()
     {

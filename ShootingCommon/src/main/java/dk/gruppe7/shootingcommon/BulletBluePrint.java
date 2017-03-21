@@ -14,11 +14,11 @@ import dk.gruppe7.common.data.Vector2;
  */
 public class BulletBluePrint
 {
-    private Rectangle bounds;
-    private Vector2 velocity;
+    private Rectangle bounds = new Rectangle();
+    private Vector2 position = new Vector2(0, 0);
+    private Vector2 velocity  = new Vector2(0, 0);;
     private float maxVelocity;
-    private float accerleration;
-    private Vector2 position;
+    private float acceleration;
     private BulletType bulletType;
 
     public Rectangle getBounds()
@@ -53,12 +53,12 @@ public class BulletBluePrint
 
     public float getAccerleration()
     {
-        return accerleration;
+        return acceleration;
     }
 
     public void setAccerleration(float accerleration)
     {
-        this.accerleration = accerleration;
+        this.acceleration = accerleration;
     }
 
     public Vector2 getPosition()
