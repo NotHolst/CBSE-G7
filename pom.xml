@@ -65,6 +65,7 @@
         <module>Player</module>
         <module>Bullet</module>
         <module>ShootingCommon</module>
+        <module>PlayerCommon</module>
     </modules>
 
     <properties>

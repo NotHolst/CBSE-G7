@@ -24,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
  
 public class BulletSystem implements IProcess
 {
-    List<ShootingEvent> events = ShootingData.events;
+    List<ShootingEvent> events = ShootingData.getEvents();
     List<Entity> bullets = new ArrayList<>();
     
     @Override

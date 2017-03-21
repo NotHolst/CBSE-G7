@@ -5,19 +5,12 @@
  */
 package dk.gruppe7.shootingcommon;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author Mathies H
  */
-public class ShootingData
+public enum BulletType
 {
-    private static List<ShootingEvent> events = new ArrayList<>();
-
-    public static List<ShootingEvent> getEvents()
-    {
-        return events;
-    }
+    LASER,
+    BULLET
 }

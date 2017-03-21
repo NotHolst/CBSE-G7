@@ -23,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
  
 public class PlayerSystem implements IProcess
 {
-    List<ShootingEvent> events = ShootingData.events;
+    List<ShootingEvent> events = ShootingData.getEvents();
     Entity player;
     
     @Override
