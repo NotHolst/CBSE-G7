@@ -15,3 +15,6 @@ hs_err_pid*
 /Core/target/
 /Common/target/
 /SilentUpdater/target/
+/Player/target/
+/Bullet/target/
+/ShootingCommon/target/

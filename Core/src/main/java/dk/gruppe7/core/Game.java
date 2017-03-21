@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
@@ -43,11 +44,12 @@ public class Game implements ApplicationListener{
         
         sr = new ShapeRenderer();
         
+        
         result = lookup.lookupResult(IProcess.class);
         result.addLookupListener(lookupListener);
         result.allItems();
         
-        for(IProcess processor : processors){
+        for(IProcess processor : lookup.lookupAll(IProcess.class)){
             processor.start(gameData, world);
             processors.add(processor);
         }
@@ -75,10 +77,19 @@ public class Game implements ApplicationListener{
         for (IProcess processor : processors) {
             //vi mangler spritebatch osv.
         }
+        
+        for (Entity entity : world.getEntities())
+        {
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.circle(entity.getPosition().x, entity.getPosition().y, 5);
+            sr.end();
+        }
     }
     
     public void update(){
-        
+        for (IProcess processor : processors) {
+            processor.process(gameData, world);
+        }
     }
 
     @Override

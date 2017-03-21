@@ -5,8 +5,5 @@ package dk.gruppe7.common.data;
  * @author Holst & Harald
  */
 public enum EventType {
-    SHOOT,
-    NEXTLEVEL,
-    NEXTROOM,
-    DIEDED,
+    COLLISION
 }

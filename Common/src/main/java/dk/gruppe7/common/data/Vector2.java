@@ -7,4 +7,11 @@ package dk.gruppe7.common.data;
 public class Vector2 {
     public float x,y;
     public Vector2(float x, float y){this.x = x; this.y = y;}
+    
+    
+    public void add(float x, float y)
+    {
+        this.x += x;
+        this.y += y;
+    }
 }

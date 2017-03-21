@@ -62,6 +62,9 @@
         <module>Common</module>
         <module>Core</module>
         <module>SilentUpdater</module>
+        <module>Player</module>
+        <module>Bullet</module>
+        <module>ShootingCommon</module>
     </modules>
 
     <properties>
