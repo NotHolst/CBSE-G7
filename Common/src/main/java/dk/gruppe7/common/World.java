@@ -3,6 +3,7 @@ package dk.gruppe7.common;
 import dk.gruppe7.common.data.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  *
@@ -30,5 +31,11 @@ public class World {
     public void removeEntity(Entity e)
     {
         entities.remove(e);
+    }
+    
+    public Entity getEntityByID(UUID entityID){
+        for(Entity e : entities)
+            if(e.getId().equals(entityID)) return e;
+        return null;
     }
 }
