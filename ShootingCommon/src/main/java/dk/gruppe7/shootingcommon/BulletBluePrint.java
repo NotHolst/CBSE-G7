@@ -56,9 +56,9 @@ public class BulletBluePrint
         return acceleration;
     }
 
-    public void setAccerleration(float accerleration)
+    public void setAcceleration(float acceleration)
     {
-        this.acceleration = accerleration;
+        this.acceleration = acceleration;
     }
 
     public Vector2 getPosition()
