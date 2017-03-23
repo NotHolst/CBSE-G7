@@ -32,6 +32,8 @@ public class Game implements ApplicationListener{
     private List<IProcess> processors = new CopyOnWriteArrayList<>();
     private Lookup.Result<IProcess> result;
     
+    private final GameInputProcessor inputProcessor = new GameInputProcessor(gameData);
+    
     @Override
     public void create() {
         
@@ -44,7 +46,6 @@ public class Game implements ApplicationListener{
         
         sr = new ShapeRenderer();
         
-        
         result = lookup.lookupResult(IProcess.class);
         result.addLookupListener(lookupListener);
         result.allItems();
@@ -54,6 +55,7 @@ public class Game implements ApplicationListener{
             processors.add(processor);
         }
         
+        inputProcessor.start();
     }
 
     @Override
@@ -68,7 +70,6 @@ public class Game implements ApplicationListener{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         gameData.setDeltaTime(Gdx.graphics.getDeltaTime());
-        gameData.getInput().update();
         
         //update entities
         update();
