@@ -71,7 +71,7 @@ public class BulletSystem implements IProcess
             switch(bulletTypes.get(bullet.getId())){
                 default:
                     bullet.setPosition(bullet.getPosition().add(bullet.getVelocity().mul(gameData.getDeltaTime())));
-                    bullet.setVelocity(bullet.getVelocity().add(bullet.getAcceleration(), bullet.getAcceleration()));
+                    bullet.setVelocity(bullet.getVelocity().mul(bullet.getAcceleration())); 
                 break;
             }
         }

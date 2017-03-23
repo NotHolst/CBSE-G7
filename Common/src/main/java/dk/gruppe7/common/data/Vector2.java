@@ -5,11 +5,11 @@ package dk.gruppe7.common.data;
  * @author Holst & Harald
  */
 public class Vector2 {
-    public static Vector2 up = new Vector2(0.f, 1.f);
-    public static Vector2 left = new Vector2(-1.f, 0.f);
-    public static Vector2 down = new Vector2(0.f, -1.f);
-    public static Vector2 right = new Vector2(1.f, 0.f);
-    public static Vector2 zero = new Vector2(0.f, 0.f);
+    public final static Vector2 up = new Vector2(0.f, 1.f);
+    public final static Vector2 left = new Vector2(-1.f, 0.f);
+    public final static Vector2 down = new Vector2(0.f, -1.f);
+    public final static Vector2 right = new Vector2(1.f, 0.f);
+    public final static Vector2 zero = new Vector2(0.f, 0.f);
     
     public float x,y;
     
