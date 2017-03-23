@@ -141,7 +141,7 @@ public class PlayerSystem implements IProcess {
         if(!aimDirection.equals(Vector2.zero)) {
             events.add(new ShootingEvent(new BulletBluePrint() {{
                 setBulletType(BulletType.BULLET);
-                setAcceleration(1.f);
+                setAcceleration(0.f);
                 setVelocity(getVelocity().add(aimDirection).mul(666.f)); 
                 setPosition(getPosition().add(playerEntity.getPosition())); 
             }}));
