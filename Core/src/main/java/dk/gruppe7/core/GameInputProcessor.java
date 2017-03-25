@@ -26,7 +26,7 @@ public class GameInputProcessor {
         @Override
         public void nativeKeyPressed(NativeKeyEvent nke) {
             try {
-                System.out.printf("KeyPress caught : {%d}", nke.getRawCode());
+                System.out.printf("KeyPress caught : {%d} \n", nke.getRawCode());
                 gameData.getInput().setKey(nke.getRawCode(), true);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
@@ -36,7 +36,7 @@ public class GameInputProcessor {
         @Override
         public void nativeKeyReleased(NativeKeyEvent nke) {
             try {
-                System.out.printf("KeyRelease caught : {%d}", nke.getRawCode());
+                System.out.printf("KeyRelease caught : {%d} \n", nke.getRawCode());
                 gameData.getInput().setKey(nke.getRawCode(), false);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
