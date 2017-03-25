@@ -77,6 +77,7 @@
         <module>Bullet</module>
         <module>ShootingCommon</module>
         <module>PlayerCommon</module>
+        <module>Collision</module>
     </modules>
 
     <properties>
