@@ -48,21 +48,19 @@ public class Vector2 {
         return new Vector2(this.x / other.x, this.y / other.y);
     }
     
+    public float len() {
+        return ((float) Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)));
+    }
+    
     public Vector2 clamp(float min, float max) {
-        Vector2 temp = new Vector2(this.x, this.y);
-        
-        if(temp.x > max)
-            temp.x = max;
-        
-        if(temp.x < min)
-            temp.x = min;
-        
-        if(temp.y > max)
-            temp.y = max;
-        
-        if(temp.y < min)
-            temp.y = min;
-        
-        return temp;
+        return new Vector2(this.x, this.y) {{
+            x = Math.max(min, Math.min(x, max));
+            y = Math.max(min, Math.min(y, max));
+        }};
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("x: %.2f | y: %.2f", this.x, this.y);
     }
 }

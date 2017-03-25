@@ -106,19 +106,11 @@ public class Input {
 
     @Deprecated
     public boolean isUp(int keycode) {
-        if (getKey(keycode) == true) {
-            return false;
-        } else {
-            return true;
-        }
+        return getKey(keycode) != true;
     }
 
     @Deprecated
     public boolean isDown(int keycode) {
-        if (getKey(keycode) == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return getKey(keycode) == true;
     }
 }
