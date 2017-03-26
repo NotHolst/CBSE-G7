@@ -4,6 +4,7 @@ import dk.gruppe7.common.GameData;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.openide.util.Exceptions;
@@ -46,8 +47,9 @@ public class GameInputProcessor {
 
     public GameInputProcessor(GameData gameData) {
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        //logger.setLevel(Level.WARNING);
         logger.setLevel(Level.OFF);
-
+        
         this.gameData = gameData;
 
         try {
@@ -56,6 +58,17 @@ public class GameInputProcessor {
         } catch (Exception e) {
             System.err.println("Failed to register native hook!");
         }
+        
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    GlobalScreen.unregisterNativeHook();
+                } catch (NativeHookException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        });
     }
 
     public void start() {
@@ -64,11 +77,5 @@ public class GameInputProcessor {
 
     public void stop() {
         GlobalScreen.removeNativeKeyListener(gameKeyListener);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        GlobalScreen.unregisterNativeHook();
-        super.finalize();
     }
 }
