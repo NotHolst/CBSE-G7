@@ -1,17 +1,20 @@
 package dk.gruppe7.player;
 
+import com.sun.corba.se.impl.orbutil.graph.Graph;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.Input;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.playercommon.PlayerData;
 import dk.gruppe7.shootingcommon.BulletBluePrint;
 import dk.gruppe7.shootingcommon.BulletType;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -28,6 +31,8 @@ public class PlayerSystem implements IProcess {
     Input input;
     boolean north, south, west, east;
     Vector2 aimDirection = Vector2.zero;
+    
+    InputStream texture = getClass().getResourceAsStream("player.png");
 
     UUID playerID;
     List<ShootingEvent> events = ShootingData.getEvents();
@@ -142,10 +147,11 @@ public class PlayerSystem implements IProcess {
             events.add(new ShootingEvent(new BulletBluePrint() {{
                 setBulletType(BulletType.BULLET);
                 setAcceleration(1.f);
-                setVelocity(getVelocity().add(aimDirection).mul(666.f)); 
+                setVelocity(getVelocity().add(aimDirection).mul(333.f)); 
                 setPosition(getPosition().add(playerEntity.getPosition())); 
             }}));
         }
+        Graphics.drawSprite(playerEntity.getPosition(), new Vector2(64, 64), texture, (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x))+90f);
     }
 
     private Entity makePlayer() {
@@ -154,7 +160,7 @@ public class PlayerSystem implements IProcess {
                 setMaxVelocity(300.f);
                 setAcceleration(100.f);
                 setCollidable(true);
-                setInputStream(getClass().getResourceAsStream("player.png"));
+                //setInputStream(getClass().getResourceAsStream("player.png"));
         }};
     }
 

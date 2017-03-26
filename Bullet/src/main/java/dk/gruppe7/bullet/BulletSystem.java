@@ -10,10 +10,13 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.Color;
+import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.shootingcommon.BulletBluePrint;
 import dk.gruppe7.shootingcommon.BulletType;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,18 +36,23 @@ public class BulletSystem implements IProcess
     List<UUID> bullets = new ArrayList<>();
     HashMap<UUID, BulletType> bulletTypes = new HashMap<>();
     
+    InputStream texture = getClass().getResourceAsStream("bullet.png");
+    
     @Override
     public void start(GameData gameData, World world)
     {
-/*
+
         //Bullet for testing.
         BulletBluePrint bluePrint = new BulletBluePrint();
         bluePrint.setBulletType(BulletType.BULLET);
         bluePrint.setPosition(new Vector2(55, 55));
         bluePrint.setVelocity(new Vector2(10, 10));
-        bluePrint.setAccerleration(0.5f);
+        //bluePrint.setAccerleration(0.5f);
         events.add(new ShootingEvent(bluePrint));
-*/
+
+        
+        
+        
     }
 
     @Override
@@ -74,6 +82,8 @@ public class BulletSystem implements IProcess
                     bullet.setVelocity(bullet.getVelocity().mul(bullet.getAcceleration())); 
                 break;
             }
+            //graphics test
+            Graphics.drawSprite(bullet.getPosition(), new Vector2(32, 32), texture, (float) Math.toDegrees(Math.atan2(bullet.getVelocity().y, bullet.getVelocity().x))+90f);
         }
         
         // if(bullets.size() > 0) System.out.println(bullets.size());
@@ -87,7 +97,7 @@ public class BulletSystem implements IProcess
         bullet.setAcceleration(bluePrint.getAccerleration());
         bullet.setBounds(bluePrint.getBounds());
         bullet.setMaxVelocity(bluePrint.getMaxVelocity());
-        bullet.setInputStream(getClass().getResourceAsStream("bullet.png"));
+        //bullet.setInputStream(getClass().getResourceAsStream("bullet.png"));
         
         world.addEntity(bullet);
         bullets.add(bullet.getId());

@@ -16,6 +16,8 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.DrawCommand;
+import dk.gruppe7.common.graphics.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,47 +94,48 @@ public class Game implements ApplicationListener{
         update();
         
         //draw entites
-        for (IProcess processor : processors) {
-            //vi mangler spritebatch osv.
-        }
-        
-        for (Entity entity : world.getEntities())
-        {
-            //sr.begin(ShapeRenderer.ShapeType.Filled);
-            //sr.circle(entity.getPosition().x, entity.getPosition().y, 5);
-            //sr.end();
-            
-            batch.enableBlending();
-            batch.begin();
-            
-            InputStream temp = (entity.getInputStream() == null) ? defaultInputStream : entity.getInputStream();
-            
-            batch.draw(
-                    /* Texture   */ inputStreamToTexture(temp), 
-                    /* X         */ entity.getPosition().x, 
-                    /* Y         */ entity.getPosition().y, 
-                    /* originX   */ 0.f, 
-                    /* originY   */ 0.f,
-                    /* width     */ 64, 
-                    /* height    */ 64, 
-                    /* scaleX    */ 1.f, 
-                    /* scaleY    */ 1.f, 
-                    /* Rotation  */ 0.f, 
-                    /* srcX      */ 0, 
-                    /* srcY      */ 0, 
-                    /* srcWidth  */ inputStreamToTexture(temp).getWidth(), 
-                    /* srcHeight */ inputStreamToTexture(temp).getHeight(), 
-                    /* flipX     */ false, 
-                    /* flipY     */ false
-            );
-            
-            batch.end();
-        }
+        //batch.enableBlending(); //alpha blending I presume?
+        draw();
+
     }
     
     public void update(){
         for (IProcess processor : processors) {
             processor.process(gameData, world);
+        }
+    }
+    
+    public void draw(){
+        for(int i = Graphics.drawCommands().size()-1; i > 0; i--){
+            DrawCommand cmd = Graphics.drawCommands().remove(i);
+            switch(cmd.getType()){
+                case SPRITE:
+                    batch.begin();
+
+                    Texture tex = inputStreamToTexture(cmd.getInputStream());
+
+                    batch.draw(
+                            /* Texture   */ tex, 
+                            /* X         */ cmd.getPosition().x, 
+                            /* Y         */ cmd.getPosition().y, 
+                            /* originX   */ cmd.getSize().x/2f, 
+                            /* originY   */ cmd.getSize().y/2f,
+                            /* width     */ cmd.getSize().x, 
+                            /* height    */ cmd.getSize().y, 
+                            /* scaleX    */ 1.f, 
+                            /* scaleY    */ 1.f, 
+                            /* Rotation  */ cmd.getRotation(), 
+                            /* srcX      */ 0, 
+                            /* srcY      */ 0, 
+                            /* srcWidth  */ tex.getWidth(), 
+                            /* srcHeight */ tex.getHeight(), 
+                            /* flipX     */ false, 
+                            /* flipY     */ false
+                    );
+                    batch.end();
+                    break;
+            }
+            
         }
     }
 
