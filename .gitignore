@@ -20,3 +20,5 @@ hs_err_pid*
 /ShootingCommon/target/
 /PlayerCommon/target/
 /Collision/target/
+/Mob/target/
+/MobCommon/target/

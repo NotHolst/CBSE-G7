@@ -70,6 +70,16 @@
             <artifactId>Collision</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Mob</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>MobCommon</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

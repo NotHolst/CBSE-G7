@@ -78,6 +78,8 @@
         <module>ShootingCommon</module>
         <module>PlayerCommon</module>
         <module>Collision</module>
+        <module>Mob</module>
+        <module>MobCommon</module>
     </modules>
 
     <properties>
