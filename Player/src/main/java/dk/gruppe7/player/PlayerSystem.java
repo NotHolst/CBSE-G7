@@ -154,6 +154,7 @@ public class PlayerSystem implements IProcess {
                 setMaxVelocity(300.f);
                 setAcceleration(100.f);
                 setCollidable(true);
+                setInputStream(getClass().getResourceAsStream("player.png"));
         }};
     }
 

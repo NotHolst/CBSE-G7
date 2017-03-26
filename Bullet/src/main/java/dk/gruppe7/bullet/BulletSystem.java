@@ -76,7 +76,7 @@ public class BulletSystem implements IProcess
             }
         }
         
-        if(bullets.size() > 0) System.out.println(bullets.size());
+        // if(bullets.size() > 0) System.out.println(bullets.size());
     }
     
     private void makeBullet(BulletBluePrint bluePrint, World world)
@@ -87,6 +87,7 @@ public class BulletSystem implements IProcess
         bullet.setAcceleration(bluePrint.getAccerleration());
         bullet.setBounds(bluePrint.getBounds());
         bullet.setMaxVelocity(bluePrint.getMaxVelocity());
+        bullet.setInputStream(getClass().getResourceAsStream("bullet.png"));
         
         world.addEntity(bullet);
         bullets.add(bullet.getId());
