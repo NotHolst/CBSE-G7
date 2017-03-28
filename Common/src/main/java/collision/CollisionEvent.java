@@ -5,7 +5,6 @@
  */
 package collision;
 
-import dk.gruppe7.common.Entity;
 import java.util.UUID;
 
 /**
@@ -14,22 +13,22 @@ import java.util.UUID;
  */
 public class CollisionEvent
 {
-    private UUID target;
-    private UUID other;
+    private UUID targetID;
+    private UUID otherID;
 
-    public CollisionEvent(UUID target, UUID other)
+    public CollisionEvent(UUID targetID, UUID otherID)
     {
-        this.target = target;
-        this.other = other;
+        this.targetID = targetID;
+        this.otherID = otherID;
     }
 
-    public UUID getTargetEntity()
+    public UUID getTargetID()
     {
-        return target;
+        return targetID;
     }
 
-    public UUID getOtherEntity()
+    public UUID getOtherID()
     {
-        return other;
+        return otherID;
     }
 }

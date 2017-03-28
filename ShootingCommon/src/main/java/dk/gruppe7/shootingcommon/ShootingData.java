@@ -15,7 +15,7 @@ import java.util.List;
 public class ShootingData
 {
     private static List<ShootingEvent> events = new ArrayList<>();
-
+    
     public static List<ShootingEvent> getEvents()
     {
         return events;

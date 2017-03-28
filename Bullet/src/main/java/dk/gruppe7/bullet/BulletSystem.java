@@ -10,8 +10,8 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
-import dk.gruppe7.shootingcommon.BulletBluePrint;
-import dk.gruppe7.shootingcommon.BulletType;
+import dk.gruppe7.shootingcommon.Bullet;
+import dk.gruppe7.shootingcommon.ShootingType;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class BulletSystem implements IProcess
 {
     List<ShootingEvent> events = ShootingData.getEvents();
     List<UUID> bullets = new ArrayList<>();
-    HashMap<UUID, BulletType> bulletTypes = new HashMap<>();
+    HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
     
     @Override
     public void start(GameData gameData, World world)
@@ -76,21 +76,13 @@ public class BulletSystem implements IProcess
             }
         }
         
-        if(bullets.size() > 0) System.out.println(bullets.size());
     }
     
-    private void makeBullet(BulletBluePrint bluePrint, World world)
+    private void makeBullet(Bullet bullet, World world)
     {
-        Entity bullet = new Entity();
-        bullet.setPosition(bluePrint.getPosition());
-        bullet.setVelocity(bluePrint.getVelocity());
-        bullet.setAcceleration(bluePrint.getAccerleration());
-        bullet.setBounds(bluePrint.getBounds());
-        bullet.setMaxVelocity(bluePrint.getMaxVelocity());
-        
         world.addEntity(bullet);
         bullets.add(bullet.getId());
-        bulletTypes.put(bullet.getId(), bluePrint.getBulletType());
+        bulletTypes.put(bullet.getId(), bullet.getBulletType());
         
     }
     

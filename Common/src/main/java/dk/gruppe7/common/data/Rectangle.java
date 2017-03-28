@@ -14,8 +14,11 @@ public class Rectangle
     private int width, height;
 
     public Rectangle() {
-        this.width = 0;
-        this.height = 0;
+    }
+    
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     public int getWidth() {
@@ -26,9 +29,4 @@ public class Rectangle
         return height;
     }
 
-    public Rectangle(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-    
 }

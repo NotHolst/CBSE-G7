@@ -5,24 +5,22 @@
  */
 package dk.gruppe7.shootingcommon;
 
-import dk.gruppe7.common.Entity;
-
 /**
  *
  * @author Mathies H
  */
 public class ShootingEvent
 {
-    private BulletBluePrint blueprint;
+    private Bullet bullet;
 
-    public ShootingEvent(BulletBluePrint bluePrint)
+    public ShootingEvent(Bullet bluePrint)
     {
-        this.blueprint = bluePrint;
+        this.bullet = bluePrint;
     }
 
-    public BulletBluePrint getBlueprint()
+    public Bullet getBlueprint()
     {
-        return blueprint;
+        return bullet;
     }
     
     

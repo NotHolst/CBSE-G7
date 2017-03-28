@@ -9,8 +9,8 @@ package dk.gruppe7.shootingcommon;
  *
  * @author Mathies H
  */
-public enum BulletType
+public enum ShootingType
 {
-    LASER,
-    BULLET
+    HITSCAN,
+    PROJECTILE
 }

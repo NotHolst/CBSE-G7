@@ -6,9 +6,8 @@ import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.Input;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
-import dk.gruppe7.playercommon.PlayerData;
-import dk.gruppe7.shootingcommon.BulletBluePrint;
-import dk.gruppe7.shootingcommon.BulletType;
+import dk.gruppe7.shootingcommon.Bullet;
+import dk.gruppe7.shootingcommon.ShootingType;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.awt.event.KeyEvent;
@@ -97,7 +96,7 @@ public class PlayerSystem implements IProcess {
     @Override
     public void start(GameData gameData, World world) {
         Entity temp = makePlayer();
-        PlayerData.setPlayerUUID(playerID = temp.getId());
+        playerID = temp.getId();
         world.addEntity(temp);
 
         input = gameData.getInput();
@@ -139,12 +138,14 @@ public class PlayerSystem implements IProcess {
         ));
 
         if(!aimDirection.equals(Vector2.zero)) {
-            events.add(new ShootingEvent(new BulletBluePrint() {{
-                setBulletType(BulletType.BULLET);
-                setAcceleration(1.f);
-                setVelocity(getVelocity().add(aimDirection).mul(666.f)); 
-                setPosition(getPosition().add(playerEntity.getPosition())); 
-            }}));
+            Bullet b = new Bullet();
+            b.setBulletType(ShootingType.PROJECTILE);
+            b.setAcceleration(1.f);
+            b.setVelocity(b.getVelocity().add(aimDirection).mul(666.f));
+            b.setPosition(b.getPosition().add(playerEntity.getPosition()));
+            events.add(new ShootingEvent(b));
+            
+            b.setBulletType(ShootingType.PROJECTILE);
         }
     }
 
