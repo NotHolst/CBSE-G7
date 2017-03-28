@@ -2,6 +2,7 @@ package dk.gruppe7.common;
 
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
+import java.io.InputStream;
 import java.util.UUID;
 
 /**
@@ -20,8 +21,8 @@ public class Entity {
     private float maxVelocity;
     private Rectangle bounds;
     private boolean collidable;
+    private InputStream inputStream;
     
-
     public UUID getId()
     {
         return id;
@@ -97,4 +98,13 @@ public class Entity {
         this.collidable = isColliable;
     }
     
+    /*
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+    */
 }

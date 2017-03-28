@@ -8,8 +8,10 @@ package dk.gruppe7.mob;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
+import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.data.MobType;
 import static dk.gruppe7.data.MobType.DEFENDER;
 import static dk.gruppe7.data.MobType.MELEE;
@@ -17,6 +19,7 @@ import static dk.gruppe7.data.MobType.RANGED;
 import static dk.gruppe7.data.MobType.SUPPORT;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobID;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
@@ -27,9 +30,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author benjaminmlynek
  */
 @ServiceProvider(service = IProcess.class)
-public class MobSystem implements IProcess {
+public class MobSystem implements IProcess, IRender {
 
     UUID mobID;
+    
+    InputStream texture = getClass().getResourceAsStream("mob.png");
 
     @Override
     public void start(GameData gameData, World world) {
@@ -58,10 +63,17 @@ public class MobSystem implements IProcess {
         // Need som help with this one. Cant seem to get other than the first mobID.
         Collection<Entity> entities = world.getEntities();
         for (Entity entity : entities) {
-            if(entity.getId().equals(mobID)) {
-                entity.setVelocity(new Vector2(10, 20));
-                entity.setPosition(entity.getPosition().add(entity.getVelocity().mul(gameData.getDeltaTime())));
-                //System.out.println("Current ID: " + mobID);
+            if(entity instanceof Mob) {
+                Mob m = (Mob) entity;
+                
+                if(m.getWanderTimer() <= 0){
+                    m.setVelocity(new Vector2(GetRandomNumberBetween(-10, 10), GetRandomNumberBetween(-10, 10)));
+                    m.setWanderTimer(GetRandomNumberBetween(1, 4));
+                }else{
+                    m.setWanderTimer(m.getWanderTimer() - gameData.getDeltaTime());
+                }
+                
+                m.setPosition(m.getPosition().add(m.getVelocity().mul(gameData.getDeltaTime())));
             }
         }
            
@@ -122,6 +134,14 @@ public class MobSystem implements IProcess {
         Random r = new Random();
         int pick = r.nextInt(mobType.getEnumConstants().length);
         return mobType.getEnumConstants()[pick];
+    }
+
+    @Override
+    public void render(Graphics g, World world) {
+        for (Entity e : world.getEntities()){
+            if(e instanceof Mob)
+                g.drawSprite(e.getPosition(), new Vector2(64, 64), texture, 0);
+        }
     }
     
     

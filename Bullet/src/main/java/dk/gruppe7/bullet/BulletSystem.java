@@ -8,12 +8,15 @@ package dk.gruppe7.bullet;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
+import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.shootingcommon.ShootingType;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +30,13 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider (service = IProcess.class) 
  
-public class BulletSystem implements IProcess
+public class BulletSystem implements IProcess, IRender
 {
     List<ShootingEvent> events = ShootingData.getEvents();
     List<UUID> bullets = new ArrayList<>();
     HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
+    
+    InputStream texture = getClass().getResourceAsStream("bullet.png");
     
     @Override
     public void start(GameData gameData, World world)
@@ -84,6 +89,15 @@ public class BulletSystem implements IProcess
         bullets.add(bullet.getId());
         bulletTypes.put(bullet.getId(), bullet.getBulletType());
         
+    }
+
+    @Override
+    public void render(Graphics g, World world) {
+        for (UUID bulletId : bullets)
+        {
+            Entity bullet = world.getEntityByID(bulletId);
+            g.drawSprite(bullet.getPosition(), new Vector2(32,32), texture, 0);
+        }
     }
     
     

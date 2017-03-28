@@ -3,14 +3,17 @@ package dk.gruppe7.player;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
+import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.Input;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.shootingcommon.ShootingType;
 import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -22,11 +25,13 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mikkel
  */
-public class PlayerSystem implements IProcess {
+public class PlayerSystem implements IProcess, IRender {
 
     Input input;
     boolean north, south, west, east;
     Vector2 aimDirection = Vector2.zero;
+    
+    InputStream texture = getClass().getResourceAsStream("player.png");
 
     UUID playerID;
     List<ShootingEvent> events = ShootingData.getEvents();
@@ -161,5 +166,12 @@ public class PlayerSystem implements IProcess {
     // Skal muligvis flyttes til en common util pakke?
     private int booleanToInt(boolean b) {
         return (b) ? 1 : 0;
+    }
+
+    @Override
+    public void render(Graphics g, World world) {
+        Entity playerEntity = world.getEntityByID(playerID);
+        
+        g.drawSprite(playerEntity.getPosition(), new Vector2(64,64), texture, (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
     }
 }

@@ -15,6 +15,8 @@ import dk.gruppe7.data.MobType;
 public class Mob extends Entity {
     
     private MobType type;
+    
+    private float wanderTimer;
 
     public MobType getMobType() {
         return type;
@@ -23,5 +25,15 @@ public class Mob extends Entity {
     public void setMobType(MobType type) {
         this.type = type;
     }
+
+    public float getWanderTimer() {
+        return wanderTimer;
+    }
+
+    public void setWanderTimer(float wanderTimer) {
+        this.wanderTimer = wanderTimer;
+    }
+    
+    
     
 }
