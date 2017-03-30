@@ -6,6 +6,8 @@ import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.Input;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.KeyEventHandler;
+import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.shootingcommon.Bullet;
@@ -16,7 +18,6 @@ import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = IProcess.class)
@@ -36,65 +37,52 @@ public class PlayerSystem implements IProcess, IRender {
     UUID playerID;
     List<ShootingEvent> events = ShootingData.getEvents();
 
-    Callable wKeyEvent = () -> { return north = !north; };
-    Callable aKeyEvent = () -> { return west = !west; };
-    Callable sKeyEvent = () -> { return south = !south; };
-    Callable dKeyEvent = () -> { return east = !east; };
-
-    Callable upKeyEvent = new Callable() {
-        long i = 0;
-
+    KeyEventHandler wKeyEventHandler = (newKeyState) -> { north = newKeyState; };
+    KeyEventHandler aKeyEventHandler = (newKeyState) -> { west = newKeyState; };
+    KeyEventHandler sKeyEventHandler = (newKeyState) -> { south = newKeyState; };
+    KeyEventHandler dKeyEventHandler = (newKeyState) -> { east = newKeyState; };
+    
+    KeyEventHandler ArrowUpKeyEventHandler = new KeyEventHandler() {
         @Override
-        public Object call() throws Exception {
-            if (i++ % 2 == 0) {
-                aimDirection = Vector2.up; 
+        public void call(boolean newKeyState) {
+            if (newKeyState == true) {
+                aimDirection = Vector2.up;
             } else if(aimDirection.equals(Vector2.up)) {
-                aimDirection = Vector2.zero; 
+                aimDirection = Vector2.zero;
             }
-            
-            return null;
         }
     };
-    Callable leftKeyEvent = new Callable() {
-        long i = 0;
-
+    
+    KeyEventHandler ArrowLeftKeyEventHandler = new KeyEventHandler() {
         @Override
-        public Object call() throws Exception {
-            if (i++ % 2 == 0) {
+        public void call(boolean newKeyState) {
+            if (newKeyState == true) {
                 aimDirection = Vector2.left;
             } else if(aimDirection.equals(Vector2.left)) {
                 aimDirection = Vector2.zero;
             }
-            
-            return null;
         }
     };
-    Callable downKeyEvent = new Callable() {
-        long i = 0;
-
+        
+    KeyEventHandler ArrowDownKeyEventHandler = new KeyEventHandler() {
         @Override
-        public Object call() throws Exception {
-            if (i++ % 2 == 0) {
+        public void call(boolean newKeyState) {
+            if (newKeyState == true) {
                 aimDirection = Vector2.down;
-            } else if (aimDirection.equals(Vector2.down)) {
+            } else if(aimDirection.equals(Vector2.down)) {
                 aimDirection = Vector2.zero;
             }
-            
-            return null;
         }
     };
-    Callable rightKeyEvent = new Callable() {
-        long i = 0;
-
+            
+    KeyEventHandler ArrowRightKeyEventHandler = new KeyEventHandler() {
         @Override
-        public Object call() throws Exception {
-            if (i++ % 2 == 0) {
+        public void call(boolean newKeyState) {
+            if (newKeyState == true) {
                 aimDirection = Vector2.right;
             } else if(aimDirection.equals(Vector2.right)) {
                 aimDirection = Vector2.zero;
             }
-            
-            return null;
         }
     };
 
@@ -105,21 +93,21 @@ public class PlayerSystem implements IProcess, IRender {
         world.addEntity(temp);
 
         input = gameData.getInput();
-        input.registerKeyEvent(KeyEvent.VK_W, wKeyEvent);
-        input.registerKeyEvent(KeyEvent.VK_A, aKeyEvent);
-        input.registerKeyEvent(KeyEvent.VK_S, sKeyEvent);
-        input.registerKeyEvent(KeyEvent.VK_D, dKeyEvent);
+        input.registerKeyEventHandler(KeyEvent.VK_W, wKeyEventHandler);
+        input.registerKeyEventHandler(KeyEvent.VK_A, aKeyEventHandler);
+        input.registerKeyEventHandler(KeyEvent.VK_S, sKeyEventHandler);
+        input.registerKeyEventHandler(KeyEvent.VK_D, dKeyEventHandler);
 
-        input.registerKeyEvent(KeyEvent.VK_UP, upKeyEvent);
-        input.registerKeyEvent(KeyEvent.VK_LEFT, leftKeyEvent);
-        input.registerKeyEvent(KeyEvent.VK_DOWN, downKeyEvent);
-        input.registerKeyEvent(KeyEvent.VK_RIGHT, rightKeyEvent);
+        input.registerKeyEventHandler(KeyEvent.VK_UP, ArrowUpKeyEventHandler);
+        input.registerKeyEventHandler(KeyEvent.VK_LEFT, ArrowLeftKeyEventHandler);
+        input.registerKeyEventHandler(KeyEvent.VK_DOWN, ArrowDownKeyEventHandler);
+        input.registerKeyEventHandler(KeyEvent.VK_RIGHT, ArrowRightKeyEventHandler);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
-        input.unregisterKeyEvent(wKeyEvent, aKeyEvent, sKeyEvent, dKeyEvent);
-        input.unregisterKeyEvent(upKeyEvent, leftKeyEvent, downKeyEvent, rightKeyEvent);
+        input.unregisterKeyEventHandler(wKeyEventHandler, aKeyEventHandler, sKeyEventHandler, dKeyEventHandler);
+        input.unregisterKeyEventHandler(ArrowUpKeyEventHandler, ArrowLeftKeyEventHandler, ArrowDownKeyEventHandler, ArrowRightKeyEventHandler);
         world.removeEntity(world.getEntityByID(playerID));
         playerID = null;
     }
@@ -132,25 +120,24 @@ public class PlayerSystem implements IProcess, IRender {
                 .add(
                     playerEntity.getAcceleration() * (booleanToInt(east) - booleanToInt(west)),
                     playerEntity.getAcceleration() * (booleanToInt(north) - booleanToInt(south)))
-                .clamp(
-                    -playerEntity.getMaxVelocity(), 
-                    playerEntity.getMaxVelocity())
+                .clampLength(
+                    playerEntity.getMaxVelocity()
+                )
                 .mul(.9f)
         ); 
         
         playerEntity.setPosition(playerEntity.getPosition()
-                .add(playerEntity.getVelocity().mul(gameData.getDeltaTime())
+                .add(playerEntity.getVelocity()
+                .mul(gameData.getDeltaTime())
         ));
 
         if(!aimDirection.equals(Vector2.zero)) {
-            Bullet b = new Bullet();
-            b.setBulletType(ShootingType.PROJECTILE);
-            b.setAcceleration(1.f);
-            b.setVelocity(b.getVelocity().add(aimDirection).mul(666.f));
-            b.setPosition(b.getPosition().add(playerEntity.getPosition()));
-            events.add(new ShootingEvent(b));
-            
-            b.setBulletType(ShootingType.PROJECTILE);
+            events.add(new ShootingEvent(new Bullet(){{
+                setBulletType(ShootingType.PROJECTILE);
+                setAcceleration(1.f);
+                setVelocity(getVelocity().add(aimDirection).mul(666.f));
+                setPosition(getPosition().add(playerEntity.getPosition()));
+            }}));
         }
     }
 
@@ -160,6 +147,7 @@ public class PlayerSystem implements IProcess, IRender {
                 setMaxVelocity(300.f);
                 setAcceleration(100.f);
                 setCollidable(true);
+                setBounds(new Rectangle(64, 64));
         }};
     }
 
@@ -172,6 +160,11 @@ public class PlayerSystem implements IProcess, IRender {
     public void render(Graphics g, World world) {
         Entity playerEntity = world.getEntityByID(playerID);
         
-        g.drawSprite(playerEntity.getPosition(), new Vector2(64,64), texture, (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
+        g.drawSprite(
+                /* Position    */ playerEntity.getPosition(), 
+                /* Size        */ new Vector2(playerEntity.getBounds().getWidth(), playerEntity.getBounds().getHeight()), 
+                /* InputStream */ texture, 
+                /* Rotation    */ (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x))
+        );
     }
 }

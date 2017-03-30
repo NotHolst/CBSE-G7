@@ -1,9 +1,9 @@
 package dk.gruppe7.common;
 
+import dk.gruppe7.common.data.KeyEventHandler;
 import dk.gruppe7.common.data.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 /**
  *
@@ -11,52 +11,52 @@ import java.util.concurrent.Callable;
  */
 public class Input {
 
-    private HashMap<Integer, Pair<Boolean, ArrayList<Callable>>> keys = new HashMap<>();
+    private HashMap<Integer, Pair<Boolean, ArrayList<KeyEventHandler>>> keys = new HashMap<>();
 
-    public void registerKeyEvent(int keycode, Callable callable) {
+    public void registerKeyEventHandler(int keycode, KeyEventHandler handler) {
         if (keys.containsKey(keycode)) {
             Pair temp = keys.get(keycode);
 
-            if (!((ArrayList<Callable>) temp.getSecond()).contains(callable)) {
-                ((ArrayList<Callable>) temp.getSecond()).add(callable);
+            if (!((ArrayList<KeyEventHandler>) temp.getSecond()).contains(handler)) {
+                ((ArrayList<KeyEventHandler>) temp.getSecond()).add(handler);
             }
 
             keys.replace(keycode, temp);
         } else {
             Pair temp = new Pair();
 
-            ArrayList<Callable> listOfCallables = new ArrayList<>();
-            listOfCallables.add(callable);
+            ArrayList<KeyEventHandler> listOfHandlers = new ArrayList<>();
+            listOfHandlers.add(handler);
 
             temp.setFirst(false);
-            temp.setSecond(listOfCallables);
+            temp.setSecond(listOfHandlers);
 
             keys.put(keycode, temp);
         }
     }
 
-    public void unregisterKeyEvent(int keycode, Callable callable) {
+    public void unregisterKeyEventHandler(int keycode, KeyEventHandler handler) {
         if (keys.containsKey(keycode)) {
             Pair temp = keys.get(keycode);
-            ((ArrayList<Callable>) temp.getSecond()).remove(callable);
+            ((ArrayList<KeyEventHandler>) temp.getSecond()).remove(handler);
         }
     }
 
-    public void unregisterKeyEvent(Callable... callable) {
+    public void unregisterKeyEventHandler(KeyEventHandler... handler) {
         for (Integer key : keys.keySet()) {
             Pair temp = keys.get(key);
 
-            for (Callable c : callable) {
-                ((ArrayList<Callable>) temp.getSecond()).remove(c);
+            for (KeyEventHandler c : handler) {
+                ((ArrayList<KeyEventHandler>) temp.getSecond()).remove(c);
             }
         }
     }
 
-    public void unregisterKeyEvent(int... keycode) {
+    public void unregisterKeyEventHandler(int... keycode) {
         for (int kc : keycode) {
             if (keys.containsKey(kc)) {
                 Pair temp = keys.get(kc);
-                ((ArrayList<Callable>) temp.getSecond()).clear();
+                ((ArrayList<KeyEventHandler>) temp.getSecond()).clear();
             }
         }
     }
@@ -68,8 +68,8 @@ public class Input {
                 temp.setFirst(newValue);
                 keys.replace(keycode, temp);
 
-                for (Callable callable : (ArrayList<Callable>) temp.getSecond()) {
-                    callable.call();
+                for (KeyEventHandler handler : (ArrayList<KeyEventHandler>) temp.getSecond()) {
+                    handler.call(newValue);
                 }
             }
         } else {
@@ -88,7 +88,7 @@ public class Input {
             Pair temp = new Pair();
             
             temp.setFirst(false);
-            temp.setSecond(new ArrayList<Callable>());
+            temp.setSecond(new ArrayList<KeyEventHandler>());
             
             keys.put(keycode, temp);
         }
