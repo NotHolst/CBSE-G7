@@ -52,11 +52,23 @@ public class Vector2 {
         return ((float) Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)));
     }
     
-    public Vector2 clamp(float min, float max) {
+    public Vector2 normalize() {
+        return new Vector2(this.x / this.len(), this.y / this.len());
+    }
+    
+    public Vector2 clampRange(float min, float max) {
         return new Vector2(this.x, this.y) {{
             x = Math.max(min, Math.min(x, max));
             y = Math.max(min, Math.min(y, max));
         }};
+    }
+    
+    public Vector2 clampLength(float maxLength) {
+        if(len() > maxLength) {
+            return normalize().mul(maxLength);
+        } else {
+            return this;
+        }
     }
     
     @Override
