@@ -22,11 +22,11 @@ public class Installer extends ModuleInstall {
         cfg.title = "CBSE G7";
         cfg.width = 1280;
         cfg.height = 720;
+        cfg.x = -1; 
+        cfg.y = -1; 
         cfg.useGL30 = false;
         cfg.resizable = false;
         
         new LwjglApplication(game, cfg);
-        
     }
-
 }
