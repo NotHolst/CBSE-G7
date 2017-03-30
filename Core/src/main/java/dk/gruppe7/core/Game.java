@@ -214,9 +214,4 @@ public class Game implements ApplicationListener{
         cachedTextures.put(inputStream.hashCode(), texture);
         return texture;
     }
-    
-    // Taget fra PlayerSystem
-    private int booleanToInt(boolean b) {
-        return (b) ? 1 : 0;
-    }
 }
