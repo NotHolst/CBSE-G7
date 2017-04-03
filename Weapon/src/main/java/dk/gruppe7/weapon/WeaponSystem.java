@@ -84,8 +84,11 @@ public class WeaponSystem implements IProcess, IRender {
             
             if (owner != null) {
                 //Vector2 offset = new Vector2((float)Math.cos(Math.toRadians(weaponEntity.getRotation()-20)), (float)Math.sin(Math.toRadians(weaponEntity.getRotation()-20)));
-                weaponEntity.setPosition(owner.getPosition().add(new Vector2(weaponEntity.getBounds().getWidth(), weaponEntity.getBounds().getHeight()).div(2)).add(weaponEntity.getOwnerOffset().rotated(owner.getRotation())));
-                System.out.println(weaponEntity.getOwnerOffset().rotated(owner.getRotation()));
+                weaponEntity.setPositionCentered(
+                        owner.getPositionCentered()
+                        .add(weaponEntity.getOwnerOffset().rotated(owner.getRotation()))
+                        //.sub(new Vector2(weaponEntity.getBounds().getWidth(), weaponEntity.getBounds().getHeight()).div(2))
+                );
                 weaponEntity.setRotation(owner.getRotation());
             }
             
@@ -103,7 +106,6 @@ public class WeaponSystem implements IProcess, IRender {
                 Vector2 directionVel = new Vector2((float)Math.cos(Math.toRadians(weaponEntity.getRotation())), (float)Math.sin(Math.toRadians(weaponEntity.getRotation())));
                 sEvents.add(new ShootingEvent(new Bullet() {
                     {
-                        System.out.println(weaponEntity.getRotation());
                         setBulletType(ShootingType.PROJECTILE);
                         setAcceleration(1.f);
                         setVelocity(
@@ -111,7 +113,7 @@ public class WeaponSystem implements IProcess, IRender {
                                 .add((ownerVel).div(2))
                         );
                         setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
-                        setPosition(weaponEntity.getPosition().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
+                        setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
                     }
                 }));
                 shoot = false;
@@ -140,7 +142,7 @@ public class WeaponSystem implements IProcess, IRender {
                 continue;
             }
             g.drawSprite(
-                    /* Position    */e.getPosition(),
+                    /* Position    */ e.getPosition(),
                     /* Size        */ new Vector2(e.getBounds().getWidth(), e.getBounds().getHeight()),
                     /* InputStream */ texture,
                     /* Rotation    */ e.getRotation()
@@ -157,8 +159,8 @@ public class WeaponSystem implements IProcess, IRender {
                 setCollidable(true);
                 setBounds(new Rectangle(48, 48));
                 setBarrelRadius(19);
-                setBarrelOffset(new Vector2(24, 0));
-                setOwnerOffset(new Vector2(16, 16));
+                setBarrelOffset(new Vector2(0, 0));
+                setOwnerOffset(new Vector2(16, -8));
             }
         };
     }

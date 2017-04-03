@@ -37,6 +37,15 @@ public class Entity {
     {
         this.position = position;
     }
+    
+    public Vector2 getPositionCentered(){
+        Vector2 pos = getPosition();
+        return new Vector2(pos.x + getBounds().getWidth()/2, pos.y + getBounds().getHeight()/2);
+    }
+    
+    public void setPositionCentered(Vector2 newpos){
+        setPosition(new Vector2(newpos.x-getBounds().getWidth()/2, newpos.y-getBounds().getHeight()/2));
+    }
 
     public float getRotation()
     {

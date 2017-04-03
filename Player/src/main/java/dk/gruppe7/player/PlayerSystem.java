@@ -130,13 +130,12 @@ public class PlayerSystem implements IProcess, IRender {
                 .add(playerEntity.getVelocity()
                 .mul(gameData.getDeltaTime())
         ));
-        //playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
+        playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
 
         if(!aimDirection.equals(Vector2.zero)) {
             playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
             events.add(new WeaponEvent(playerEntity.getId()));
         }
-        playerEntity.setRotation(playerEntity.getRotation()+1);
     }
 
     private Player makePlayer() {

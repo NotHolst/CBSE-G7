@@ -73,9 +73,9 @@ public class Vector2 {
     
     public Vector2 rotated(double rotation)
     {
-        Vector2 rotatedVector = new Vector2(this.x, this.y);
-        rotatedVector.x *=  Math.cos(Math.toRadians(rotation));
-        rotatedVector.y *=  Math.sin(Math.toRadians(rotation));
+        Vector2 rotatedVector = new Vector2();
+        rotatedVector.x = (float) (x * Math.cos(Math.toRadians(rotation)) - y * Math.sin(Math.toRadians(rotation)));
+        rotatedVector.y =  (float) (x * Math.sin(Math.toRadians(rotation)) + y * Math.cos(Math.toRadians(rotation)));
         return rotatedVector;
     }
     
