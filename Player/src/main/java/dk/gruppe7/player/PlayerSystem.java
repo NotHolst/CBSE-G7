@@ -10,10 +10,10 @@ import dk.gruppe7.common.data.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
-import dk.gruppe7.shootingcommon.Bullet;
-import dk.gruppe7.shootingcommon.ShootingType;
-import dk.gruppe7.shootingcommon.ShootingData;
-import dk.gruppe7.shootingcommon.ShootingEvent;
+import dk.gruppe7.playercommon.Player;
+import dk.gruppe7.weaponcommon.Weapon;
+import dk.gruppe7.weaponcommon.WeaponData;
+import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.util.List;
@@ -35,7 +35,7 @@ public class PlayerSystem implements IProcess, IRender {
     InputStream texture = getClass().getResourceAsStream("player.png");
 
     UUID playerID;
-    List<ShootingEvent> events = ShootingData.getEvents();
+    List<WeaponEvent> events = WeaponData.getEvents();
 
     KeyEventHandler wKeyEventHandler = (newKeyState) -> { north = newKeyState; };
     KeyEventHandler aKeyEventHandler = (newKeyState) -> { west = newKeyState; };
@@ -88,7 +88,7 @@ public class PlayerSystem implements IProcess, IRender {
 
     @Override
     public void start(GameData gameData, World world) {
-        Entity temp = makePlayer();
+        Player temp = makePlayer();
         playerID = temp.getId();
         world.addEntity(temp);
 
@@ -130,19 +130,17 @@ public class PlayerSystem implements IProcess, IRender {
                 .add(playerEntity.getVelocity()
                 .mul(gameData.getDeltaTime())
         ));
+        //playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
 
         if(!aimDirection.equals(Vector2.zero)) {
-            events.add(new ShootingEvent(new Bullet(){{
-                setBulletType(ShootingType.PROJECTILE);
-                setAcceleration(1.f);
-                setVelocity(getVelocity().add(aimDirection).mul(666.f));
-                setPosition(getPosition().add(playerEntity.getPosition()));
-            }}));
+            playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
+            events.add(new WeaponEvent(playerEntity.getId()));
         }
+        playerEntity.setRotation(playerEntity.getRotation()+1);
     }
 
-    private Entity makePlayer() {
-        return new Entity() {{
+    private Player makePlayer() {
+        return new Player() {{
                 setPosition(new Vector2(50.f, 50.f));
                 setMaxVelocity(300.f);
                 setAcceleration(100.f);
@@ -164,7 +162,7 @@ public class PlayerSystem implements IProcess, IRender {
                 /* Position    */ playerEntity.getPosition(), 
                 /* Size        */ new Vector2(playerEntity.getBounds().getWidth(), playerEntity.getBounds().getHeight()), 
                 /* InputStream */ texture, 
-                /* Rotation    */ (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x))
+                /* Rotation    */ playerEntity.getRotation()
         );
     }
 }

@@ -14,8 +14,9 @@ public class DrawCommand {
     }
     
     private DrawCommandType type;
-    private Vector2 position;
-    private Vector2 size;
+    private Vector2 position = Vector2.zero;
+    private Vector2 size = Vector2.zero;
+    private Vector2 offset = null;
     private Color color;
     private InputStream inputStream;
     private float rotation;
@@ -66,6 +67,14 @@ public class DrawCommand {
 
     public void setRotation(float rotation) {
         this.rotation = rotation;
+    }
+
+    public Vector2 getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Vector2 offset) {
+        this.offset = offset;
     }
     
     

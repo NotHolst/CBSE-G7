@@ -38,4 +38,15 @@ public class World {
             if(e.getId().equals(entityID)) return e;
         return null;
     }
+    
+    public ArrayList<Entity> getEntitiesByClass(Class c)
+    {
+        ArrayList<Entity> list = new ArrayList<Entity>();
+        for(Entity e : entities)
+            if(e.getClass().equals(c)) list.add(e);
+        
+        return list;
+        
+        
+    }
 }

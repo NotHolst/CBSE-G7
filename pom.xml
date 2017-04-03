@@ -80,6 +80,8 @@
         <module>Collision</module>
         <module>Mob</module>
         <module>MobCommon</module>
+        <module>Weapon</module>
+        <module>WeaponCommon</module>
     </modules>
 
     <properties>

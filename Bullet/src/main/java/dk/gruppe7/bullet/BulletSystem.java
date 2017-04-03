@@ -96,7 +96,7 @@ public class BulletSystem implements IProcess, IRender
         for (UUID bulletId : bullets)
         {
             Entity bullet = world.getEntityByID(bulletId);
-            g.drawSprite(bullet.getPosition(), new Vector2(32,32), texture, 0);
+            g.drawSprite(bullet.getPosition(), new Vector2(bullet.getBounds().getWidth(),bullet.getBounds().getHeight()), texture, 0);
         }
     }
     

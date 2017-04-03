@@ -18,6 +18,17 @@ public class Graphics {
         cmd.setType(DrawCommand.DrawCommandType.SPRITE);
         drawCommands.add(cmd);
     }
+    public void drawSpriteOffset(Vector2 position, Vector2 size, Vector2 offset, InputStream texture, float rotation)
+    {
+       DrawCommand cmd = new DrawCommand();
+        cmd.setPosition(position);
+        cmd.setSize(size);
+        cmd.setInputStream(texture);
+        cmd.setRotation(rotation);
+        cmd.setType(DrawCommand.DrawCommandType.SPRITE);
+        cmd.setOffset(offset);
+        drawCommands.add(cmd); 
+    }
     
     public ArrayList<DrawCommand> getDrawCommands(){
         return drawCommands;

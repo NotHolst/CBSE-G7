@@ -71,6 +71,14 @@ public class Vector2 {
         }
     }
     
+    public Vector2 rotated(double rotation)
+    {
+        Vector2 rotatedVector = new Vector2(this.x, this.y);
+        rotatedVector.x *=  Math.cos(Math.toRadians(rotation));
+        rotatedVector.y *=  Math.sin(Math.toRadians(rotation));
+        return rotatedVector;
+    }
+    
     @Override
     public String toString() {
         return String.format("x: %.2f | y: %.2f", this.x, this.y);

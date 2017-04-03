@@ -6,7 +6,7 @@
         <artifactId>CBSE-G7-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>Player</artifactId>
+    <artifactId>WeaponCommon</artifactId>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -17,7 +17,8 @@
                 <configuration>
                     <useOSGiDependencies>true</useOSGiDependencies>
                     <publicPackages>
-                        <publicPackage>dk.gruppe7.player</publicPackage>
+                        <publicPackage>dk.gruppe7.weaponcommon</publicPackage>
+                        <publicPackage>dk.gruppe7.data</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -26,15 +27,6 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -46,24 +38,8 @@
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE81</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>PlayerCommon</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>WeaponCommon</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
