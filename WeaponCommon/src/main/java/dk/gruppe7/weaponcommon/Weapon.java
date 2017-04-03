@@ -20,6 +20,8 @@ public class Weapon extends Entity {
     private InputStream texture;
     private Vector2 ownerOffset = Vector2.zero;
     private Vector2 barrelOffset = Vector2.zero;
+    private float fireRate;
+    private float cooldown;
 
     public UUID getOwner() {
         return owner;
@@ -59,6 +61,22 @@ public class Weapon extends Entity {
 
     public void setBarrelOffset(Vector2 barrelOffset) {
         this.barrelOffset = barrelOffset;
+    }
+
+    public float getFireRate() {
+        return fireRate;
+    }
+
+    public void setFireRate(float fireRate) {
+        this.fireRate = fireRate;
+    }
+
+    public float getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(float cooldown) {
+        this.cooldown = cooldown;
     }
     
 }

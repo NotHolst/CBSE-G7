@@ -96,10 +96,14 @@ public class WeaponSystem implements IProcess, IRender {
                 if (wEvents.get(i).getShooter() != weaponEntity.getOwner()) {
                     continue;
                 }
+                if(weaponEntity.getCooldown() <= 0)
+                {
                 shoot = true;
-                wEvents.remove(i);
+                weaponEntity.setCooldown(weaponEntity.getFireRate());
+                }
+                wEvents.remove(i);                
             }
-            
+            weaponEntity.setCooldown(weaponEntity.getCooldown()-gameData.getDeltaTime());
             if (shoot) {
                 Vector2 ownerPos = owner.getPosition();
                 Vector2 ownerVel = owner.getVelocity();
@@ -161,6 +165,8 @@ public class WeaponSystem implements IProcess, IRender {
                 setBarrelRadius(19);
                 setBarrelOffset(new Vector2(0, 0));
                 setOwnerOffset(new Vector2(16, -8));
+                setFireRate(0.5f);
+                setCooldown(0);
             }
         };
     }
