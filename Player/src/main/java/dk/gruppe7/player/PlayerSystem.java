@@ -6,6 +6,7 @@ import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.Input;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.VirtualKeyCode;
 import dk.gruppe7.common.data.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
@@ -93,15 +94,15 @@ public class PlayerSystem implements IProcess, IRender {
         world.addEntity(temp);
 
         input = gameData.getInput();
-        input.registerKeyEventHandler(KeyEvent.VK_W, wKeyEventHandler);
-        input.registerKeyEventHandler(KeyEvent.VK_A, aKeyEventHandler);
-        input.registerKeyEventHandler(KeyEvent.VK_S, sKeyEventHandler);
-        input.registerKeyEventHandler(KeyEvent.VK_D, dKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_W, wKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_A, aKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_S, sKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_D, dKeyEventHandler);
 
-        input.registerKeyEventHandler(KeyEvent.VK_UP, ArrowUpKeyEventHandler);
-        input.registerKeyEventHandler(KeyEvent.VK_LEFT, ArrowLeftKeyEventHandler);
-        input.registerKeyEventHandler(KeyEvent.VK_DOWN, ArrowDownKeyEventHandler);
-        input.registerKeyEventHandler(KeyEvent.VK_RIGHT, ArrowRightKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_UP, ArrowUpKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_LEFT, ArrowLeftKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_DOWN, ArrowDownKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_RIGHT, ArrowRightKeyEventHandler);
     }
 
     @Override

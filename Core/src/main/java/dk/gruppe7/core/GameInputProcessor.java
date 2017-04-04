@@ -21,14 +21,14 @@ public class GameInputProcessor {
 
         @Override
         public void nativeKeyTyped(NativeKeyEvent nke) {
-            throw new UnsupportedOperationException("Not supported.");
+            // System.err.println("Not supported!");
         }
 
         @Override
         public void nativeKeyPressed(NativeKeyEvent nke) {
             try {
                 //System.out.printf("KeyPress caught : {%d} \n", nke.getRawCode());
-                gameData.getInput().setKey(nke.getRawCode(), true);
+                gameData.getInput().setKey(nke.getKeyCode(), true);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -38,7 +38,7 @@ public class GameInputProcessor {
         public void nativeKeyReleased(NativeKeyEvent nke) {
             try {
                 //System.out.printf("KeyRelease caught : {%d} \n", nke.getRawCode());
-                gameData.getInput().setKey(nke.getRawCode(), false);
+                gameData.getInput().setKey(nke.getKeyCode(), false);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
