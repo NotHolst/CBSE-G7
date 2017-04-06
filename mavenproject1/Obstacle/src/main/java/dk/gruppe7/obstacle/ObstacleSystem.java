@@ -90,7 +90,6 @@ public class ObstacleSystem implements IProcess, IRender
     public void process(GameData gameData, World world)
     {
         List<CollisionEvent> temp = CollisionData.getEvents();
-        System.out.println(temp.size());
         
         for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents().listIterator(); iterator.hasNext();)
         {
