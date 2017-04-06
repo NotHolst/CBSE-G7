@@ -24,4 +24,8 @@ hs_err_pid*
 /MobCommon/target/
 /Weapon/target/
 /WeaponCommon/target/
+<<<<<<< HEAD
 /mavenproject1/Obstacle/target/
+=======
+/LevelGenerator/target/
+>>>>>>> 135a9c7ee232d4ff09f2e2738ad55b79851985de

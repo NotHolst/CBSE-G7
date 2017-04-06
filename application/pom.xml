@@ -92,7 +92,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+<<<<<<< HEAD
             <artifactId>Obstacle</artifactId>
+=======
+            <artifactId>LevelGenerator</artifactId>
+>>>>>>> 135a9c7ee232d4ff09f2e2738ad55b79851985de
             <version>${project.version}</version>
         </dependency>
     </dependencies>

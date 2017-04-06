@@ -43,7 +43,7 @@ public class PlayerSystem implements IProcess, IRender {
     KeyEventHandler sKeyEventHandler = (newKeyState) -> { south = newKeyState; };
     KeyEventHandler dKeyEventHandler = (newKeyState) -> { east = newKeyState; };
     
-    KeyEventHandler ArrowUpKeyEventHandler = new KeyEventHandler() {
+    KeyEventHandler arrowUpKeyEventHandler = new KeyEventHandler() {
         @Override
         public void call(boolean newKeyState) {
             if (newKeyState == true) {
@@ -54,7 +54,7 @@ public class PlayerSystem implements IProcess, IRender {
         }
     };
     
-    KeyEventHandler ArrowLeftKeyEventHandler = new KeyEventHandler() {
+    KeyEventHandler arrowLeftKeyEventHandler = new KeyEventHandler() {
         @Override
         public void call(boolean newKeyState) {
             if (newKeyState == true) {
@@ -65,7 +65,7 @@ public class PlayerSystem implements IProcess, IRender {
         }
     };
         
-    KeyEventHandler ArrowDownKeyEventHandler = new KeyEventHandler() {
+    KeyEventHandler arrowDownKeyEventHandler = new KeyEventHandler() {
         @Override
         public void call(boolean newKeyState) {
             if (newKeyState == true) {
@@ -76,7 +76,7 @@ public class PlayerSystem implements IProcess, IRender {
         }
     };
             
-    KeyEventHandler ArrowRightKeyEventHandler = new KeyEventHandler() {
+    KeyEventHandler arrowRightKeyEventHandler = new KeyEventHandler() {
         @Override
         public void call(boolean newKeyState) {
             if (newKeyState == true) {
@@ -99,16 +99,16 @@ public class PlayerSystem implements IProcess, IRender {
         input.registerKeyEventHandler(VirtualKeyCode.VC_S, sKeyEventHandler);
         input.registerKeyEventHandler(VirtualKeyCode.VC_D, dKeyEventHandler);
 
-        input.registerKeyEventHandler(VirtualKeyCode.VC_UP, ArrowUpKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_LEFT, ArrowLeftKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_DOWN, ArrowDownKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_RIGHT, ArrowRightKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_UP, arrowUpKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_LEFT, arrowLeftKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_DOWN, arrowDownKeyEventHandler);
+        input.registerKeyEventHandler(VirtualKeyCode.VC_RIGHT, arrowRightKeyEventHandler);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
         input.unregisterKeyEventHandler(wKeyEventHandler, aKeyEventHandler, sKeyEventHandler, dKeyEventHandler);
-        input.unregisterKeyEventHandler(ArrowUpKeyEventHandler, ArrowLeftKeyEventHandler, ArrowDownKeyEventHandler, ArrowRightKeyEventHandler);
+        input.unregisterKeyEventHandler(arrowUpKeyEventHandler, arrowLeftKeyEventHandler, arrowDownKeyEventHandler, arrowRightKeyEventHandler);
         world.removeEntity(world.getEntityByID(playerID));
         playerID = null;
     }
