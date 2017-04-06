@@ -109,7 +109,7 @@ public class Game implements ApplicationListener{
         batch.enableBlending();
         drawGraphics();
 
-        
+        gameData.incrementTickCount();
     }
     
     public void update(){

@@ -42,8 +42,8 @@ public class CollisionSystem implements IProcess {
                 */
                 if(!target.equals(other) && target.isCollidable() && other.isCollidable() && intersects(target, other)) {
                     //System.out.println("Adding new CollisionEvent");
-                    CollisionData.getEvents().add(new CollisionEvent(target.getId(), other.getId())); // CollisionEvent for the first
-                    CollisionData.getEvents().add(new CollisionEvent(other.getId(), target.getId())); // CollisionEvent for the second
+                    CollisionData.getEvents(gameData.getTickCount()).add(new CollisionEvent(target.getId(), other.getId(), gameData.getTickCount())); // CollisionEvent for the first
+                    CollisionData.getEvents(gameData.getTickCount()).add(new CollisionEvent(other.getId(), target.getId(), gameData.getTickCount())); // CollisionEvent for the second
                 }
             }
         }

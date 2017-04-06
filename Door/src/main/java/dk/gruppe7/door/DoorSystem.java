@@ -71,7 +71,7 @@ public class DoorSystem implements IProcess, IRender
             }
         }
         
-        Collision(world);
+        Collision(world, gameData);
         
         
             
@@ -138,9 +138,9 @@ public class DoorSystem implements IProcess, IRender
             world.addEntity(currentDoor);
     }
     
-    private void Collision(World world)
+    private void Collision(World world, GameData gameData)
     {
-        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents().listIterator(); iterator.hasNext();)
+        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();)
         {
             CollisionEvent tempi = iterator.next();
             for (Door door : currentDoors)

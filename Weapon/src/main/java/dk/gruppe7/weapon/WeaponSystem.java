@@ -123,7 +123,7 @@ public class WeaponSystem implements IProcess, IRender {
                 shoot = false;
             }
             
-            for (Iterator<CollisionEvent> i = CollisionData.getEvents().iterator(); i.hasNext();) {
+            for (Iterator<CollisionEvent> i = CollisionData.getEvents(gameData.getTickCount()).iterator(); i.hasNext();) {
                 CollisionEvent colEv = i.next();
                 if (colEv.getOtherID().equals(weaponEntity.getId()) || colEv.getTargetID().equals(weaponEntity.getId())) {
                     
