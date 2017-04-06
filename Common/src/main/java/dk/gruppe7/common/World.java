@@ -13,11 +13,9 @@ import java.util.UUID;
 public class World {
     
     private int currentLevel;
-    private Room currentRoom;
+    private Room currentRoom = null;
     private HashMap<Point, Point[]> map;
     private ArrayList<Entity> entities = new ArrayList<>(); //Jan bruger hashmap med <entityID (string), Entity>. Det er nok smart ift. lookup af en bestemt entity
-    
-    
     
     public ArrayList<Entity> getEntities()
     {
@@ -47,7 +45,13 @@ public class World {
             if(e.getClass().equals(c)) list.add(e);
         
         return list;
-        
-        
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
     }
 }
