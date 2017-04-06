@@ -82,6 +82,7 @@
         <module>MobCommon</module>
         <module>Weapon</module>
         <module>WeaponCommon</module>
+        <module>mavenproject1/Obstacle</module>
     </modules>
 
     <properties>

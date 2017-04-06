@@ -128,8 +128,23 @@ public class Game implements ApplicationListener{
                 case SPRITE:
                     batch.begin();
 
+                    
+                    
                     Texture tex = inputStreamToTexture(cmd.getInputStream());
 
+                    
+                    float repeatX = 1;
+                    float repeatY = 1;
+                    if (cmd.getSpriteRenderType() == DrawCommand.SpriteRenderMode.REPEAT)
+                    {
+                        tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+                        repeatX = cmd.getSize().x /tex.getWidth();
+                        repeatY = cmd.getSize().y/  tex.getHeight(); 
+                        //LibGDX will always scale the texture to the bounds,
+                        //Forcing this approach where amount of wraps are,
+                        //calculated manually
+                    }
+                    
                     batch.draw(
                             /* Texture   */ tex, 
                             /* X         */ cmd.getPosition().x, 
@@ -143,8 +158,8 @@ public class Game implements ApplicationListener{
                             /* Rotation  */ cmd.getRotation(), 
                             /* srcX      */ 0, 
                             /* srcY      */ 0, 
-                            /* srcWidth  */ tex.getWidth(), 
-                            /* srcHeight */ tex.getHeight(), 
+                            /* srcWidth  */ (int)(tex.getWidth()*repeatX), 
+                            /* srcHeight */ (int)(tex.getHeight()*repeatY), 
                             /* flipX     */ false, 
                             /* flipY     */ false
                     );
