@@ -84,6 +84,7 @@
         <module>WeaponCommon</module>
         <module>mavenproject1/Obstacle</module>
         <module>LevelGenerator</module>
+        <module>Door</module>
     </modules>
 
     <properties>
