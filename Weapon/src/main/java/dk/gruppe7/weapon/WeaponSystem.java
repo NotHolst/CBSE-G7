@@ -127,12 +127,19 @@ public class WeaponSystem implements IProcess, IRender {
                 CollisionEvent colEv = i.next();
                 if (colEv.getOtherID().equals(weaponEntity.getId()) || colEv.getTargetID().equals(weaponEntity.getId())) {
                     
-                    if (world.getEntityByID(colEv.getOtherID()).getClass().equals(Player.class)) {
+                    try
+                    {
+                         if (world.getEntityByID(colEv.getOtherID()).getClass().equals(Player.class)) {
                         weaponEntity.setOwner(colEv.getOtherID());
                     }
                     if (world.getEntityByID(colEv.getTargetID()).getClass().equals(Player.class)) {
                         weaponEntity.setOwner(colEv.getTargetID());
                     }
+                    } 
+                    catch (Exception es)
+                    {
+                    }
+                   
                 }
             }
         }
