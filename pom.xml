@@ -82,11 +82,8 @@
         <module>MobCommon</module>
         <module>Weapon</module>
         <module>WeaponCommon</module>
-<<<<<<< HEAD
         <module>mavenproject1/Obstacle</module>
-=======
         <module>LevelGenerator</module>
->>>>>>> 135a9c7ee232d4ff09f2e2738ad55b79851985de
     </modules>
 
     <properties>

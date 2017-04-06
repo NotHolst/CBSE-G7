@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>dk.gruppe7</groupId>
@@ -92,11 +92,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-<<<<<<< HEAD
             <artifactId>Obstacle</artifactId>
-=======
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>LevelGenerator</artifactId>
->>>>>>> 135a9c7ee232d4ff09f2e2738ad55b79851985de
             <version>${project.version}</version>
         </dependency>
     </dependencies>
