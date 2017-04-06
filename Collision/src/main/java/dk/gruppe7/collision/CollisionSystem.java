@@ -11,6 +11,7 @@ import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.Rectangle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -48,28 +49,17 @@ public class CollisionSystem implements IProcess {
         }
     }
     
-    private boolean intersects(Entity target, Entity other) {
-        if(target.getBounds() == null || other.getBounds() == null) return false;
-        float tw = target.getBounds().getWidth();
-        float th = target.getBounds().getHeight();
-        float rw = other.getBounds().getWidth();
-        float rh = other.getBounds().getHeight();
-        if(rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) return false; // you can't collide with Entity with a less than 0 bounds
+    private boolean intersects(Entity targetEntity, Entity otherEntity) {
+        if(targetEntity.getBounds() == null || otherEntity.getBounds() == null) return false;
         
-        float tx = target.getPosition().x;
-        float ty = target.getPosition().y;
-        float rx = other.getPosition().x;
-        float ry = other.getPosition().y;
-        rw += rx;
-        rh += ry;
-        tw += tx;
-        th += ty;
+        if(targetEntity.getBounds().isEmpty() || otherEntity.getBounds().isEmpty()) return false;
         
-        return ((rw < rx || rw > tx) &&
-                (rh < ry || rh > ty) &&
-                (tw < tx || tw > rx) &&
-                (th < ty || th > ry));
+        Rectangle targetRect = targetEntity.getBounds().add((int) targetEntity.getPosition().x, (int) targetEntity.getPosition().y);
+        Rectangle otherRect = otherEntity.getBounds().add((int) otherEntity.getPosition().x, (int) otherEntity.getPosition().y);
+        
+        return ((otherRect.getWidth() < otherEntity.getPosition().x || otherRect.getWidth() > targetEntity.getPosition().x) &&
+                (otherRect.getHeight() < otherEntity.getPosition().y || otherRect.getHeight() > targetEntity.getPosition().y) &&
+                (targetRect.getWidth() < targetEntity.getPosition().x || targetRect.getWidth() > otherEntity.getPosition().x) &&
+                (targetRect.getHeight() < targetEntity.getPosition().y || targetRect.getHeight() > otherEntity.getPosition().y));
     }
-    
-    
 }
