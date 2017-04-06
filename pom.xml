@@ -82,6 +82,7 @@
         <module>MobCommon</module>
         <module>Weapon</module>
         <module>WeaponCommon</module>
+        <module>LevelGenerator</module>
     </modules>
 
     <properties>
