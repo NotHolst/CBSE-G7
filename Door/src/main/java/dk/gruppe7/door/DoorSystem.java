@@ -88,7 +88,6 @@ public class DoorSystem implements IProcess, IRender
         currentDoors = new ArrayList<>();
         if(newRoom.getNorth() != null)
         {
-            System.out.println("N");
             currentDoors.add(new Door()
             {{
                         setCollidable(true);
@@ -99,7 +98,6 @@ public class DoorSystem implements IProcess, IRender
         }
         if(newRoom.getWest()!= null)
         {
-            System.out.println("W");
             currentDoors.add(new Door()
             {{
                         setCollidable(true);
@@ -113,7 +111,6 @@ public class DoorSystem implements IProcess, IRender
         }
         if(newRoom.getSouth()!= null)
         {
-            System.out.println("S");
             currentDoors.add(new Door()
             {{
                         setCollidable(true);
@@ -126,7 +123,6 @@ public class DoorSystem implements IProcess, IRender
         }
         if(newRoom.getEast()!= null)
         {
-            System.out.println("E");
             currentDoors.add(new Door()
             {{
                         setCollidable(true);
@@ -137,8 +133,6 @@ public class DoorSystem implements IProcess, IRender
             }});
             
         }
-        
-        System.out.println(currentDoors.size());
         
         for (Entity currentDoor : currentDoors)
             world.addEntity(currentDoor);
