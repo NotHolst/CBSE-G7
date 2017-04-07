@@ -107,7 +107,7 @@ public class Entity {
         this.collidable = isColliable;
     }
     
-    /*
+    
     public InputStream getInputStream() {
         return inputStream;
     }
@@ -115,5 +115,5 @@ public class Entity {
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
     }
-    */
+   
 }

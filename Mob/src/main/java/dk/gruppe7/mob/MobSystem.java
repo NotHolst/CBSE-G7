@@ -10,6 +10,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.data.MobType;
@@ -18,6 +19,9 @@ import static dk.gruppe7.data.MobType.MELEE;
 import static dk.gruppe7.data.MobType.RANGED;
 import static dk.gruppe7.data.MobType.SUPPORT;
 import dk.gruppe7.mobcommon.Mob;
+import dk.gruppe7.mobcommon.MobData;
+import dk.gruppe7.mobcommon.MobEvent;
+import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
 import java.io.InputStream;
 import java.util.Collection;
@@ -46,6 +50,7 @@ public class MobSystem implements IProcess, IRender {
                     GetRandomNumberBetween(0, gameData.getScreenHeight()),
                     pickRandomMobType(MobType.class));
             world.addEntity(mob);
+            MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
         }
                 
     }
@@ -87,6 +92,7 @@ public class MobSystem implements IProcess, IRender {
         mob.setMaxVelocity(300.f);
         mob.setAcceleration(80.f);
         mob.setCollidable(true);
+        mob.setBounds(new Rectangle(64, 64));
 
         // Create different types of mobs with different behavior
         if (type == SUPPORT) {

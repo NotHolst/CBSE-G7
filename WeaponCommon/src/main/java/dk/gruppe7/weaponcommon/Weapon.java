@@ -7,6 +7,7 @@ package dk.gruppe7.weaponcommon;
 
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.data.Vector2;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ public class Weapon extends Entity {
     private Vector2 barrelOffset = Vector2.zero;
     private float fireRate;
     private float cooldown;
+     
 
     public UUID getOwner() {
         return owner;
