@@ -13,6 +13,11 @@ public class DrawCommand {
         LINE, RECTANGLE, CIRCLE, SPRITE
     }
     
+    public static enum SpriteRenderMode{
+        STRETCH, REPEAT
+    }
+    
+    private SpriteRenderMode spriteRenderType = SpriteRenderMode.STRETCH;
     private DrawCommandType type;
     private Vector2 position = Vector2.zero;
     private Vector2 size = Vector2.zero;
@@ -25,6 +30,18 @@ public class DrawCommand {
         return type;
     }
 
+    public SpriteRenderMode getSpriteRenderType()
+    {
+        return spriteRenderType;
+    }
+
+    public void setSpriteRenderType(SpriteRenderMode spriteRenderType)
+    {
+        this.spriteRenderType = spriteRenderType;
+    }
+
+    
+    
     public void setType(DrawCommandType type) {
         this.type = type;
     }

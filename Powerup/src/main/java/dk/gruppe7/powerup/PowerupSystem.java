@@ -68,17 +68,17 @@ public class PowerupSystem implements IProcess, IRender {
             }
         }
         // Iterates over all the CollisionEvents backwards because we are removing from it while iterating;
-        for (int i = CollisionData.getEvents().size() - 1; i >= 0; i--) {
+        for (int i = CollisionData.getEvents(gameData.getTickCount()).size() - 1; i >= 0; i--) {
             // Sets the current target of the CollisionEvent
-            Entity targetEntity = world.getEntityByID(CollisionData.getEvents().get(i).getTargetID());
+            Entity targetEntity = world.getEntityByID(CollisionData.getEvents(gameData.getTickCount()).get(i).getTargetID());
             // if the targetEntity is a Powerup and the "other" is the player we wanna do something
-            if (targetEntity instanceof Powerup && CollisionData.getEvents().get(i).getOtherID().equals(player.getId())) {
+            if (targetEntity instanceof Powerup && CollisionData.getEvents(gameData.getTickCount()).get(i).getOtherID().equals(player.getId())) {
                 Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
                 player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
                 // Cleanup
                 world.removeEntity(powerup);
                 powerups.remove(powerup);
-                CollisionData.getEvents().remove(i);
+                CollisionData.getEvents(gameData.getTickCount()).remove(i);
             }
 
         }

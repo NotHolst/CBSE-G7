@@ -47,6 +47,7 @@ public class Game implements ApplicationListener{
     private final Lookup lookup = Lookup.getDefault();
     private List<IProcess> processors = new CopyOnWriteArrayList<>();
     private List<IRender> renderers = new CopyOnWriteArrayList<>();
+    private InputStream defaultInputStream = getClass().getResourceAsStream("default.png");
     
     private Lookup.Result<IProcess> processorsResult;
     private Lookup.Result<IRender> renderersResult;
@@ -93,8 +94,6 @@ public class Game implements ApplicationListener{
         //TODO:
     }
 
-    InputStream defaultInputStream = getClass().getResourceAsStream("default.png");
-    
     @Override
     public void render() {
         //Clear screen before drawing
@@ -110,6 +109,7 @@ public class Game implements ApplicationListener{
         batch.enableBlending();
         drawGraphics();
 
+        gameData.incrementTickCount();
     }
     
     public void update(){
@@ -127,9 +127,26 @@ public class Game implements ApplicationListener{
             switch(cmd.getType()){
                 case SPRITE:
                     batch.begin();
+                    
+                    Texture tex;
+                    if(cmd.getInputStream() != null) {
+                        tex = inputStreamToTexture(cmd.getInputStream());
+                    } else {
+                        tex = inputStreamToTexture(defaultInputStream);
+                    }
 
-                    Texture tex = inputStreamToTexture(cmd.getInputStream());
-
+                    float repeatX = 1;
+                    float repeatY = 1;
+                    if (cmd.getSpriteRenderType() == DrawCommand.SpriteRenderMode.REPEAT)
+                    {
+                        tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+                        repeatX = cmd.getSize().x /tex.getWidth();
+                        repeatY = cmd.getSize().y/  tex.getHeight(); 
+                        //LibGDX will always scale the texture to the bounds,
+                        //Forcing this approach where amount of wraps are,
+                        //calculated manually
+                    }
+                    
                     batch.draw(
                             /* Texture   */ tex, 
                             /* X         */ cmd.getPosition().x, 
@@ -143,8 +160,8 @@ public class Game implements ApplicationListener{
                             /* Rotation  */ cmd.getRotation(), 
                             /* srcX      */ 0, 
                             /* srcY      */ 0, 
-                            /* srcWidth  */ tex.getWidth(), 
-                            /* srcHeight */ tex.getHeight(), 
+                            /* srcWidth  */ (int)(tex.getWidth()*repeatX), 
+                            /* srcHeight */ (int)(tex.getHeight()*repeatY), 
                             /* flipX     */ false, 
                             /* flipY     */ false
                     );

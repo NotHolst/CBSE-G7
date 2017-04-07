@@ -7,6 +7,7 @@ package dk.gruppe7.common;
 public class GameData {
     private int screenWidth;
     private int screenHeight;
+    private long tickCount = 0;
     private float deltaTime;
     private final Input input = new Input();
 
@@ -33,11 +34,16 @@ public class GameData {
     public void setDeltaTime(float deltaTime) {
         this.deltaTime = deltaTime;
     }
+    
+    public void incrementTickCount() {
+        this.tickCount++;
+    }
+    
+    public long getTickCount() {
+        return this.tickCount;
+    }
 
     public Input getInput() {
         return input;
     }
-
-    
-    
 }
