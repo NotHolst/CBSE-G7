@@ -73,7 +73,7 @@ public class Input {
                 }
             }
         } else {
-            System.err.printf("Keycode {%d} isn't associated with any events! \n", keycode);
+            //System.err.printf("Keycode {%d} isn't associated with any events! \n", keycode);
         }
     }
 

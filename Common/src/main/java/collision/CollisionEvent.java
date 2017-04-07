@@ -15,11 +15,13 @@ public class CollisionEvent
 {
     private UUID targetID;
     private UUID otherID;
+    private long expirationTick;
 
-    public CollisionEvent(UUID targetID, UUID otherID)
+    public CollisionEvent(UUID targetID, UUID otherID, long currentTick)
     {
         this.targetID = targetID;
         this.otherID = otherID;
+        this.expirationTick = currentTick + 2;
     }
 
     public UUID getTargetID()
@@ -30,5 +32,10 @@ public class CollisionEvent
     public UUID getOtherID()
     {
         return otherID;
+    }
+    
+    public long getExpirationTick() 
+    {
+        return expirationTick;
     }
 }

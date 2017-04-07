@@ -7,6 +7,7 @@ package collision;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -15,9 +16,18 @@ import java.util.List;
 public class CollisionData
 {
     private static List<CollisionEvent> events = new ArrayList<>();
+    private static long lastTick = -1;
 
-    public static List<CollisionEvent> getEvents()
+    public static List<CollisionEvent> getEvents(long currentTick)
     {
+        if(currentTick != lastTick) {
+            lastTick = currentTick;
+            
+            events = events.stream()
+                           .filter(event -> currentTick - event.getExpirationTick() < 2)
+                           .collect(Collectors.toList());
+        }
+        
         return events;
     }
 }

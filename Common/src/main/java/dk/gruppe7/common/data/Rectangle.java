@@ -11,7 +11,7 @@ package dk.gruppe7.common.data;
  */
 public class Rectangle
 {
-    private int width, height;
+    private int x, y, width, height;
 
     public Rectangle() {
     }
@@ -19,6 +19,22 @@ public class Rectangle
     public Rectangle(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+    
+    public Rectangle add(int width, int height) {
+        return new Rectangle(this.width + width, this.height + height);
+    }
+    
+    public Rectangle add(Rectangle other) {
+        return new Rectangle(this.width + other.width, this.height + other.height);
+    }
+    
+    public Rectangle sub(int width, int height) {
+        return new Rectangle(this.width - width, this.height - height);
+    }
+    
+    public Rectangle sub(Rectangle other) {
+        return new Rectangle(this.width - other.width, this.height - other.height);
     }
 
     public int getWidth() {
@@ -29,4 +45,7 @@ public class Rectangle
         return height;
     }
 
+    public boolean isEmpty() {
+        return this.width * this.height <= 0;
+    }
 }

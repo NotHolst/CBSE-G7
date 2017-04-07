@@ -88,13 +88,13 @@ public class LevelGenerator implements IProcess
 
                     for (int i = 0; i < expansionDirections.size(); i++) {
                         try {
-                            grid[(int) (currPoint.x + expansionDirections.get(i).x)][(int) (currPoint.y + expansionDirections.get(i).y)] += 0;
+                            grid[currPoint.x + expansionDirections.get(i).x][currPoint.y + expansionDirections.get(i).y] += 0;
                         } catch (IndexOutOfBoundsException ex) {
                             continue;
                         }
 
-                        if (grid[(int) (currPoint.x + expansionDirections.get(i).x)][(int) (currPoint.y + expansionDirections.get(i).y)] == 0) {
-                            grid[(int) (currPoint.x + expansionDirections.get(i).x)][(int) (currPoint.y + expansionDirections.get(i).y)] = 1;
+                        if (grid[currPoint.x + expansionDirections.get(i).x][currPoint.y + expansionDirections.get(i).y] == 0) {
+                            grid[currPoint.x + expansionDirections.get(i).x][currPoint.y + expansionDirections.get(i).y] = 1;
                             iterator.add(new Point(currPoint.x + expansionDirections.get(i).x, currPoint.y + expansionDirections.get(i).y));
                             roomsLeftToPlace--;
                             break;
