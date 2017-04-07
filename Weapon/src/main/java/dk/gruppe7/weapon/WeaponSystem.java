@@ -128,7 +128,7 @@ public class WeaponSystem implements IProcess, IRender {
                 shoot = false;
             }
 
-            for (ListIterator<CollisionEvent> i = CollisionData.getEvents().listIterator(); i.hasNext();) {
+            for (ListIterator<CollisionEvent> i = CollisionData.getEvents(0).listIterator(); i.hasNext();) {
                 CollisionEvent colEv = i.next(); //Iterates CollisionEvents to see if there are any pertaining to the Weapon and a possible Owner.
                 if (colEv.getOtherID().equals(weaponEntity.getId())) {
                     if (world.getEntityByID(colEv.getTargetID()) instanceof Player) {

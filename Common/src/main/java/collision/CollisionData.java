@@ -31,9 +31,6 @@ public class CollisionData
         return events;
     }
 
-    public static List<CollisionEvent> getEvents() {
-        return events;
-    }
-
+   
     
 }
