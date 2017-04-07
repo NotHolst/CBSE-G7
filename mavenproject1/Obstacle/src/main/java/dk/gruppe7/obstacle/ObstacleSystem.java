@@ -89,22 +89,7 @@ public class ObstacleSystem implements IProcess, IRender
     @Override
     public void process(GameData gameData, World world)
     {
-        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();)
-        {
-            CollisionEvent tempi = iterator.next();
-            
-            for (UUID uuid : boundsID)
-            {
-                if(tempi.getOtherID().equals(uuid))
-                {
-                    Entity e = world.getEntityByID(tempi.getTargetID());
-                    e.setPosition(new Vector2(150,150));                   
-                    iterator.remove();
-                }
-                else if(tempi.getTargetID().equals(uuid))
-                    iterator.remove();
-            }
-        }
+       
     }
 
     @Override
