@@ -20,12 +20,14 @@ public class CollisionData
 
     public static List<CollisionEvent> getEvents(long currentTick)
     {
-        if(currentTick == lastTick) {
-            return events;
-        } else {
-            return events = events.stream()
-                                  .filter(event -> currentTick - event.getExpirationTick() < 2)
-                                  .collect(Collectors.toList());
+        if(currentTick != lastTick) {
+            lastTick = currentTick;
+            
+            events = events.stream()
+                           .filter(event -> currentTick - event.getExpirationTick() < 2)
+                           .collect(Collectors.toList());
         }
+        
+        return events;
     }
 }
