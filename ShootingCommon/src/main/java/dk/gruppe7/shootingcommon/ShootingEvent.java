@@ -12,10 +12,17 @@ package dk.gruppe7.shootingcommon;
 public class ShootingEvent
 {
     private Bullet bullet;
+    private long expirationTick;
 
+    @Deprecated
     public ShootingEvent(Bullet bluePrint)
     {
         this.bullet = bluePrint;
+    }
+    
+    public ShootingEvent(Bullet bluePrint, long currentTick) {
+        this.bullet = bluePrint;
+        this.expirationTick = currentTick + 2;
     }
 
     public Bullet getBlueprint()
@@ -23,7 +30,7 @@ public class ShootingEvent
         return bullet;
     }
     
-    
-    
-    
+    public long getExpirationTick() {
+        return expirationTick;
+    }
 }
