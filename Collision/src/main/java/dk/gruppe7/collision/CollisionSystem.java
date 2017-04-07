@@ -35,7 +35,8 @@ public class CollisionSystem implements IProcess {
     public void process(GameData gameData, World world) {
         for(Entity target: world.getEntities()) {
             for(Entity other: world.getEntities()) {
-                /*System.out.println(target.getPosition().x + " | " + target.getPosition().y + " | " 
+                /*
+                System.out.println(target.getPosition().x + " | " + target.getPosition().y + " | " 
                         + target.getBounds().getWidth() + " | " + target.getBounds().getHeight() + " | "
                         + target.isCollidable());
                 */

@@ -82,6 +82,8 @@
         <module>MobCommon</module>
         <module>Weapon</module>
         <module>WeaponCommon</module>
+        <module>Powerup</module>
+        <module>PowerupCommon</module>
     </modules>
 
     <properties>
