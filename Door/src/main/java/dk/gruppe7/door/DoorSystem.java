@@ -17,6 +17,8 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.levelcommon.LevelData;
+import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -136,6 +138,9 @@ public class DoorSystem implements IProcess, IRender
         
         for (Entity currentDoor : currentDoors)
             world.addEntity(currentDoor);
+        
+        LevelData.getEvents().add(new RoomChangedEvent(newRoom));
+        System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
     
     private void Collision(World world, GameData gameData)
@@ -150,7 +155,7 @@ public class DoorSystem implements IProcess, IRender
                     Entity e = world.getEntityByID(tempi.getTargetID());
                    
                     Player temp = e instanceof Player ? (Player)e : null;
-                    System.out.println(temp);
+                    //System.out.println(temp);
                     if(temp != null)
                     {
                         switch(((Door)world.getEntityByID(tempi.getOtherID())).getDirection())
