@@ -84,10 +84,11 @@
         <module>WeaponCommon</module>
         <module>Powerup</module>
         <module>PowerupCommon</module>
-        <module>mavenproject1/Obstacle</module>
         <module>LevelGenerator</module>
+        <module>Obstacle</module>
         <module>Door</module>
         <module>LevelCommon</module>
+        <module>DamageCommon</module>
     </modules>
 
     <properties>

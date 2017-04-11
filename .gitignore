@@ -36,3 +36,5 @@ hs_err_pid*
 /Door/target/
 >>>>>>> origin/master
 /LevelCommon/target/
+/Obstacle/target/
+/DamageCommon/target/
