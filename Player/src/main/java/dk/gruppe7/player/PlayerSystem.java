@@ -13,6 +13,9 @@ import dk.gruppe7.common.data.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.mobcommon.MobData;
+import dk.gruppe7.mobcommon.MobEvent;
+import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.Weapon;
@@ -40,7 +43,7 @@ public class PlayerSystem implements IProcess, IRender {
     InputStream texture = getClass().getResourceAsStream("player.png");
 
     UUID playerID;
-    List<WeaponEvent> events = WeaponData.getEvents();
+    List<WeaponEvent> weaponEvents = WeaponData.getEvents();
 
     KeyEventHandler wKeyEventHandler = (newKeyState) -> { north = newKeyState; };
     KeyEventHandler aKeyEventHandler = (newKeyState) -> { west = newKeyState; };
@@ -137,13 +140,20 @@ public class PlayerSystem implements IProcess, IRender {
                     .add(playerEntity.getVelocity()
                     .mul(gameData.getDeltaTime())
             ));
+            
             playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
 
             if(!aimDirection.equals(Vector2.zero)) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-                events.add(new WeaponEvent(playerEntity.getId()));
+                weaponEvents.add(new WeaponEvent(playerEntity.getId()));
             }
-        
+            
+            for(MobEvent event : MobData.getEvents(gameData.getTickCount())) {
+                if(event.getType() == MobEventType.DEATH) {
+                    playerEntity.incrementScoreBy(1);
+                }
+            }
+            
             //Bullet collides with player the moment it spawns
             //checkCollision(world, gameData, (Player) playerEntity);
         }

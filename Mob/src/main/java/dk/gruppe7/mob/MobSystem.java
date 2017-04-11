@@ -23,6 +23,7 @@ import static dk.gruppe7.data.MobType.SUPPORT;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
+import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
 import dk.gruppe7.shootingcommon.Bullet;
@@ -89,8 +90,10 @@ public class MobSystem implements IProcess, IRender {
                 
                 m.setPosition(m.getPosition().add(m.getVelocity().mul(gameData.getDeltaTime())));
                 
-                if(m.getHealthData().getHealth() <= 0)
+                if(m.getHealthData().getHealth() <= 0) {
                     remove.add(m);
+                    MobData.getEvents(gameData.getTickCount()).add(new MobEvent(m, MobEventType.DEATH, gameData.getTickCount()));
+                }
                 
                 checkCollision(world, gameData, m);
             }
