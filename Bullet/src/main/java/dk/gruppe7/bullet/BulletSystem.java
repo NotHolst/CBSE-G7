@@ -5,6 +5,8 @@
  */
 package dk.gruppe7.bullet;
 
+import collision.CollisionData;
+import collision.CollisionEvent;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -95,8 +97,10 @@ public class BulletSystem implements IProcess, IRender
     public void render(Graphics g, World world) {
         for (UUID bulletId : bullets)
         {
-            Entity bullet = world.getEntityByID(bulletId);
-            g.drawSprite(bullet.getPosition(), new Vector2(bullet.getBounds().getWidth(),bullet.getBounds().getHeight()), texture, 0);
+            Bullet bullet = (Bullet)world.getEntityByID(bulletId);
+            if (bullet.getDamageData().getDamage() != 0) //Need to be replaced, temporary fix to make it look like bullets dissapear
+                 g.drawSprite(bullet.getPosition(), new Vector2(bullet.getBounds().getWidth(),bullet.getBounds().getHeight()), texture, 0);
+           
         }
     }
     

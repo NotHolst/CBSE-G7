@@ -121,8 +121,10 @@ public class WeaponSystem implements IProcess, IRender {
                                 directionVel.mul(666.f)
                                         .add((ownerVel).div(2))
                         );
+                        
                         setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
                         setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
+                        setCollidable(true);
                     }
                 }));
                 shoot = false;

@@ -1,5 +1,7 @@
 package dk.gruppe7.player;
 
+import collision.CollisionData;
+import collision.CollisionEvent;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -12,12 +14,14 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.playercommon.Player;
+import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.Weapon;
 import dk.gruppe7.weaponcommon.WeaponData;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -115,9 +119,11 @@ public class PlayerSystem implements IProcess, IRender {
 
     @Override
     public void process(GameData gameData, World world) {
-        Entity playerEntity = world.getEntityByID(playerID);
+        Player playerEntity = (Player)world.getEntityByID(playerID);
         
-        playerEntity.setVelocity(playerEntity.getVelocity()
+        if(playerEntity != null && playerEntity.getHealthData().getHealth() > 0)
+        {
+             playerEntity.setVelocity(playerEntity.getVelocity()
                 .add(
                     playerEntity.getAcceleration() * (booleanToInt(east) - booleanToInt(west)),
                     playerEntity.getAcceleration() * (booleanToInt(north) - booleanToInt(south)))
@@ -125,17 +131,44 @@ public class PlayerSystem implements IProcess, IRender {
                     playerEntity.getMaxVelocity()
                 )
                 .mul(.9f)
-        ); 
+            ); 
         
-        playerEntity.setPosition(playerEntity.getPosition()
-                .add(playerEntity.getVelocity()
-                .mul(gameData.getDeltaTime())
-        ));
-        playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
+            playerEntity.setPosition(playerEntity.getPosition()
+                    .add(playerEntity.getVelocity()
+                    .mul(gameData.getDeltaTime())
+            ));
+            playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
 
-        if(!aimDirection.equals(Vector2.zero)) {
-            playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-            events.add(new WeaponEvent(playerEntity.getId()));
+            if(!aimDirection.equals(Vector2.zero)) {
+                playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
+                events.add(new WeaponEvent(playerEntity.getId()));
+            }
+        
+            //Bullet collides with player the moment it spawns
+            //checkCollision(world, gameData, (Player) playerEntity);
+        }
+       
+    }
+    
+    
+    private void checkCollision(World world, GameData gameData, Player player)
+    {
+        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();)
+        {
+            CollisionEvent tempi = iterator.next();
+            
+            if(tempi.getOtherID().equals(player.getId()))
+            {
+                Entity hitBy = world.getEntityByID(tempi.getTargetID());
+                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
+                if(b != null)
+                {
+                    player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
+                    //Temporary: to avoid bullets hitting multiple times
+                    b.getDamageData().setDamage(0);
+                }
+                    
+            }
         }
     }
 
