@@ -89,6 +89,7 @@
         <module>Door</module>
         <module>LevelCommon</module>
         <module>DamageCommon</module>
+        <module>ObstacleCommon</module>
     </modules>
 
     <properties>
