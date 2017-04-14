@@ -16,6 +16,7 @@ import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
+import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.Weapon;
@@ -153,9 +154,8 @@ public class PlayerSystem implements IProcess, IRender {
                     playerEntity.incrementScoreBy(1);
                 }
             }
-            
-            //Bullet collides with player the moment it spawns
-            //checkCollision(world, gameData, (Player) playerEntity);
+
+            checkCollision(world, gameData, (Player) playerEntity);
         }
        
     }
@@ -167,17 +167,46 @@ public class PlayerSystem implements IProcess, IRender {
         {
             CollisionEvent tempi = iterator.next();
             
-            if(tempi.getOtherID().equals(player.getId()))
-            {
-                Entity hitBy = world.getEntityByID(tempi.getTargetID());
-                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
-                if(b != null)
-                {
-                    player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
-                    //Temporary: to avoid bullets hitting multiple times
-                    b.getDamageData().setDamage(0);
+            // Bullet collision -- Bullet collides with player the moment it spawns.
+            //if(tempi.getOtherID().equals(player.getId()))
+            //{
+            //    Entity hitBy = world.getEntityByID(tempi.getTargetID());
+            //    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
+            //    if(b != null)
+            //    {
+            //        player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
+            //        //Temporary: to avoid bullets hitting multiple times
+            //        b.getDamageData().setDamage(0);
+            //    }  
+            //}
+            
+            // Obstacle collision -- Corners can bug the player out of the screen.
+            if(Obstacle.class.isInstance(world.getEntityByID(tempi.getOtherID())) && tempi.getTargetID().equals(player.getId())) { 
+                Entity targetEntity = world.getEntityByID(tempi.getTargetID());
+                Entity otherEntity = world.getEntityByID(tempi.getOtherID());
+                
+                float sumY = (targetEntity.getBounds().getWidth() + otherEntity.getBounds().getWidth()) * (targetEntity.getPositionCentered().y - otherEntity.getPositionCentered().y);
+                float sumX = (targetEntity.getBounds().getHeight() + otherEntity.getBounds().getHeight()) * (targetEntity.getPositionCentered().x - otherEntity.getPositionCentered().x);
+                
+                if(sumY > sumX) {
+                        if(sumY > -sumX) {
+                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y + otherEntity.getBounds().getHeight() + 1)); 
+                        } else {
+                            targetEntity.setPosition(new Vector2((otherEntity.getPosition().x - targetEntity.getBounds().getWidth() - 1), targetEntity.getPosition().y));
+                        }
+                    } else {
+                        if(sumY > -sumX) {
+                            targetEntity.setPosition(new Vector2(otherEntity.getPosition().x + otherEntity.getBounds().getWidth() + 1, targetEntity.getPosition().y));
+                        } else {
+                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y - targetEntity.getBounds().getHeight() - 1));
+                    }
                 }
-                    
+                                
+                targetEntity.setVelocity(targetEntity.getVelocity().normalize());
+                
+                iterator.remove();
+            } else if (Obstacle.class.isInstance(world.getEntityByID(tempi.getTargetID()))) { 
+                iterator.remove();
             }
         }
     }

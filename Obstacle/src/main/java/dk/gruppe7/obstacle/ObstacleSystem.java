@@ -15,8 +15,10 @@ import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.obstaclecommon.Obstacle;
 import org.openide.util.lookup.ServiceProvider;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
@@ -27,86 +29,86 @@ import java.util.UUID;
  */
 @ServiceProvider(service = IProcess.class)
 
-public class ObstacleSystem implements IProcess, IRender
-{
+public class ObstacleSystem implements IProcess, IRender {
+    private InputStream boundsTexture = getClass().getResourceAsStream("roomBound.png");
+    private ArrayList<UUID> listOfBoundsIDs = new ArrayList<>();
 
-    InputStream boundsTexture = getClass().getResourceAsStream("roomBound.png");
-    UUID[] boundsID = new UUID[4];
-    
-    int boundsWidth = 25;
-    
+    private final int boundsWidth = 25;
+
     @Override
-    public void start(GameData gameData, World world)
-    {
-        for (Entity boundEntity : createRoomBounds(gameData))
-        {
+    public void start(GameData gameData, World world) {
+        for (Entity boundEntity : createRoomBounds(gameData)) {
             world.addEntity(boundEntity);
         }
     }
-    
-    private Entity[] createRoomBounds(GameData gameData)
-    {
-        Entity[] bounds = new Entity[4];
-        bounds[0] = new Entity() {{
-            setCollidable(true);
-            setPosition(new Vector2(0, 0));
-            setBounds(new Rectangle(boundsWidth, gameData.getScreenHeight()));
-        }};
-        bounds[1] = new Entity() {{
-            setCollidable(true);
-            setPosition(new Vector2(boundsWidth, 0));
-            setBounds(new Rectangle(gameData.getScreenWidth()-2*boundsWidth, boundsWidth));
-        }};
-        bounds[2] = new Entity() {{
-            setCollidable(true);
-            setPosition(new Vector2(gameData.getScreenWidth()-boundsWidth, 0));
-            setBounds(new Rectangle(boundsWidth, gameData.getScreenHeight()));
-        }};
-        bounds[3] = new Entity() {{
-            setCollidable(true);
-            setPosition(new Vector2(boundsWidth, gameData.getScreenHeight()-boundsWidth));
-            setBounds(new Rectangle(gameData.getScreenWidth()-2*boundsWidth, boundsWidth));
-        }};
+
+    private Obstacle[] createRoomBounds(GameData gameData) {
+        Obstacle[] bounds = new Obstacle[5];
+        bounds[0] = new Obstacle() {
+            {
+                setCollidable(true);
+                setPosition(new Vector2(0, 0));
+                setBounds(new Rectangle(boundsWidth, gameData.getScreenHeight()));
+            }
+        };
+        bounds[1] = new Obstacle() {
+            {
+                setCollidable(true);
+                setPosition(new Vector2(boundsWidth, 0));
+                setBounds(new Rectangle(gameData.getScreenWidth() - 2 * boundsWidth, boundsWidth));
+            }
+        };
+        bounds[2] = new Obstacle() {
+            {
+                setCollidable(true);
+                setPosition(new Vector2(gameData.getScreenWidth() - boundsWidth, 0));
+                setBounds(new Rectangle(boundsWidth, gameData.getScreenHeight()));
+            }
+        };
+        bounds[3] = new Obstacle() {
+            {
+                setCollidable(true);
+                setPosition(new Vector2(boundsWidth, gameData.getScreenHeight() - boundsWidth));
+                setBounds(new Rectangle(gameData.getScreenWidth() - 2 * boundsWidth, boundsWidth));
+            }
+        };
         
-        
-        
-        
-        for (int i = 0; i < 4; i++)
-            boundsID[i] = bounds[i].getId();
-        
-        
-        
-        
+        // Temp Dummy Obstacle
+        bounds[4] = new Obstacle() {
+            {
+                setCollidable(true);
+                setPosition(new Vector2(608, 328));
+                setBounds(new Rectangle(64, 64));
+            }
+        };
+
+        for (int i = 0; i < 5; i++) {
+            listOfBoundsIDs.add(bounds[i].getId());
+        }
+
         return bounds;
     }
 
     @Override
-    public void stop(GameData gameData, World world)
-    {
+    public void stop(GameData gameData, World world) {
+
+    }
+
+    @Override
+    public void process(GameData gameData, World world) {
         
     }
 
     @Override
-    public void process(GameData gameData, World world)
-    {
-       
-    }
-
-    @Override
-    public void render(Graphics g, World world)
-    {
-        for (UUID uuid : boundsID)
-        {
+    public void render(Graphics g, World world) {
+        for (UUID uuid : listOfBoundsIDs) {
             Entity bound = world.getEntityByID(uuid);
             g.drawRepeatedSprite(
-                /* Position    */ bound.getPosition(), 
-                /* Size        */ new Vector2(bound.getBounds().getWidth(), bound.getBounds().getHeight()), 
-                /* InputStream */ boundsTexture, 
-                /* Rotation    */ bound.getRotation()
-                                  
+                    /* Position    */bound.getPosition(),
+                    /* Size        */ new Vector2(bound.getBounds().getWidth(), bound.getBounds().getHeight()),
+                    /* InputStream */ boundsTexture,
+                    /* Rotation    */ bound.getRotation()
             );
         }
-        
     }
-    
 }
