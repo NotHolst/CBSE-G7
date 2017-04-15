@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="dk.gruppe7.ParticleSystem">
-    <module_version install_time="1492272329002" last="true" origin="installer" specification_version="1.0">
+    <module_version install_time="1492276870083" last="true" origin="installer" specification_version="1.0">
         <file crc="4180547635" name="config/Modules/dk-gruppe7-ParticleSystem.xml"/>
-        <file crc="4146140871" name="modules/dk-gruppe7-ParticleSystem.jar"/>
+        <file crc="2272326285" name="modules/dk-gruppe7-ParticleSystem.jar"/>
     </module_version>
 </module>

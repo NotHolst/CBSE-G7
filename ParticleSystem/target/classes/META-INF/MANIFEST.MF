@@ -3,7 +3,7 @@ OpenIDE-Module-Localizing-Bundle: dk/gruppe7/particlesystem/Bundle.pro
  perties
 OpenIDE-Module-Specification-Version: 1.0
 OpenIDE-Module-Implementation-Version: 1.0-20170415
-OpenIDE-Module-Build-Version: 201704151605
+OpenIDE-Module-Build-Version: 201704151721
 OpenIDE-Module: dk.gruppe7.ParticleSystem
 OpenIDE-Module-Public-Packages: dk.gruppe7.particlesystem.*
 OpenIDE-Module-Requires: org.openide.modules.ModuleFormat1
