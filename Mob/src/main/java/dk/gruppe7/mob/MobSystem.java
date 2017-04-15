@@ -5,6 +5,8 @@
  */
 package dk.gruppe7.mob;
 
+import collision.CollisionData;
+import collision.CollisionEvent;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -21,10 +23,15 @@ import static dk.gruppe7.data.MobType.SUPPORT;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
+import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
+import dk.gruppe7.shootingcommon.Bullet;
+import dk.gruppe7.weaponcommon.Weapon;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ListIterator;
 import java.util.Random;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
@@ -39,6 +46,7 @@ public class MobSystem implements IProcess, IRender {
     UUID mobID;
     
     InputStream texture = getClass().getResourceAsStream("mob.png");
+    InputStream health = getClass().getResourceAsStream("healthGreen.png");
 
     @Override
     public void start(GameData gameData, World world) {
@@ -66,6 +74,8 @@ public class MobSystem implements IProcess, IRender {
     @Override
     public void process(GameData gameData, World world) {
         // Need som help with this one. Cant seem to get other than the first mobID.
+        ArrayList<Entity> remove = new ArrayList<>();
+        
         Collection<Entity> entities = world.getEntities();
         for (Entity entity : entities) {
             if(entity instanceof Mob) {
@@ -79,9 +89,40 @@ public class MobSystem implements IProcess, IRender {
                 }
                 
                 m.setPosition(m.getPosition().add(m.getVelocity().mul(gameData.getDeltaTime())));
+                
+                if(m.getHealthData().getHealth() <= 0) {
+                    remove.add(m);
+                    MobData.getEvents(gameData.getTickCount()).add(new MobEvent(m, MobEventType.DEATH, gameData.getTickCount()));
+                }
+                
+                checkCollision(world, gameData, m);
             }
         }
+        
+        for (Entity e : remove)
+            world.removeEntity(e);
            
+    }
+    
+    private void checkCollision(World world, GameData gameData, Mob mob)
+    {
+        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();)
+        {
+            CollisionEvent tempi = iterator.next();
+            
+            if(tempi.getOtherID().equals(mob.getId()))
+            {
+                Entity hitBy = world.getEntityByID(tempi.getTargetID());
+                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
+                if(b != null)
+                {
+                    mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
+                    //Temporary: to avoid bullets hitting multiple times
+                    b.getDamageData().setDamage(0);
+                }
+                    
+            }
+        }
     }
     
     private Entity createMob(float x, float y, MobType type) {
@@ -141,12 +182,18 @@ public class MobSystem implements IProcess, IRender {
         int pick = r.nextInt(mobType.getEnumConstants().length);
         return mobType.getEnumConstants()[pick];
     }
+    
+    
 
     @Override
     public void render(Graphics g, World world) {
         for (Entity e : world.getEntities()){
             if(e instanceof Mob)
+            {
                 g.drawSprite(e.getPosition(), new Vector2(64, 64), texture, 0);
+                g.drawSprite(e.getPosition().add(0, -2), new Vector2(64*((Mob) e).getHealthData().getHealth()/((Mob) e).getHealthData().getStartHealth(), 5), health, 0);
+            }
+                
         }
     }
     

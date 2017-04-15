@@ -6,6 +6,7 @@
 package dk.gruppe7.shootingcommon;
 
 import dk.gruppe7.common.Entity;
+import dk.gruppe7.damagecommon.DamageData;
 
 /**
  *
@@ -14,6 +15,17 @@ import dk.gruppe7.common.Entity;
 public class Bullet extends Entity {
 
     private ShootingType bulletType;
+    private DamageData damage = new DamageData() {{setDamage(1);}};
+
+    public DamageData getDamageData()
+    {
+        return damage;
+    }
+
+    public void setDamage(DamageData damage)
+    {
+        this.damage = damage;
+    }
 
     public ShootingType getBulletType() {
         return bulletType;

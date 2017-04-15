@@ -1,5 +1,7 @@
 package dk.gruppe7.player;
 
+import collision.CollisionData;
+import collision.CollisionEvent;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -11,13 +13,19 @@ import dk.gruppe7.common.data.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.mobcommon.MobData;
+import dk.gruppe7.mobcommon.MobEvent;
+import dk.gruppe7.mobcommon.MobEventType;
+import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
+import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.Weapon;
 import dk.gruppe7.weaponcommon.WeaponData;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -36,7 +44,7 @@ public class PlayerSystem implements IProcess, IRender {
     InputStream texture = getClass().getResourceAsStream("player.png");
 
     UUID playerID;
-    List<WeaponEvent> events = WeaponData.getEvents();
+    List<WeaponEvent> weaponEvents = WeaponData.getEvents();
 
     KeyEventHandler wKeyEventHandler = (newKeyState) -> { north = newKeyState; };
     KeyEventHandler aKeyEventHandler = (newKeyState) -> { west = newKeyState; };
@@ -115,9 +123,11 @@ public class PlayerSystem implements IProcess, IRender {
 
     @Override
     public void process(GameData gameData, World world) {
-        Entity playerEntity = world.getEntityByID(playerID);
+        Player playerEntity = (Player)world.getEntityByID(playerID);
         
-        playerEntity.setVelocity(playerEntity.getVelocity()
+        if(playerEntity != null && playerEntity.getHealthData().getHealth() > 0)
+        {
+             playerEntity.setVelocity(playerEntity.getVelocity()
                 .add(
                     playerEntity.getAcceleration() * (booleanToInt(east) - booleanToInt(west)),
                     playerEntity.getAcceleration() * (booleanToInt(north) - booleanToInt(south)))
@@ -125,17 +135,79 @@ public class PlayerSystem implements IProcess, IRender {
                     playerEntity.getMaxVelocity()
                 )
                 .mul(.9f)
-        ); 
+            ); 
         
-        playerEntity.setPosition(playerEntity.getPosition()
-                .add(playerEntity.getVelocity()
-                .mul(gameData.getDeltaTime())
-        ));
-        playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
+            playerEntity.setPosition(playerEntity.getPosition()
+                    .add(playerEntity.getVelocity()
+                    .mul(gameData.getDeltaTime())
+            ));
+            
+            playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
 
-        if(!aimDirection.equals(Vector2.zero)) {
-            playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-            events.add(new WeaponEvent(playerEntity.getId()));
+            if(!aimDirection.equals(Vector2.zero)) {
+                playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
+                weaponEvents.add(new WeaponEvent(playerEntity.getId()));
+            }
+            
+            for(MobEvent event : MobData.getEvents(gameData.getTickCount())) {
+                if(event.getType() == MobEventType.DEATH) {
+                    playerEntity.incrementScoreBy(1);
+                }
+            }
+
+            checkCollision(world, gameData, (Player) playerEntity);
+        }
+       
+    }
+    
+    
+    private void checkCollision(World world, GameData gameData, Player player)
+    {
+        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();)
+        {
+            CollisionEvent tempi = iterator.next();
+            
+            // Bullet collision -- Bullet collides with player the moment it spawns.
+            //if(tempi.getOtherID().equals(player.getId()))
+            //{
+            //    Entity hitBy = world.getEntityByID(tempi.getTargetID());
+            //    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
+            //    if(b != null)
+            //    {
+            //        player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
+            //        //Temporary: to avoid bullets hitting multiple times
+            //        b.getDamageData().setDamage(0);
+            //    }  
+            //}
+            
+            // Obstacle collision -- Corners can bug the player out of the screen.
+            if(Obstacle.class.isInstance(world.getEntityByID(tempi.getOtherID())) && tempi.getTargetID().equals(player.getId())) { 
+                Entity targetEntity = world.getEntityByID(tempi.getTargetID());
+                Entity otherEntity = world.getEntityByID(tempi.getOtherID());
+                
+                float sumY = (targetEntity.getBounds().getWidth() + otherEntity.getBounds().getWidth()) * (targetEntity.getPositionCentered().y - otherEntity.getPositionCentered().y);
+                float sumX = (targetEntity.getBounds().getHeight() + otherEntity.getBounds().getHeight()) * (targetEntity.getPositionCentered().x - otherEntity.getPositionCentered().x);
+                
+                if(sumY > sumX) {
+                        if(sumY > -sumX) {
+                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y + otherEntity.getBounds().getHeight() + 0)); 
+                        } else {
+                            targetEntity.setPosition(new Vector2((otherEntity.getPosition().x - targetEntity.getBounds().getWidth() - 0), targetEntity.getPosition().y));
+                        }
+                    } else {
+                        if(sumY > -sumX) {
+                            targetEntity.setPosition(new Vector2(otherEntity.getPosition().x + otherEntity.getBounds().getWidth() + 0, targetEntity.getPosition().y));
+                        } else {
+                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y - targetEntity.getBounds().getHeight() - 0));
+                    }
+                }
+                                
+                targetEntity.setVelocity(targetEntity.getVelocity().normalize());
+                
+                iterator.remove();
+            } else if (Obstacle.class.isInstance(world.getEntityByID(tempi.getTargetID()))) { 
+                iterator.remove();
+            }
         }
     }
 

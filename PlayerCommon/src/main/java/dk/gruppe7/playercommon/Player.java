@@ -6,6 +6,7 @@
 package dk.gruppe7.playercommon;
 
 import dk.gruppe7.common.Entity;
+import dk.gruppe7.damagecommon.HealthData;
 import java.util.UUID;
 
 /**
@@ -14,4 +15,18 @@ import java.util.UUID;
  */
 public class Player extends Entity {
 
+    private HealthData healthData = new HealthData(10);
+    private int score = 0;
+
+    public HealthData getHealthData() {
+        return healthData;
+    }
+
+    public void incrementScoreBy(int score) {
+        this.score += score;
+    }
+    
+    public int getScore() {
+        return score;
+    }
 }

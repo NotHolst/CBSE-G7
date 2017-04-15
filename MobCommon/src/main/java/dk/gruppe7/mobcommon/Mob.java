@@ -6,6 +6,7 @@
 package dk.gruppe7.mobcommon;
 
 import dk.gruppe7.common.Entity;
+import dk.gruppe7.damagecommon.HealthData;
 import dk.gruppe7.data.MobType;
 
 /**
@@ -15,8 +16,14 @@ import dk.gruppe7.data.MobType;
 public class Mob extends Entity {
     
     private MobType type;
+    private HealthData health = new HealthData(5);
     
     private float wanderTimer;
+
+    public HealthData getHealthData()
+    {
+        return health;
+    }
 
     public MobType getMobType() {
         return type;

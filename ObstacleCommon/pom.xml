@@ -6,7 +6,7 @@
         <artifactId>CBSE-G7-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>MobCommon</artifactId>
+    <artifactId>ObstacleCommon</artifactId>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -17,8 +17,7 @@
                 <configuration>
                     <useOSGiDependencies>true</useOSGiDependencies>
                     <publicPackages>
-                        <publicPackage>dk.gruppe7.mobcommon</publicPackage>
-                        <publicPackage>dk.gruppe7.data</publicPackage>
+                        <publicPackage>dk.gruppe7.obstaclecommon</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -41,12 +40,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>Common</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>dk.gruppe7</groupId>
-            <artifactId>DamageCommon</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>

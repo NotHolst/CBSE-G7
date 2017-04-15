@@ -21,6 +21,13 @@ public class Rectangle
         this.height = height;
     }
     
+    public Rectangle(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    
     public Rectangle add(int width, int height) {
         return new Rectangle(this.width + width, this.height + height);
     }
@@ -36,6 +43,10 @@ public class Rectangle
     public Rectangle sub(Rectangle other) {
         return new Rectangle(this.width - other.width, this.height - other.height);
     }
+    
+    public Rectangle move(int x, int y) {
+        return new Rectangle(this.x + x, this.y + y, this.width, this.height);
+    }
 
     public int getWidth() {
         return width;
@@ -43,6 +54,14 @@ public class Rectangle
 
     public int getHeight() {
         return height;
+    }
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getY() {
+        return y;
     }
 
     public boolean isEmpty() {
