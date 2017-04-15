@@ -1,5 +1,7 @@
 package dk.gruppe7.common;
 
+import dk.gruppe7.common.resources.ResourceManager;
+
 /**
  *
  * @author Holst & Harald
@@ -10,6 +12,7 @@ public class GameData {
     private long tickCount = 0;
     private float deltaTime;
     private final Input input = new Input();
+    private ResourceManager resourceManager;
 
     public int getScreenWidth() {
         return screenWidth;
@@ -46,4 +49,13 @@ public class GameData {
     public Input getInput() {
         return input;
     }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
+
+    public void setResourceManager(ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
+    }
+    
 }

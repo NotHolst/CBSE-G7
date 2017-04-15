@@ -6,6 +6,7 @@
 package dk.gruppe7.mobcommon;
 
 import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.damagecommon.HealthData;
 import dk.gruppe7.data.MobType;
 
@@ -17,6 +18,7 @@ public class Mob extends Entity {
     
     private MobType type;
     private HealthData health = new HealthData(5);
+    private Animator animator;
     
     private float wanderTimer;
 
@@ -39,6 +41,14 @@ public class Mob extends Entity {
 
     public void setWanderTimer(float wanderTimer) {
         this.wanderTimer = wanderTimer;
+    }
+
+    public Animator getAnimator() {
+        return animator;
+    }
+
+    public void setAnimator(Animator animator) {
+        this.animator = animator;
     }
     
     

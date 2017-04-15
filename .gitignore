@@ -38,4 +38,12 @@ hs_err_pid*
 /LevelCommon/target/
 /Obstacle/target/
 /DamageCommon/target/
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 /ObstacleCommon/target/
+=======
+/Background/target/
+>>>>>>> Stashed changes
+=======
+/Background/target/
+>>>>>>> Stashed changes

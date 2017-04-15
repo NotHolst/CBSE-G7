@@ -3,23 +3,31 @@ package dk.gruppe7.common.graphics;
 
 import dk.gruppe7.common.data.Vector2;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Graphics {
     
-    private ArrayList<DrawCommand> drawCommands = new ArrayList<>();
-        
+    private PriorityQueue<DrawCommand> drawCommands = new PriorityQueue<DrawCommand>(new DrawCommandComparator());
+      
     public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation){
+    drawSprite(position, size, texture, rotation, 0);
+    }
+    public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation, int zIndex){
         DrawCommand cmd = new DrawCommand();
         cmd.setPosition(position);
         cmd.setSize(size);
         cmd.setInputStream(texture);
         cmd.setRotation(rotation);
         cmd.setType(DrawCommand.DrawCommandType.SPRITE);
+        cmd.setzIndex(zIndex);
         drawCommands.add(cmd);
     }
     
-    public void drawRepeatedSprite(Vector2 position, Vector2 size, InputStream texture, float rotation)
+    public void drawRepeatedSprite(Vector2 position, Vector2 size, InputStream texture, float rotation){
+        drawRepeatedSprite(position, size, texture, rotation, 0);
+    }
+    public void drawRepeatedSprite(Vector2 position, Vector2 size, InputStream texture, float rotation, int zIndex)
     {
         DrawCommand cmd = new DrawCommand();
         cmd.setPosition(position);
@@ -28,10 +36,13 @@ public class Graphics {
         cmd.setRotation(rotation);
         cmd.setType(DrawCommand.DrawCommandType.SPRITE);
         cmd.setSpriteRenderType(DrawCommand.SpriteRenderMode.REPEAT);
+        cmd.setzIndex(zIndex);
         drawCommands.add(cmd);
     }
-    
-    public void drawSpriteOffset(Vector2 position, Vector2 size, Vector2 offset, InputStream texture, float rotation)
+    public void drawSpriteOffset(Vector2 position, Vector2 size, Vector2 offset, InputStream texture, float rotation){
+        drawSpriteOffset(position, size, offset, texture, rotation, 0);
+    } 
+    public void drawSpriteOffset(Vector2 position, Vector2 size, Vector2 offset, InputStream texture, float rotation, int zIndex)
     {
        DrawCommand cmd = new DrawCommand();
         cmd.setPosition(position);
@@ -40,11 +51,20 @@ public class Graphics {
         cmd.setRotation(rotation);
         cmd.setType(DrawCommand.DrawCommandType.SPRITE);
         cmd.setOffset(offset);
+        cmd.setzIndex(zIndex);
         drawCommands.add(cmd); 
     }
     
-    public ArrayList<DrawCommand> getDrawCommands(){
+    public PriorityQueue<DrawCommand> getDrawCommands(){
         return drawCommands;
     }
     
+}
+
+class DrawCommandComparator implements Comparator<DrawCommand>{
+
+    @Override
+    public int compare(DrawCommand o1, DrawCommand o2) {
+        return o1.getzIndex()-o2.getzIndex();
+    }
 }

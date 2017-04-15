@@ -23,6 +23,7 @@ public class Weapon extends Entity {
     private Vector2 barrelOffset = Vector2.zero;
     private float fireRate;
     private float cooldown;
+    private WeaponType type;
      
 
     public UUID getOwner() {
@@ -79,6 +80,14 @@ public class Weapon extends Entity {
 
     public void setCooldown(float cooldown) {
         this.cooldown = cooldown;
+    }
+
+    public WeaponType getType() {
+        return type;
+    }
+
+    public void setType(WeaponType type) {
+        this.type = type;
     }
     
 }

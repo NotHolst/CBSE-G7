@@ -16,6 +16,7 @@ public class Bullet extends Entity {
 
     private ShootingType bulletType;
     private DamageData damage = new DamageData() {{setDamage(1);}};
+    private float despawnTimer = 10;
 
     public DamageData getDamageData()
     {
@@ -33,6 +34,14 @@ public class Bullet extends Entity {
 
     public void setBulletType(ShootingType bulletType) {
         this.bulletType = bulletType;
+    }
+
+    public float getDespawnTimer() {
+        return despawnTimer;
+    }
+
+    public void setDespawnTimer(float despawnTimer) {
+        this.despawnTimer = despawnTimer;
     }
 
 }

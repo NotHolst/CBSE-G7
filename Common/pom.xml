@@ -22,6 +22,7 @@
                         <publicPackage>collision</publicPackage>
                         <publicPackage>dispose</publicPackage>
                         <publicPackage>dk.gruppe7.common.graphics</publicPackage>
+                        <publicPackage>dk.gruppe7.common.resources</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

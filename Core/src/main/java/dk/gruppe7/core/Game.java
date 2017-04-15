@@ -30,6 +30,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import dk.gruppe7.common.resources.ResourceManager;
+import java.util.Iterator;
 
 /**
  *
@@ -47,7 +49,7 @@ public class Game implements ApplicationListener{
     private final Lookup lookup = Lookup.getDefault();
     private List<IProcess> processors = new CopyOnWriteArrayList<>();
     private List<IRender> renderers = new CopyOnWriteArrayList<>();
-    private InputStream defaultInputStream = getClass().getResourceAsStream("default.png");
+    private ResourceManager resourceManager = new ResourceManager();
     
     private Lookup.Result<IProcess> processorsResult;
     private Lookup.Result<IRender> renderersResult;
@@ -59,6 +61,8 @@ public class Game implements ApplicationListener{
         
         gameData.setScreenWidth(Gdx.graphics.getWidth());
         gameData.setScreenHeight(Gdx.graphics.getHeight());
+        
+        gameData.setResourceManager(resourceManager);
         
         cam = new OrthographicCamera(gameData.getScreenWidth(), gameData.getScreenHeight());
         cam.translate(gameData.getScreenWidth()/2, gameData.getScreenHeight()/2);
@@ -97,7 +101,7 @@ public class Game implements ApplicationListener{
     @Override
     public void render() {
         //Clear screen before drawing
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(.7f, .7f, .75f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         
@@ -122,18 +126,15 @@ public class Game implements ApplicationListener{
     }
     
     public void drawGraphics(){
-        for(int i = graphics.getDrawCommands().size()-1; i > 0; i--){
-            DrawCommand cmd = graphics.getDrawCommands().remove(i);
+        
+        while(graphics.getDrawCommands().size() > 0){
+            DrawCommand cmd = graphics.getDrawCommands().poll();
             switch(cmd.getType()){
                 case SPRITE:
                     batch.begin();
                     
-                    Texture tex;
-                    if(cmd.getInputStream() != null) {
-                        tex = inputStreamToTexture(cmd.getInputStream());
-                    } else {
-                        tex = inputStreamToTexture(defaultInputStream);
-                    }
+                    Texture tex = inputStreamToTexture(cmd.getInputStream());
+                    
 
                     float repeatX = 1;
                     float repeatY = 1;
@@ -168,8 +169,8 @@ public class Game implements ApplicationListener{
                     batch.end();
                     break;
             }
-            
         }
+       
     }
 
     @Override
@@ -216,7 +217,7 @@ public class Game implements ApplicationListener{
     private Texture inputStreamToTexture(InputStream inputStream) {
         if(cachedTextures.containsKey(inputStream.hashCode()))
             return cachedTextures.get(inputStream.hashCode());
-        
+    
         Gdx2DPixmap gpm = null;
         
         try {

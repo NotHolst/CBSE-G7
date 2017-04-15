@@ -25,6 +25,7 @@ public class DrawCommand {
     private Color color;
     private InputStream inputStream;
     private float rotation;
+    private int zIndex;
 
     public DrawCommandType getType() {
         return type;
@@ -92,6 +93,14 @@ public class DrawCommand {
 
     public void setOffset(Vector2 offset) {
         this.offset = offset;
+    }
+
+    public int getzIndex() {
+        return zIndex;
+    }
+
+    public void setzIndex(int zIndex) {
+        this.zIndex = zIndex;
     }
     
     

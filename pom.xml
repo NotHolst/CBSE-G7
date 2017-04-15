@@ -90,6 +90,7 @@
         <module>LevelCommon</module>
         <module>DamageCommon</module>
         <module>ObstacleCommon</module>
+        <module>Background</module>
     </modules>
 
     <properties>

@@ -29,6 +29,9 @@ import dk.gruppe7.shootingcommon.ShootingType;
 import dk.gruppe7.weaponcommon.Weapon;
 import dk.gruppe7.weaponcommon.WeaponData;
 import dk.gruppe7.weaponcommon.WeaponEvent;
+import dk.gruppe7.weaponcommon.WeaponType;
+import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
+import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -47,15 +50,15 @@ import org.openide.util.lookup.ServiceProviders;
  */
 public class WeaponSystem implements IProcess, IRender {
 
-    String weaponSprite = "weapon.png";
-    InputStream texture = getClass().getResourceAsStream(weaponSprite);
+    InputStream textureMace = getClass().getResourceAsStream("Mace.png");
+    InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
     List<ShootingEvent> sEvents = ShootingData.getEvents();
     List<WeaponEvent> wEvents = WeaponData.getEvents();
 
     @Override
     public void start(GameData gameData, World world) {
         //Standard weapon for the Player
-        Weapon addedWeapon = generateWeapon();
+        Weapon addedWeapon = generateWeapon(CROSSBOW);
         world.addEntity(addedWeapon);
         //addedWeapon.setOwner(world.getEntitiesByClass(Player.class).get(0).getId());
 
@@ -115,16 +118,29 @@ public class WeaponSystem implements IProcess, IRender {
                 Vector2 directionVel = new Vector2((float) Math.cos(Math.toRadians(weaponEntity.getRotation())), (float) Math.sin(Math.toRadians(weaponEntity.getRotation())));
                 sEvents.add(new ShootingEvent(new Bullet() {
                     {
-                        setBulletType(ShootingType.PROJECTILE);
-                        setAcceleration(1.f);
-                        setVelocity(
-                                directionVel.mul(666.f)
+                                setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
+                                setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
+                                setCollidable(true);
+                                setRotation(weaponEntity.getRotation());
+                        switch (weaponEntity.getType()){
+                            case CROSSBOW:
+                                setBulletType(ShootingType.PROJECTILE);
+                                setAcceleration(1.f);
+                                setVelocity(
+                                    directionVel.mul(666.f)
                                         .add((ownerVel).div(2))
-                        );
+                                );
+                                break;
                         
-                        setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
-                        setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
-                        setCollidable(true);
+                            case MACE:
+                                setBulletType(ShootingType.MELEE);
+                                setAcceleration(0.f);
+                                setVelocity(
+                                    directionVel.mul(0.f)
+                                );
+                                break;
+                                
+                        }
                     }
                 }));
                 shoot = false;
@@ -148,7 +164,7 @@ public class WeaponSystem implements IProcess, IRender {
                 Mob mob = mobEvent.getMob();
                 switch (mob.getMobType()) {
                     case MELEE:
-                        Weapon mobWeaponMelee = generateWeapon();
+                        Weapon mobWeaponMelee = generateWeapon(MACE);
                         mobWeaponMelee.setOwner(mob.getId());
                         mobWeaponMelee.setCollidable(false);
                         world.addEntity(mobWeaponMelee);
@@ -156,7 +172,7 @@ public class WeaponSystem implements IProcess, IRender {
                         break;
 
                     default:
-                        Weapon mobWeaponRanged = generateWeapon();
+                        Weapon mobWeaponRanged = generateWeapon(CROSSBOW);
                         mobWeaponRanged.setOwner(mob.getId());
                         mobWeaponRanged.setCollidable(false);
                         world.addEntity(mobWeaponRanged);
@@ -184,20 +200,40 @@ public class WeaponSystem implements IProcess, IRender {
         }
     }
 
-    private Weapon generateWeapon() {
+    private Weapon generateWeapon(WeaponType type) {
         return new Weapon() {
             {
-                setPosition(new Vector2(200.f, 200.f));
-                setMaxVelocity(0.f);
-                setAcceleration(0.f);
-                setCollidable(true);
-                setBounds(new Rectangle(48, 48));
-                setBarrelRadius(19);
-                setBarrelOffset(new Vector2(0, 0));
-                setOwnerOffset(new Vector2(16, -8));
-                setFireRate(0.5f);
-                setCooldown(0);
-                setInputStream(texture);
+                setType(CROSSBOW);
+                switch (type) {
+                                                      
+                    case MACE:
+                        setPosition(new Vector2(200.f, 200.f));
+                        setMaxVelocity(0.f);
+                        setAcceleration(0.f);
+                        setCollidable(true);
+                        setBounds(new Rectangle(32, 32));
+                        setBarrelRadius(32);
+                        setBarrelOffset(new Vector2(-4, 8));
+                        setOwnerOffset(new Vector2(16, -8));
+                        setFireRate(0.5f);
+                        setCooldown(0);
+                        setInputStream(textureMace);
+                        break;
+                    
+                    case CROSSBOW:
+                        setPosition(new Vector2(200.f, 200.f));
+                        setMaxVelocity(0.f);
+                        setAcceleration(0.f);
+                        setCollidable(true);
+                        setBounds(new Rectangle(48, 48));
+                        setBarrelRadius(19);
+                        setBarrelOffset(new Vector2(-4, 8));
+                        setOwnerOffset(new Vector2(16, -8));
+                        setFireRate(0.3f);
+                        setCooldown(0);
+                        setInputStream(textureCrossbow);
+                        break; 
+                }
             }
         };
     }

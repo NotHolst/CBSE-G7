@@ -6,6 +6,7 @@
 package dk.gruppe7.playercommon;
 
 import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.damagecommon.HealthData;
 import java.util.UUID;
 
@@ -14,9 +15,12 @@ import java.util.UUID;
  * @author Mathies H
  */
 public class Player extends Entity {
+    
+    private Animator animator;
 
     private HealthData healthData = new HealthData(10);
     private int score = 0;
+    
 
     public HealthData getHealthData() {
         return healthData;
@@ -29,4 +33,13 @@ public class Player extends Entity {
     public int getScore() {
         return score;
     }
+
+    public Animator getAnimator() {
+        return animator;
+    }
+
+    public void setAnimator(Animator animator) {
+        this.animator = animator;
+    }
+    
 }

@@ -12,5 +12,6 @@ package dk.gruppe7.shootingcommon;
 public enum ShootingType
 {
     HITSCAN,
-    PROJECTILE
+    PROJECTILE,
+    MELEE
 }

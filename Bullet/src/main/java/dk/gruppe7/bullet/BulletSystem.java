@@ -14,6 +14,7 @@ import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.shootingcommon.ShootingType;
 import dk.gruppe7.shootingcommon.ShootingData;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -35,14 +37,16 @@ import org.openide.util.lookup.ServiceProvider;
 public class BulletSystem implements IProcess, IRender
 {
     List<ShootingEvent> events = ShootingData.getEvents();
-    List<UUID> bullets = new ArrayList<>();
-    HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
+    //List<UUID> bullets = new ArrayList<>();
+    //HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
     
-    InputStream texture = getClass().getResourceAsStream("bullet.png");
+    Image textureCrossbowBolt;
     
     @Override
     public void start(GameData gameData, World world)
     {
+        
+        textureCrossbowBolt = gameData.getResourceManager().addImage("bolt", getClass().getResourceAsStream("CrossbowBolt.png"));
 /*
         //Bullet for testing.
         BulletBluePrint bluePrint = new BulletBluePrint();
@@ -52,14 +56,16 @@ public class BulletSystem implements IProcess, IRender
         bluePrint.setAccerleration(0.5f);
         events.add(new ShootingEvent(bluePrint));
 */
+        
     }
 
     @Override
     public void stop(GameData gameData, World world)
     {
-        for (UUID bullet : bullets)
+        for (ListIterator<Entity> e = world.getEntities().listIterator(); e.hasNext();)
         {
-            world.removeEntity(world.getEntityByID(bullet));
+            Entity entity = e.next();
+            if (entity instanceof Bullet) e.remove();
         }
     }
 
@@ -72,34 +78,41 @@ public class BulletSystem implements IProcess, IRender
             events.remove(0);
         }
         
-        for (UUID bulletId : bullets)
+        for (ListIterator<Entity> e = world.getEntities().listIterator(); e.hasNext();)
         {
-            Entity bullet = world.getEntityByID(bulletId);
-            switch(bulletTypes.get(bullet.getId())){
-                default:
+            Entity entity = e.next();
+            
+                    if (!(entity instanceof Bullet)) continue;
+                    Bullet bullet = (Bullet) entity;
+                    bullet.setDespawnTimer(bullet.getDespawnTimer() - gameData.getDeltaTime());
+                        
                     bullet.setPosition(bullet.getPosition().add(bullet.getVelocity().mul(gameData.getDeltaTime())));
-                    bullet.setVelocity(bullet.getVelocity().mul(bullet.getAcceleration())); 
-                break;
-            }
+                    //bullet.setVelocity(bullet.getVelocity().mul(bullet.getAcceleration())); 
+                    if(0 > bullet.getDespawnTimer()) {                            
+                            e.remove();  
+                        }
+                
+            
         }
         
     }
     
     private void makeBullet(Bullet bullet, World world)
     {
-        world.addEntity(bullet);
-        bullets.add(bullet.getId());
-        bulletTypes.put(bullet.getId(), bullet.getBulletType());
-        
+        world.addEntity(bullet);        
     }
 
     @Override
     public void render(Graphics g, World world) {
-        for (UUID bulletId : bullets)
+        for (ListIterator<Entity> e = world.getEntities().listIterator(); e.hasNext();)
         {
-            Bullet bullet = (Bullet)world.getEntityByID(bulletId);
+            Entity entity = e.next();
+            if(entity instanceof Bullet){
+            Bullet bullet = (Bullet) entity;
             if (bullet.getDamageData().getDamage() != 0) //Need to be replaced, temporary fix to make it look like bullets dissapear
-                 g.drawSprite(bullet.getPosition(), new Vector2(bullet.getBounds().getWidth(),bullet.getBounds().getHeight()), texture, 0);
+                 g.drawSprite(bullet.getPosition(), new Vector2(17,3), textureCrossbowBolt.getInputStream(), bullet.getRotation());
+                 
+            }
            
         }
     }
