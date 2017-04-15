@@ -3,6 +3,7 @@ package dk.gruppe7.core;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,6 +41,7 @@ public class Game implements ApplicationListener{
     private static OrthographicCamera cam;
     private Graphics graphics;
     private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
     
     private final GameData gameData = new GameData();
     private World world = new World();
@@ -66,6 +68,7 @@ public class Game implements ApplicationListener{
         
         graphics = new Graphics();
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
         
         processorsResult = lookup.lookupResult(IProcess.class);
         processorsResult.addLookupListener(lookupListener);
@@ -98,8 +101,9 @@ public class Game implements ApplicationListener{
     public void render() {
         //Clear screen before drawing
         Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling?GL30.GL_COVERAGE_BUFFER_BIT_NV:0));
+        Gdx.gl.glEnable(GL30.GL_BLEND);
+        
         
         gameData.setDeltaTime(Gdx.graphics.getDeltaTime());
         
@@ -107,6 +111,7 @@ public class Game implements ApplicationListener{
         update();
         //render entities
         batch.enableBlending();
+        
         drawGraphics();
 
         gameData.incrementTickCount();
@@ -166,6 +171,22 @@ public class Game implements ApplicationListener{
                             /* flipY     */ false
                     );
                     batch.end();
+                    break;
+                    
+                case RECTANGLE:
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.rect(cmd.getPosition().x, cmd.getPosition().y, cmd.getSize().x, cmd.getSize().y);
+                    shapeRenderer.end();
+                    break;
+                case CIRCLE:
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(cmd.getPosition().x, cmd.getPosition().y, cmd.getSize().x);
+                    shapeRenderer.end();
+                    break;
+                case LINE:
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.line(cmd.getPosition().x, cmd.getPosition().y, cmd.getSize().x, cmd.getSize().y);
+                    shapeRenderer.end();
                     break;
             }
             

@@ -1,5 +1,7 @@
 package dk.gruppe7.common.data;
 
+import java.util.Random;
+
 /**
  *
  * @author Holst & Harald
@@ -77,6 +79,14 @@ public class Vector2 {
         rotatedVector.x = (float) (x * Math.cos(Math.toRadians(rotation)) - y * Math.sin(Math.toRadians(rotation)));
         rotatedVector.y =  (float) (x * Math.sin(Math.toRadians(rotation)) + y * Math.cos(Math.toRadians(rotation)));
         return rotatedVector;
+    }
+    
+    public static Vector2 randomInRadius(float radius){
+        Random r = new Random();
+        return new Vector2() {{
+            x = (r.nextFloat()-0.5f)*2;
+            y = (r.nextFloat()-0.5f)*2;
+        }}.normalize().mul(radius);
     }
     
     @Override

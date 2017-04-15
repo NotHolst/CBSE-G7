@@ -88,6 +88,7 @@
         <module>LevelGenerator</module>
         <module>Door</module>
         <module>LevelCommon</module>
+        <module>ParticleSystem</module>
     </modules>
 
     <properties>

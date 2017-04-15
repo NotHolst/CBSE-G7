@@ -43,6 +43,24 @@ public class Graphics {
         drawCommands.add(cmd); 
     }
     
+    public void drawRectangle(Vector2 position, Vector2 size, Color color){
+        DrawCommand cmd = new DrawCommand();
+        cmd.setPosition(position);
+        cmd.setSize(size);
+        cmd.setColor(color);
+        cmd.setType(DrawCommand.DrawCommandType.RECTANGLE);
+        drawCommands.add(cmd);
+    }
+    
+    public void drawCircle(Vector2 position, float radius, Color color){
+        DrawCommand cmd = new DrawCommand();
+        cmd.setPosition(position);
+        cmd.setSize(new Vector2(radius, radius));
+        cmd.setColor(color);
+        cmd.setType(DrawCommand.DrawCommandType.CIRCLE);
+        drawCommands.add(cmd);
+    }
+    
     public ArrayList<DrawCommand> getDrawCommands(){
         return drawCommands;
     }

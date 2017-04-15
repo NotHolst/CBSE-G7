@@ -10,9 +10,13 @@ package dk.gruppe7.common.graphics;
  * @author movie
  */
 public class Color {
-    public int r,g,b;
+    public int r,g,b, a;
     
     public Color(int r, int g, int b){
-        this.r = r; this.g = g; this.b = b;
+        this.r = r; this.g = g; this.b = b; this.a = 255;
+    }
+    
+    public Color(int r, int g, int b, int a){
+        this.r = r; this.g = g; this.b = b; this.a = a;
     }
 }
