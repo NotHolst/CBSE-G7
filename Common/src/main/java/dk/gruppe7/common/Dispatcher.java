@@ -28,8 +28,6 @@ public class Dispatcher {
         } else {
             mapOfEventHandlers.get(mapOfEventLinks.get(hashcode)).forEach(handler -> handler.call(event));
         }
-        
-        System.out.println("STATUS : " + mapOfEventHandlers.size() + " | " + mapOfEventLinks.size());
     }
     
     /**
