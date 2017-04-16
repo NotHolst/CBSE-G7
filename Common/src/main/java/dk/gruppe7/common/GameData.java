@@ -1,5 +1,6 @@
 package dk.gruppe7.common;
 
+import dk.gruppe7.common.audio.AudioPlayer;
 import dk.gruppe7.common.resources.ResourceManager;
 
 /**
@@ -13,6 +14,7 @@ public class GameData {
     private float deltaTime;
     private final Input input = new Input();
     private ResourceManager resourceManager;
+    private AudioPlayer audioPlayer;
 
     public int getScreenWidth() {
         return screenWidth;
@@ -56,6 +58,14 @@ public class GameData {
 
     public void setResourceManager(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
+    }
+
+    public AudioPlayer getAudioPlayer() {
+        return audioPlayer;
+    }
+
+    public void setAudioPlayer(AudioPlayer audioPlayer) {
+        this.audioPlayer = audioPlayer;
     }
     
 }

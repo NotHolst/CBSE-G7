@@ -11,6 +11,7 @@ import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.common.resources.Audio;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.levelcommon.LevelData;
 import dk.gruppe7.levelcommon.LevelEvent;
@@ -33,22 +34,26 @@ public class BackgroundSystem implements IProcess, IRender{
     Image[] tiles;
     int currentSeed;
     int screenWidth, screenHeight;
+    Audio backgroundSound;
     
     @Override
     public void start(GameData gameData, World world) {
         tiles = new Image[]{
-            gameData.getResourceManager().addImage("tile0", getClass().getResourceAsStream("tile0.png")),
-            gameData.getResourceManager().addImage("tile1", getClass().getResourceAsStream("tile1.png")),
-            gameData.getResourceManager().addImage("tile2", getClass().getResourceAsStream("tile2.png")),
-            gameData.getResourceManager().addImage("tile3", getClass().getResourceAsStream("tile3.png")),
-            gameData.getResourceManager().addImage("tile4", getClass().getResourceAsStream("tile4.png")),
-            gameData.getResourceManager().addImage("tile5", getClass().getResourceAsStream("tile5.png")),
-            gameData.getResourceManager().addImage("tile6", getClass().getResourceAsStream("tile6.png")),
-            gameData.getResourceManager().addImage("tile7", getClass().getResourceAsStream("tile7.png"))
+            gameData.getResourceManager().addImage("tile0", getClass().getResourceAsStream("Tile0.png")),
+            gameData.getResourceManager().addImage("tile1", getClass().getResourceAsStream("Tile1.png")),
+            gameData.getResourceManager().addImage("tile2", getClass().getResourceAsStream("Tile2.png")),
+            gameData.getResourceManager().addImage("tile3", getClass().getResourceAsStream("Tile3.png")),
+            gameData.getResourceManager().addImage("tile4", getClass().getResourceAsStream("Tile4.png")),
+            gameData.getResourceManager().addImage("tile5", getClass().getResourceAsStream("Tile5.png")),
+            gameData.getResourceManager().addImage("tile6", getClass().getResourceAsStream("Tile6.png")),
+            gameData.getResourceManager().addImage("tile7", getClass().getResourceAsStream("Tile7.png"))
         };
         
         screenHeight = gameData.getScreenHeight();
         screenWidth = gameData.getScreenWidth();
+        
+        backgroundSound = gameData.getResourceManager().addAudio("backgroundSound", getClass().getResourceAsStream("background.wav"));
+        gameData.getAudioPlayer().play(backgroundSound, .75f);
         
     }
 

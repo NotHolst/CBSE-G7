@@ -24,26 +24,13 @@ hs_err_pid*
 /MobCommon/target/
 /Weapon/target/
 /WeaponCommon/target/
-<<<<<<< HEAD
 /Powerup/target/
 /PowerupCommon/target/
-=======
-<<<<<<< HEAD
 /mavenproject1/Obstacle/target/
-=======
 /LevelGenerator/target/
->>>>>>> 135a9c7ee232d4ff09f2e2738ad55b79851985de
 /Door/target/
->>>>>>> origin/master
 /LevelCommon/target/
 /Obstacle/target/
 /DamageCommon/target/
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 /ObstacleCommon/target/
-=======
 /Background/target/
->>>>>>> Stashed changes
-=======
-/Background/target/
->>>>>>> Stashed changes

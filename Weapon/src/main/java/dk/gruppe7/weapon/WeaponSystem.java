@@ -16,6 +16,7 @@ import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.common.resources.Audio;
 import static dk.gruppe7.data.MobType.MELEE;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobData;
@@ -54,6 +55,7 @@ public class WeaponSystem implements IProcess, IRender {
     InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
     List<ShootingEvent> sEvents = ShootingData.getEvents();
     List<WeaponEvent> wEvents = WeaponData.getEvents();
+    Audio crossbowSound;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -61,6 +63,8 @@ public class WeaponSystem implements IProcess, IRender {
         Weapon addedWeapon = generateWeapon(CROSSBOW);
         world.addEntity(addedWeapon);
         //addedWeapon.setOwner(world.getEntitiesByClass(Player.class).get(0).getId());
+        
+        crossbowSound = gameData.getResourceManager().addAudio("crossbowSound", getClass().getResourceAsStream("bow.wav"));
 
     }
 
@@ -128,8 +132,10 @@ public class WeaponSystem implements IProcess, IRender {
                                 setAcceleration(1.f);
                                 setVelocity(
                                     directionVel.mul(666.f)
-                                        .add((ownerVel).div(2))
+                                        .add((ownerVel).div(2))                                       
                                 );
+                                
+                                gameData.getAudioPlayer().play(crossbowSound);
                                 break;
                         
                             case MACE:
