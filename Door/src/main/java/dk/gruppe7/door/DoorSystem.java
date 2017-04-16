@@ -142,20 +142,18 @@ public class DoorSystem implements IProcess, IRender
         System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
         
-    ActionEventHandler collisionHandler = (Object event) -> {
-        CollisionEvent e = (CollisionEvent) event;
-        
+    ActionEventHandler<CollisionEvent> collisionHandler = (event) -> {        
         for (Door door : currentDoors)
         {
-            if(e.getOtherID().equals(door.getId()))
+            if(event.getOtherID().equals(door.getId()))
             {
-                Entity entity = world.getEntityByID(e.getTargetID());
+                Entity entity = world.getEntityByID(event.getTargetID());
                
                 Player temp = entity instanceof Player ? (Player)entity : null;
                 //System.out.println(temp);
                 if(temp != null)
                 {
-                    switch(((Door)world.getEntityByID(e.getOtherID())).getDirection())
+                    switch(((Door)world.getEntityByID(event.getOtherID())).getDirection())
                     {
                         case NORTH:
                             world.setCurrentRoom(currentRoom.getNorth());

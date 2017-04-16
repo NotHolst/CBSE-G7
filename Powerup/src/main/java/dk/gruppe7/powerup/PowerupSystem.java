@@ -73,12 +73,10 @@ public class PowerupSystem implements IProcess, IRender {
         }
     }
     
-    ActionEventHandler pickupCollisionHandler = (Object event) -> {
-        CollisionEvent e = (CollisionEvent) event;
-        
-        Entity targetEntity = world.getEntityByID(e.getTargetID());
+    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event) -> {
+        Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
-        if (targetEntity instanceof Powerup && e.getOtherID().equals(player.getId())) {
+        if (targetEntity instanceof Powerup && event.getOtherID().equals(player.getId())) {
             Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
             player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
             

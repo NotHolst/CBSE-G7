@@ -174,13 +174,11 @@ public class WeaponSystem implements IProcess, IRender {
         }
     }
     
-    ActionEventHandler pickupCollisionHandler = (Object event) -> {
-        CollisionEvent e = (CollisionEvent) event;
-        
+    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event) -> {
         for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
-            if (e.getOtherID().equals(weapon.getId())) {
-                if (world.getEntityByID(e.getTargetID()) instanceof Player) {
-                    weapon.setOwner(e.getTargetID());
+            if (event.getOtherID().equals(weapon.getId())) {
+                if (world.getEntityByID(event.getTargetID()) instanceof Player) {
+                    weapon.setOwner(event.getTargetID());
                     weapon.setCollidable(false);
                 }
             }

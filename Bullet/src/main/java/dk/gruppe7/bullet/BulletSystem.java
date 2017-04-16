@@ -5,6 +5,7 @@
  */
 package dk.gruppe7.bullet;
 
+import collision.CollisionEvent;
 import dispose.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
@@ -69,7 +70,8 @@ public class BulletSystem implements IProcess, IRender
         } 
     }
     
-    ActionEventHandler disposeEventHandler = (Object event) -> {
+    
+    ActionEventHandler disposeEventHandler = (event) -> {
         List<Bullet> listOfBulletsToRemove = new ArrayList<>();
         
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {

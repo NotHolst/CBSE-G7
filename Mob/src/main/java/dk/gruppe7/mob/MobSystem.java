@@ -147,12 +147,10 @@ public class MobSystem implements IProcess, IRender {
         world.removeEntities(listOfMobsToBeRemoved);
     }
 
-    ActionEventHandler bulletCollisionHandler = (Object event) -> {
-        CollisionEvent e = (CollisionEvent) event;
-        
+    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event) -> {
         for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
-            if (e.getOtherID().equals(mob.getId())) {
-                Entity hitBy = world.getEntityByID(e.getTargetID());
+            if (event.getOtherID().equals(mob.getId())) {
+                Entity hitBy = world.getEntityByID(event.getTargetID());
                 Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
                 if (b != null) {
                     mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());

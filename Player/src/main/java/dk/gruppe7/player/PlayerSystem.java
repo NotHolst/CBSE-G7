@@ -209,10 +209,8 @@ public class PlayerSystem implements IProcess, IRender {
             }
     }
 
-    ActionEventHandler bulletCollisionHandler = (Object event) -> {
+    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event) -> {
         // Bullet collision -- Bullet collides with player the moment it spawns.
-        CollisionEvent e = (CollisionEvent) event;
-        
         //if(e.getOtherID().equals(playerID))
         //{
         //    Entity hitBy = world.getEntityByID(e.getTargetID());
@@ -229,32 +227,30 @@ public class PlayerSystem implements IProcess, IRender {
         //}
     };
     
-    ActionEventHandler obstacleCollisionHandler = (Object event) -> {
-        CollisionEvent e = (CollisionEvent) event;
-        
-            if(Obstacle.class.isInstance(world.getEntityByID(e.getOtherID())) && e.getTargetID().equals(playerID)){ 
-                Entity targetEntity = world.getEntityByID(e.getTargetID());
-                Entity otherEntity = world.getEntityByID(e.getOtherID());
-                
-                float sumY = (targetEntity.getBounds().getWidth() + otherEntity.getBounds().getWidth()) * (targetEntity.getPositionCentered().y - otherEntity.getPositionCentered().y);
-                float sumX = (targetEntity.getBounds().getHeight() + otherEntity.getBounds().getHeight()) * (targetEntity.getPositionCentered().x - otherEntity.getPositionCentered().x);
-                
-                if(sumY > sumX) {
-                        if(sumY > -sumX) {
-                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y + otherEntity.getBounds().getHeight() + 0)); 
-                        } else {
-                            targetEntity.setPosition(new Vector2((otherEntity.getPosition().x - targetEntity.getBounds().getWidth() - 0), targetEntity.getPosition().y));
-                        }
+    ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event) -> {
+        if(Obstacle.class.isInstance(world.getEntityByID(event.getOtherID())) && event.getTargetID().equals(playerID)){ 
+            Entity targetEntity = world.getEntityByID(event.getTargetID());
+            Entity otherEntity = world.getEntityByID(event.getOtherID());
+            
+            float sumY = (targetEntity.getBounds().getWidth() + otherEntity.getBounds().getWidth()) * (targetEntity.getPositionCentered().y - otherEntity.getPositionCentered().y);
+            float sumX = (targetEntity.getBounds().getHeight() + otherEntity.getBounds().getHeight()) * (targetEntity.getPositionCentered().x - otherEntity.getPositionCentered().x);
+            
+            if(sumY > sumX) {
+                    if(sumY > -sumX) {
+                        targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y + otherEntity.getBounds().getHeight() + 0)); 
                     } else {
-                        if(sumY > -sumX) {
-                            targetEntity.setPosition(new Vector2(otherEntity.getPosition().x + otherEntity.getBounds().getWidth() + 0, targetEntity.getPosition().y));
-                        } else {
-                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y - targetEntity.getBounds().getHeight() - 0));
+                        targetEntity.setPosition(new Vector2((otherEntity.getPosition().x - targetEntity.getBounds().getWidth() - 0), targetEntity.getPosition().y));
                     }
+                } else {
+                    if(sumY > -sumX) {
+                        targetEntity.setPosition(new Vector2(otherEntity.getPosition().x + otherEntity.getBounds().getWidth() + 0, targetEntity.getPosition().y));
+                    } else {
+                        targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y - targetEntity.getBounds().getHeight() - 0));
                 }
-                                
-                targetEntity.setVelocity(targetEntity.getVelocity().normalize());
             }
+                            
+            targetEntity.setVelocity(targetEntity.getVelocity().normalize());
+        }
     };
 
     private Player makePlayer() {
