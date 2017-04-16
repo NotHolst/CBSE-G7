@@ -23,6 +23,7 @@
                         <publicPackage>dispose</publicPackage>
                         <publicPackage>dk.gruppe7.common.graphics</publicPackage>
                         <publicPackage>dk.gruppe7.common.resources</publicPackage>
+                        <publicPackage>dk.gruppe7.common.audio</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -18,6 +18,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.audio.AudioPlayer;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.DrawCommand;
 import dk.gruppe7.common.graphics.Graphics;
@@ -59,13 +60,17 @@ public class Game implements ApplicationListener{
     
     private final GameInputProcessor inputProcessor = new GameInputProcessor(gameData);
     
+    private AudioPlayer audioPlayer = new AudioPlayer();
+    
     @Override
     public void create() {
+        
         
         gameData.setScreenWidth(Gdx.graphics.getWidth());
         gameData.setScreenHeight(Gdx.graphics.getHeight());
         
         gameData.setResourceManager(resourceManager);
+        gameData.setAudioPlayer(audioPlayer);
         
         cam = new OrthographicCamera(gameData.getScreenWidth(), gameData.getScreenHeight());
         cam.translate(gameData.getScreenWidth()/2, gameData.getScreenHeight()/2);

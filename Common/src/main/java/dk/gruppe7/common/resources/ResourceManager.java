@@ -13,23 +13,36 @@ import java.util.HashMap;
  * @author haral
  */
 public class ResourceManager {
+
     private HashMap<String, Image> images = new HashMap<>();
     private HashMap<String, Audio> audio = new HashMap<>();
-        
-    public Image getImage(String identifier){
+
+    public Image getImage(String identifier) {
         return images.get(getIdentifier(identifier));
     }
-    public Image addImage(String identifier, InputStream image){
-        
+
+    public Image addImage(String identifier, InputStream image) {
+
         images.put(getIdentifier(identifier), new Image(image));
         return getImage(identifier);
-        
+
     }
-    private String getCallerClassName(){
+
+    public Audio getAudio(String identifier) {
+        return audio.get(getIdentifier(identifier));
+    }
+
+    public Audio addAudio(String identifier, InputStream audioStream) {
+        audio.put(getIdentifier(identifier), new Audio(audioStream));
+        return getAudio(identifier);
+    }
+
+    private String getCallerClassName() {
         return Thread.currentThread().getStackTrace()[1].getFileName();
     }
-    private String getIdentifier(String id){
-    return String.format("%s:%s", getCallerClassName(), id);
+
+    private String getIdentifier(String id) {
+        return String.format("%s:%s", getCallerClassName(), id);
     }
-    
+
 }
