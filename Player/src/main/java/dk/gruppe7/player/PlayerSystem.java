@@ -294,11 +294,14 @@ public class PlayerSystem implements IProcess, IRender {
                 /* InputStream */ texture.getInputStream(),
                 /* Rotation    */ playerEntity.getRotation()
         );
+        
         g.drawSprite(
                 /* Position    */playerEntity.getPosition(),
                 /* Size        */ new Vector2(playerEntity.getBounds().getWidth(), playerEntity.getBounds().getHeight()),
                 /* InputStream */ playerEntity.getAnimator().getTexture(),
                 /* Rotation    */ (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x))
         );
+        
+        g.drawString(new Vector2(50, 670), String.format("Score : %d", playerEntity.getScore()));
     }
 }

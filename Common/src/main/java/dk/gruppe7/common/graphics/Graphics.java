@@ -11,8 +11,9 @@ public class Graphics {
     private PriorityQueue<DrawCommand> drawCommands = new PriorityQueue<DrawCommand>(new DrawCommandComparator());
       
     public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation){
-    drawSprite(position, size, texture, rotation, 0);
+        drawSprite(position, size, texture, rotation, 0);
     }
+    
     public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation, int zIndex){
         DrawCommand cmd = new DrawCommand();
         cmd.setPosition(position);
@@ -27,6 +28,7 @@ public class Graphics {
     public void drawRepeatedSprite(Vector2 position, Vector2 size, InputStream texture, float rotation){
         drawRepeatedSprite(position, size, texture, rotation, 0);
     }
+    
     public void drawRepeatedSprite(Vector2 position, Vector2 size, InputStream texture, float rotation, int zIndex)
     {
         DrawCommand cmd = new DrawCommand();
@@ -39,9 +41,11 @@ public class Graphics {
         cmd.setzIndex(zIndex);
         drawCommands.add(cmd);
     }
+    
     public void drawSpriteOffset(Vector2 position, Vector2 size, Vector2 offset, InputStream texture, float rotation){
         drawSpriteOffset(position, size, offset, texture, rotation, 0);
     } 
+    
     public void drawSpriteOffset(Vector2 position, Vector2 size, Vector2 offset, InputStream texture, float rotation, int zIndex)
     {
        DrawCommand cmd = new DrawCommand();
@@ -53,6 +57,19 @@ public class Graphics {
         cmd.setOffset(offset);
         cmd.setzIndex(zIndex);
         drawCommands.add(cmd); 
+    }
+    
+    public void drawString(Vector2 position, String string) {
+        drawString(position, string, 1);
+    }
+    
+    public void drawString(Vector2 position, String string, int zIndex) {
+        DrawCommand cmd = new DrawCommand();
+        cmd.setString(string);
+        cmd.setPosition(position);
+        cmd.setType(DrawCommand.DrawCommandType.STRING);
+        cmd.setzIndex(zIndex);
+        drawCommands.add(cmd);
     }
     
     public PriorityQueue<DrawCommand> getDrawCommands(){

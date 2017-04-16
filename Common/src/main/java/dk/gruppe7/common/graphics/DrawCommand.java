@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class DrawCommand {
     public static enum DrawCommandType{
-        LINE, RECTANGLE, CIRCLE, SPRITE
+        LINE, RECTANGLE, CIRCLE, SPRITE, STRING
     }
     
     public static enum SpriteRenderMode{
@@ -24,6 +24,7 @@ public class DrawCommand {
     private Vector2 offset = null;
     private Color color;
     private InputStream inputStream;
+    private String string;
     private float rotation;
     private int zIndex;
 
@@ -77,6 +78,14 @@ public class DrawCommand {
 
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+    }
+    
+    public void setString(String string) {
+        this.string = string;
+    }
+    
+    public String getString() {
+        return string;
     }
 
     public float getRotation() {
