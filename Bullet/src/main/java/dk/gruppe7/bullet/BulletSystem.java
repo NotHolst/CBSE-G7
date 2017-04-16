@@ -33,7 +33,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class BulletSystem implements IProcess, IRender
 {
     List<ShootingEvent> events = ShootingData.getEvents();
-    World world;
     //List<UUID> bullets = new ArrayList<>();
     //HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
     
@@ -45,7 +44,6 @@ public class BulletSystem implements IProcess, IRender
         textureCrossbowBolt = gameData.getResourceManager().addImage("bolt", getClass().getResourceAsStream("CrossbowBolt.png"));
 
         Dispatcher.subscribe(DisposeEvent.class, disposeEventHandler);
-        this.world = world;   
     }
 
     @Override
@@ -70,8 +68,7 @@ public class BulletSystem implements IProcess, IRender
         } 
     }
     
-    
-    ActionEventHandler disposeEventHandler = (event) -> {
+    ActionEventHandler disposeEventHandler = (event, world) -> {
         List<Bullet> listOfBulletsToRemove = new ArrayList<>();
         
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {

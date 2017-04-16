@@ -128,7 +128,7 @@ public class Game implements ApplicationListener{
             renderer.render(graphics, world);
         }
         
-        Dispatcher.post(new DisposeEvent());
+        Dispatcher.post(new DisposeEvent(), world);
     }
     
     public void drawGraphics(){

@@ -43,7 +43,6 @@ public class DoorSystem implements IProcess, IRender
     
     Room currentRoom = null;
     List<Door> currentDoors = new ArrayList<>();
-    World world;
     
     Map<Direction,Vector2> doorPosition = new HashMap<>();
 
@@ -55,7 +54,6 @@ public class DoorSystem implements IProcess, IRender
         doorPosition.put(Direction.NORTH, new Vector2(gameData.getScreenWidth()/2, gameData.getScreenHeight()-38));
         doorPosition.put(Direction.EAST, new Vector2(gameData.getScreenWidth()-38, gameData.getScreenHeight()/2));
         
-        this.world = world;
         Dispatcher.subscribe(CollisionEvent.class, collisionHandler);
     }
 
@@ -142,7 +140,7 @@ public class DoorSystem implements IProcess, IRender
         System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
         
-    ActionEventHandler<CollisionEvent> collisionHandler = (event) -> {        
+    ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {        
         for (Door door : currentDoors)
         {
             if(event.getOtherID().equals(door.getId()))

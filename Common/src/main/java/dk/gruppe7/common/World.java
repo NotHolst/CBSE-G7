@@ -4,12 +4,10 @@ import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  *

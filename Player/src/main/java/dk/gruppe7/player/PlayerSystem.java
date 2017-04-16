@@ -34,9 +34,6 @@ import dk.gruppe7.common.resources.Image;
  * @author Mikkel
  */
 public class PlayerSystem implements IProcess, IRender {
-
-    World world = null;
-    
     Input input;
     boolean north, south, west, east;
     Vector2 aimDirection = Vector2.zero;
@@ -124,13 +121,12 @@ public class PlayerSystem implements IProcess, IRender {
 
         };
 
-        this.world = world;
         Player temp = makePlayer();
         playerID = temp.getId();
         temp.setAnimator(
                 new Animator(frames, .1f)
         );
-        this.world.addEntity(temp);
+        world.addEntity(temp);
 
         texture = gameData.getResourceManager().addImage("torso", getClass().getResourceAsStream("player.png"));
         //String torso = "torso";
@@ -209,11 +205,11 @@ public class PlayerSystem implements IProcess, IRender {
             }
     }
 
-    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event) -> {
+    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
         // Bullet collision -- Bullet collides with player the moment it spawns.
-        //if(e.getOtherID().equals(playerID))
+        //if(event.getOtherID().equals(playerID))
         //{
-        //    Entity hitBy = world.getEntityByID(e.getTargetID());
+        //    Entity hitBy = world.getEntityByID(event.getTargetID());
         //    Player player = (Player) world.getEntityByID(playerID);
 
         //    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
@@ -227,7 +223,7 @@ public class PlayerSystem implements IProcess, IRender {
         //}
     };
     
-    ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event) -> {
+    ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {
         if(Obstacle.class.isInstance(world.getEntityByID(event.getOtherID())) && event.getTargetID().equals(playerID)){ 
             Entity targetEntity = world.getEntityByID(event.getTargetID());
             Entity otherEntity = world.getEntityByID(event.getOtherID());

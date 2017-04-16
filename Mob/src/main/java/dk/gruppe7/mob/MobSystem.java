@@ -43,7 +43,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class MobSystem implements IProcess, IRender {
 
     UUID mobID;
-    World world;
 
     Image textureSkeletonRanged;
     Image textureSkeletonMelee;
@@ -94,7 +93,6 @@ public class MobSystem implements IProcess, IRender {
         health = gameData.getResourceManager().addImage("healthBar", getClass().getResourceAsStream("healthGreen.png"));
 
         Entity mob;
-        this.world = world;
         // Add mobs to the world
 
         for (int i = 0; i < GetRandomNumberBetween(2, 7); i++) {
@@ -102,7 +100,7 @@ public class MobSystem implements IProcess, IRender {
                     GetRandomNumberBetween(0, gameData.getScreenWidth()),
                     GetRandomNumberBetween(0, gameData.getScreenHeight()),
                     pickRandomMobType(MobType.class));
-            this.world.addEntity(mob);
+            world.addEntity(mob);
             MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
         }
 
@@ -147,7 +145,7 @@ public class MobSystem implements IProcess, IRender {
         world.removeEntities(listOfMobsToBeRemoved);
     }
 
-    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event) -> {
+    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
         for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
             if (event.getOtherID().equals(mob.getId())) {
                 Entity hitBy = world.getEntityByID(event.getTargetID());

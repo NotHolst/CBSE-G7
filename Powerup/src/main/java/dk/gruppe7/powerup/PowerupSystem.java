@@ -37,18 +37,15 @@ public class PowerupSystem implements IProcess, IRender {
 
     private List<Powerup> powerups;
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
-    World world;
     Entity player = null;
 
     @Override
     public void start(GameData gameData, World world) {
-        this.world = world;
-        
         powerups = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
             Entity e = makePowerup();
             powerups.add((Powerup) e);
-            this.world.addEntity(e);
+            world.addEntity(e);
         }
 
         Dispatcher.subscribe(CollisionEvent.class, pickupCollisionHandler);
@@ -73,7 +70,7 @@ public class PowerupSystem implements IProcess, IRender {
         }
     }
     
-    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event) -> {
+    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
         Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
         if (targetEntity instanceof Powerup && event.getOtherID().equals(player.getId())) {

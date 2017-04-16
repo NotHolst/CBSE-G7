@@ -52,14 +52,12 @@ public class WeaponSystem implements IProcess, IRender {
     InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
     List<ShootingEvent> sEvents = ShootingData.getEvents();
     List<WeaponEvent> wEvents = WeaponData.getEvents();
-    World world;
 
     @Override
     public void start(GameData gameData, World world) {
         //Standard weapon for the Player
         Weapon addedWeapon = generateWeapon(CROSSBOW);
-        this.world = world;
-        this.world.addEntity(addedWeapon);
+        world.addEntity(addedWeapon);
         //addedWeapon.setOwner(world.getEntitiesByClass(Player.class).get(0).getId());
 
         Dispatcher.subscribe(CollisionEvent.class, pickupCollisionHandler);
@@ -174,7 +172,7 @@ public class WeaponSystem implements IProcess, IRender {
         }
     }
     
-    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event) -> {
+    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
         for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
             if (event.getOtherID().equals(weapon.getId())) {
                 if (world.getEntityByID(event.getTargetID()) instanceof Player) {

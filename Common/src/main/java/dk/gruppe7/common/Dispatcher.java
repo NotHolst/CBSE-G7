@@ -18,15 +18,15 @@ public class Dispatcher {
     /**
      * Triggers all handlers registered to the event type being posted and hands off the event object to the handlers themselves.
      */
-    public static void post(Object event) {
+    public static void post(Object event, World world) {
         isEventValid(event);
         addEventTypeIfUnknown(event);
         
         int hashcode = event.getClass().hashCode();
         if(mapOfEventHandlers.containsKey(hashcode)) {
-            mapOfEventHandlers.get(hashcode).forEach(handler -> handler.call(event));
+            mapOfEventHandlers.get(hashcode).forEach(handler -> handler.call(event, world));
         } else {
-            mapOfEventHandlers.get(mapOfEventLinks.get(hashcode)).forEach(handler -> handler.call(event));
+            mapOfEventHandlers.get(mapOfEventLinks.get(hashcode)).forEach(handler -> handler.call(event, world));
         }
         
         // System.out.println("STATUS : " + mapOfEventHandlers.size() + " | " + mapOfEventLinks.size());
