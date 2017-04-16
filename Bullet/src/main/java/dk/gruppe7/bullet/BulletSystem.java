@@ -5,7 +5,6 @@
  */
 package dk.gruppe7.bullet;
 
-import collision.CollisionData;
 import collision.CollisionEvent;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;

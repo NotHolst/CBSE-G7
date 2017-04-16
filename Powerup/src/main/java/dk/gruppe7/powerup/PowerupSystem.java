@@ -5,13 +5,14 @@
  */
 package dk.gruppe7.powerup;
 
-import collision.CollisionData;
 import collision.CollisionEvent;
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.ActionEventHandler;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.powerupcommon.Powerup;
@@ -36,18 +37,21 @@ public class PowerupSystem implements IProcess, IRender {
 
     private List<Powerup> powerups;
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
-
+    World world;
     Entity player = null;
 
     @Override
     public void start(GameData gameData, World world) {
+        this.world = world;
+        
         powerups = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
             Entity e = makePowerup();
             powerups.add((Powerup) e);
-            world.addEntity(e);
+            this.world.addEntity(e);
         }
 
+        Dispatcher.subscribe(CollisionEvent.class, pickupCollisionHandler);
     }
 
     @Override
@@ -55,6 +59,8 @@ public class PowerupSystem implements IProcess, IRender {
         for (Powerup powerup : powerups) {
             world.removeEntity(powerup);
         }
+        
+        Dispatcher.unsubscribe(CollisionEvent.class, pickupCollisionHandler);
     }
 
     @Override
@@ -67,22 +73,21 @@ public class PowerupSystem implements IProcess, IRender {
                 }
             }
         }
-        // Iterates over all the CollisionEvents backwards because we are removing from it while iterating;
-        for (int i = CollisionData.getEvents(gameData.getTickCount()).size() - 1; i >= 0; i--) {
-            // Sets the current target of the CollisionEvent
-            Entity targetEntity = world.getEntityByID(CollisionData.getEvents(gameData.getTickCount()).get(i).getTargetID());
-            // if the targetEntity is a Powerup and the "other" is the player we wanna do something
-            if (targetEntity instanceof Powerup && CollisionData.getEvents(gameData.getTickCount()).get(i).getOtherID().equals(player.getId())) {
-                Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
-                player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
-                // Cleanup
-                world.removeEntity(powerup);
-                powerups.remove(powerup);
-                CollisionData.getEvents(gameData.getTickCount()).remove(i);
-            }
-
-        }
     }
+    
+    ActionEventHandler pickupCollisionHandler = (Object event) -> {
+        CollisionEvent e = (CollisionEvent) event;
+        
+        Entity targetEntity = world.getEntityByID(e.getTargetID());
+        // if the targetEntity is a Powerup and the "other" is the player we wanna do something
+        if (targetEntity instanceof Powerup && e.getOtherID().equals(player.getId())) {
+            Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
+            player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
+            // Cleanup
+            world.removeEntity(powerup);
+            powerups.remove(powerup);
+        }
+    };
 
     @Override
     public void render(Graphics g, World world) {

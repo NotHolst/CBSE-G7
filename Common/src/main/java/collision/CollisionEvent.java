@@ -6,22 +6,23 @@
 package collision;
 
 import java.util.UUID;
+import dk.gruppe7.common.Event;
 
 /**
  *
  * @author Mathies H
  */
+
+@Event
 public class CollisionEvent
 {
     private UUID targetID;
     private UUID otherID;
-    private long expirationTick;
 
-    public CollisionEvent(UUID targetID, UUID otherID, long currentTick)
+    public CollisionEvent(UUID targetID, UUID otherID)
     {
         this.targetID = targetID;
         this.otherID = otherID;
-        this.expirationTick = currentTick + 2;
     }
 
     public UUID getTargetID()
@@ -32,10 +33,5 @@ public class CollisionEvent
     public UUID getOtherID()
     {
         return otherID;
-    }
-    
-    public long getExpirationTick() 
-    {
-        return expirationTick;
     }
 }

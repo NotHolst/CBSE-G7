@@ -5,13 +5,14 @@
  */
 package dk.gruppe7.mob;
 
-import collision.CollisionData;
 import collision.CollisionEvent;
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.ActionEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
@@ -46,6 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MobSystem implements IProcess, IRender {
 
     UUID mobID;
+    World world;
 
     Image textureSkeletonRanged;
     Image textureSkeletonMelee;
@@ -96,6 +98,7 @@ public class MobSystem implements IProcess, IRender {
         health = gameData.getResourceManager().addImage("healthBar", getClass().getResourceAsStream("healthGreen.png"));
 
         Entity mob;
+        this.world = world;
         // Add mobs to the world
 
         for (int i = 0; i < GetRandomNumberBetween(2, 7); i++) {
@@ -103,10 +106,11 @@ public class MobSystem implements IProcess, IRender {
                     GetRandomNumberBetween(0, gameData.getScreenWidth()),
                     GetRandomNumberBetween(0, gameData.getScreenHeight()),
                     pickRandomMobType(MobType.class));
-            world.addEntity(mob);
+            this.world.addEntity(mob);
             MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
         }
 
+        Dispatcher.subscribe(CollisionEvent.class, bulletCollisionHandler);
     }
 
     @Override
@@ -115,6 +119,7 @@ public class MobSystem implements IProcess, IRender {
         world.removeEntity(world.getEntityByID(mobID));
         mobID = null;
 
+        Dispatcher.unsubscribe(CollisionEvent.class, bulletCollisionHandler);
     }
 
     @Override
@@ -145,8 +150,6 @@ public class MobSystem implements IProcess, IRender {
                     remove.add(m);
                     MobData.getEvents(gameData.getTickCount()).add(new MobEvent(m, MobEventType.DEATH, gameData.getTickCount()));
                 }
-
-                checkCollision(world, gameData, m);
             }
         }
 
@@ -156,22 +159,27 @@ public class MobSystem implements IProcess, IRender {
 
     }
 
-    private void checkCollision(World world, GameData gameData, Mob mob) {
-        for (ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();) {
-            CollisionEvent tempi = iterator.next();
+    ActionEventHandler bulletCollisionHandler = (Object event) -> {
+        CollisionEvent e = (CollisionEvent) event;
+        
+        Collection<Entity> entities = world.getEntities();
+        for (Entity entity : entities) {
+            if (entity instanceof Mob) {
+                Mob mob = (Mob) entity;
+                
+                if (e.getOtherID().equals(mob.getId())) {
+                    Entity hitBy = world.getEntityByID(e.getTargetID());
+                    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
+                    if (b != null) {
+                        mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
+                        //Temporary: to avoid bullets hitting multiple times
+                        b.getDamageData().setDamage(0);
+                    }
 
-            if (tempi.getOtherID().equals(mob.getId())) {
-                Entity hitBy = world.getEntityByID(tempi.getTargetID());
-                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
-                if (b != null) {
-                    mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
-                    //Temporary: to avoid bullets hitting multiple times
-                    b.getDamageData().setDamage(0);
                 }
-
             }
         }
-    }
+    };
 
     private Entity createMob(float x, float y, MobType type) {
         Mob mob = new Mob();

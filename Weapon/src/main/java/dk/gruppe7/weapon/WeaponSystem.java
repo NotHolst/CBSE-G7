@@ -5,14 +5,14 @@
  */
 package dk.gruppe7.weapon;
 
-import collision.CollisionData;
-import static collision.CollisionData.getEvents;
 import collision.CollisionEvent;
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.ActionEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
@@ -54,19 +54,22 @@ public class WeaponSystem implements IProcess, IRender {
     InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
     List<ShootingEvent> sEvents = ShootingData.getEvents();
     List<WeaponEvent> wEvents = WeaponData.getEvents();
+    World world;
 
     @Override
     public void start(GameData gameData, World world) {
         //Standard weapon for the Player
         Weapon addedWeapon = generateWeapon(CROSSBOW);
-        world.addEntity(addedWeapon);
+        this.world = world;
+        this.world.addEntity(addedWeapon);
         //addedWeapon.setOwner(world.getEntitiesByClass(Player.class).get(0).getId());
 
+        Dispatcher.subscribe(CollisionEvent.class, pickupCollisionHandler);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
-
+        Dispatcher.unsubscribe(CollisionEvent.class, pickupCollisionHandler);
     }
 
     @Override
@@ -145,19 +148,8 @@ public class WeaponSystem implements IProcess, IRender {
                 }));
                 shoot = false;
             }
-
-            for (ListIterator<CollisionEvent> i = CollisionData.getEvents(gameData.getTickCount()).listIterator(); i.hasNext();) {
-                CollisionEvent colEv = i.next(); //Iterates CollisionEvents to see if there are any pertaining to the Weapon and a possible Owner.
-                if (colEv.getOtherID().equals(weaponEntity.getId())) {
-                    if (world.getEntityByID(colEv.getTargetID()) instanceof Player) {
-                        weaponEntity.setOwner(colEv.getTargetID());
-                        weaponEntity.setCollidable(false);
-                    }
-                    i.remove();
-                }
-            }
-
         }
+        
         for (ListIterator<MobEvent> i = MobData.getEvents().listIterator(); i.hasNext();) {
             MobEvent mobEvent = i.next();
             if (mobEvent.getType() == MobEventType.SPAWN) {
@@ -182,8 +174,26 @@ public class WeaponSystem implements IProcess, IRender {
                 i.remove();
             }
         }
-
     }
+    
+    ActionEventHandler pickupCollisionHandler = (Object event) -> {
+        CollisionEvent e = (CollisionEvent) event;
+        
+        for (Entity entity : world.getEntities()) {
+            if ((entity instanceof Weapon)) {
+                Weapon weaponEntity = (Weapon) entity;
+                
+                if (e.getOtherID().equals(weaponEntity.getId())) {
+                    if (world.getEntityByID(e.getTargetID()) instanceof Player) {
+                        weaponEntity.setOwner(e.getTargetID());
+                        weaponEntity.setCollidable(false);
+                    }
+                }
+            }
+        }
+        
+        
+    };
 
     @Override
     public void render(Graphics g, World world) {
