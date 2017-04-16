@@ -50,6 +50,7 @@ public class Game implements ApplicationListener{
     private List<IProcess> processors = new CopyOnWriteArrayList<>();
     private List<IRender> renderers = new CopyOnWriteArrayList<>();
     private ResourceManager resourceManager = new ResourceManager();
+    private InputStream fallbackInputStream = getClass().getResourceAsStream("default.png");
     
     private Lookup.Result<IProcess> processorsResult;
     private Lookup.Result<IRender> renderersResult;
@@ -133,9 +134,9 @@ public class Game implements ApplicationListener{
                 case SPRITE:
                     batch.begin();
                     
-                    Texture tex = inputStreamToTexture(cmd.getInputStream());
+                    //Texture tex = inputStreamToTexture(cmd.getInputStream());
+                    Texture tex = (cmd.getInputStream() != null) ? inputStreamToTexture(cmd.getInputStream()) : inputStreamToTexture(fallbackInputStream);
                     
-
                     float repeatX = 1;
                     float repeatY = 1;
                     if (cmd.getSpriteRenderType() == DrawCommand.SpriteRenderMode.REPEAT)
