@@ -56,9 +56,7 @@ public class PowerupSystem implements IProcess, IRender {
 
     @Override
     public void stop(GameData gameData, World world) {
-        for (Powerup powerup : powerups) {
-            world.removeEntity(powerup);
-        }
+        world.removeEntities(world.<Powerup>getEntitiesByClass(Powerup.class));
         
         Dispatcher.unsubscribe(CollisionEvent.class, pickupCollisionHandler);
     }
@@ -83,7 +81,8 @@ public class PowerupSystem implements IProcess, IRender {
         if (targetEntity instanceof Powerup && e.getOtherID().equals(player.getId())) {
             Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
             player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
-            // Cleanup
+            
+            // Cleanup -- this can cause problems, should use the disposeEvent to trigger clean-up instead.
             world.removeEntity(powerup);
             powerups.remove(powerup);
         }

@@ -30,11 +30,7 @@ import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
 import dk.gruppe7.shootingcommon.Bullet;
-import dk.gruppe7.weaponcommon.Weapon;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ListIterator;
 import java.util.Random;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
@@ -124,58 +120,44 @@ public class MobSystem implements IProcess, IRender {
 
     @Override
     public void process(GameData gameData, World world) {
-        // Need som help with this one. Cant seem to get other than the first mobID.
-        ArrayList<Entity> remove = new ArrayList<>();
+        ArrayList<Mob> listOfMobsToBeRemoved = new ArrayList<>();
 
-        Collection<Entity> entities = world.getEntities();
-        for (Entity entity : entities) {
-            if (entity instanceof Mob) {
-                Mob m = (Mob) entity;
-
-                if(m.getVelocity().len() > .1f){
-                m.getAnimator().setInterval(15*1.0f/m.getVelocity().len());
-                m.getAnimator().update(gameData);
+        for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
+            if(mob.getVelocity().len() > .1f){
+                mob.getAnimator().setInterval(15*1.0f/mob.getVelocity().len());
+                mob.getAnimator().update(gameData);
             }
 
-                if (m.getWanderTimer() <= 0) {
-                    m.setVelocity(new Vector2(GetRandomNumberBetween(-10, 10), GetRandomNumberBetween(-10, 10)));
-                    m.setWanderTimer(GetRandomNumberBetween(1, 4));
-                } else {
-                    m.setWanderTimer(m.getWanderTimer() - gameData.getDeltaTime());
-                }
+            if (mob.getWanderTimer() <= 0) {
+                mob.setVelocity(new Vector2(GetRandomNumberBetween(-10, 10), GetRandomNumberBetween(-10, 10)));
+                mob.setWanderTimer(GetRandomNumberBetween(1, 4));
+            } else {
+                mob.setWanderTimer(mob.getWanderTimer() - gameData.getDeltaTime());
+            }
 
-                m.setPosition(m.getPosition().add(m.getVelocity().mul(gameData.getDeltaTime())));
+            mob.setPosition(mob.getPosition().add(mob.getVelocity().mul(gameData.getDeltaTime())));
 
-                if (m.getHealthData().getHealth() <= 0) {
-                    remove.add(m);
-                    MobData.getEvents(gameData.getTickCount()).add(new MobEvent(m, MobEventType.DEATH, gameData.getTickCount()));
-                }
+            if (mob.getHealthData().getHealth() <= 0) {
+                listOfMobsToBeRemoved.add(mob);
+                MobData.getEvents(gameData.getTickCount()).add(new MobEvent(mob, MobEventType.DEATH, gameData.getTickCount()));
             }
         }
-
-        for (Entity e : remove) {
-            world.removeEntity(e);
-        }
-
+        
+        // The below line should be moved to a dispose event handler.
+        world.removeEntities(listOfMobsToBeRemoved);
     }
 
     ActionEventHandler bulletCollisionHandler = (Object event) -> {
         CollisionEvent e = (CollisionEvent) event;
         
-        Collection<Entity> entities = world.getEntities();
-        for (Entity entity : entities) {
-            if (entity instanceof Mob) {
-                Mob mob = (Mob) entity;
-                
-                if (e.getOtherID().equals(mob.getId())) {
-                    Entity hitBy = world.getEntityByID(e.getTargetID());
-                    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
-                    if (b != null) {
-                        mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
-                        //Temporary: to avoid bullets hitting multiple times
-                        b.getDamageData().setDamage(0);
-                    }
-
+        for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
+            if (e.getOtherID().equals(mob.getId())) {
+                Entity hitBy = world.getEntityByID(e.getTargetID());
+                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
+                if (b != null) {
+                    mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
+                    //Temporary: to avoid bullets hitting multiple times
+                    b.getDamageData().setDamage(0);
                 }
             }
         }
@@ -242,43 +224,38 @@ public class MobSystem implements IProcess, IRender {
 
     @Override
     public void render(Graphics g, World world) {
-        for (Entity e : world.getEntities()) {
-            if (e instanceof Mob) {
-                Mob mob = (Mob) e;
-                Image texture;
-                //Temporary, until we can distinguish between skeletons and knights.
-                texture = textureSkeletonRanged;
+        for (Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
+            Image texture;
+            //Temporary, until we can distinguish between skeletons and knights.
+            texture = textureSkeletonRanged;
 
-                /*switch (mob.getMobType()){
-                    case MELEE:
-                        texture = textureSkeletonMelee;
-                        break;
-                        
-                    default:
-                        //Random selection of texture for the ranged mobs.
-                        Random r = new Random(mob.getId().hashCode());
-                        if(r.nextDouble() >= 0.51){
-                            texture = textureSkeletonRanged;
-                        }
-                        else texture = textureKnightRanged;
-                        break;
-                }*/
-                g.drawSprite(
-                        /* Position    */e.getPosition(),
-                        /* Size        */ new Vector2(e.getBounds().getWidth(), e.getBounds().getHeight()),
-                        /* InputStream */ texture.getInputStream(),
-                        /* Rotation    */ e.getRotation()
-                );
-                g.drawSprite(
-                        /* Position    */e.getPosition(),
-                        /* Size        */ new Vector2(e.getBounds().getWidth(), e.getBounds().getHeight()),
-                        /* InputStream */ mob.getAnimator().getTexture(),
-                        /* Rotation    */ (float) Math.toDegrees(Math.atan2(e.getVelocity().y, e.getVelocity().x))
-                );
-                g.drawSprite(e.getPosition().add(0, -2), new Vector2(64 * ((Mob) e).getHealthData().getHealth() / ((Mob) e).getHealthData().getStartHealth(), 5), health.getInputStream(), 0);
-            }
-
+            /*switch (mob.getMobType()){
+                case MELEE:
+                    texture = textureSkeletonMelee;
+                    break;
+                    
+                default:
+                    //Random selection of texture for the ranged mobs.
+                    Random r = new Random(mob.getId().hashCode());
+                    if(r.nextDouble() >= 0.51){
+                        texture = textureSkeletonRanged;
+                    }
+                    else texture = textureKnightRanged;
+                    break;
+            }*/
+            g.drawSprite(
+                    /* Position    */mob.getPosition(),
+                    /* Size        */ new Vector2(mob.getBounds().getWidth(), mob.getBounds().getHeight()),
+                    /* InputStream */ texture.getInputStream(),
+                    /* Rotation    */ mob.getRotation()
+            );
+            g.drawSprite(
+                    /* Position    */mob.getPosition(),
+                    /* Size        */ new Vector2(mob.getBounds().getWidth(), mob.getBounds().getHeight()),
+                    /* InputStream */ mob.getAnimator().getTexture(),
+                    /* Rotation    */ (float) Math.toDegrees(Math.atan2(mob.getVelocity().y, mob.getVelocity().x))
+            );
+            g.drawSprite(mob.getPosition().add(0, -2), new Vector2(64 * ((Mob) mob).getHealthData().getHealth() / ((Mob) mob).getHealthData().getStartHealth(), 5), health.getInputStream(), 0);
         }
     }
-
 }

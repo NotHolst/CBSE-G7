@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import dispose.DisposeEvent;
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -121,9 +123,12 @@ public class Game implements ApplicationListener{
         for (IProcess processor : processors) {
             processor.process(gameData, world);
         }
+        
         for (IRender renderer : renderers){
             renderer.render(graphics, world);
         }
+        
+        Dispatcher.post(new DisposeEvent());
     }
     
     public void drawGraphics(){

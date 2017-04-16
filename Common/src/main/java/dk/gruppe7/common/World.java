@@ -3,11 +3,13 @@ package dk.gruppe7.common;
 import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -35,19 +37,31 @@ public class World {
         entities.remove(e);
     }
     
+    public void removeEntities(Collection<? extends Entity> col) {
+        col.forEach(entity -> entities.remove(entity));
+    }
+    
     public Entity getEntityByID(UUID entityID){
         for(Entity e : entities)
             if(e.getId().equals(entityID)) return e;
         return null;
     }
     
-    public ArrayList<Entity> getEntitiesByClass(Class c)
-    {
-        ArrayList<Entity> list = new ArrayList<Entity>();
-        for(Entity e : entities)
-            if(e.getClass().equals(c)) list.add(e);
+    public <T extends Entity> ArrayList<T> getEntitiesByClass(Class klass) {
+        ArrayList<Entity> list = new ArrayList<>();
         
-        return list;
+        for(Entity e : entities) {
+            if(e.getClass().equals(klass)) {
+                list.add(e);
+                continue;
+            }
+            
+            if(e.getClass().getSuperclass().equals(klass)) {
+                list.add(e);
+            }
+        }
+            
+        return (ArrayList<T>)list;
     }
 
     public Room getCurrentRoom() {

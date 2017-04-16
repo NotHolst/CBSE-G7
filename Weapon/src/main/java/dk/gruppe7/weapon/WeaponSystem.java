@@ -33,10 +33,8 @@ import dk.gruppe7.weaponcommon.WeaponType;
 import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -179,33 +177,24 @@ public class WeaponSystem implements IProcess, IRender {
     ActionEventHandler pickupCollisionHandler = (Object event) -> {
         CollisionEvent e = (CollisionEvent) event;
         
-        for (Entity entity : world.getEntities()) {
-            if ((entity instanceof Weapon)) {
-                Weapon weaponEntity = (Weapon) entity;
-                
-                if (e.getOtherID().equals(weaponEntity.getId())) {
-                    if (world.getEntityByID(e.getTargetID()) instanceof Player) {
-                        weaponEntity.setOwner(e.getTargetID());
-                        weaponEntity.setCollidable(false);
-                    }
+        for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
+            if (e.getOtherID().equals(weapon.getId())) {
+                if (world.getEntityByID(e.getTargetID()) instanceof Player) {
+                    weapon.setOwner(e.getTargetID());
+                    weapon.setCollidable(false);
                 }
             }
         }
-        
-        
     };
 
     @Override
     public void render(Graphics g, World world) {
-        for (Entity e : world.getEntities()) {
-            if (!(e instanceof Weapon)) {
-                continue;
-            }
+        for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
             g.drawSprite(
-                    /* Position    */e.getPosition(),
-                    /* Size        */ new Vector2(e.getBounds().getWidth(), e.getBounds().getHeight()),
-                    /* InputStream */ e.getInputStream(),
-                    /* Rotation    */ e.getRotation()
+                    /* Position    */weapon.getPosition(),
+                    /* Size        */ new Vector2(weapon.getBounds().getWidth(), weapon.getBounds().getHeight()),
+                    /* InputStream */ weapon.getInputStream(),
+                    /* Rotation    */ weapon.getRotation()
             );
         }
     }
