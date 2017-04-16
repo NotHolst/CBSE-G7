@@ -6,6 +6,7 @@
 package dk.gruppe7.powerup;
 
 import collision.CollisionEvent;
+import dispose.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
@@ -35,27 +36,30 @@ import org.openide.util.lookup.ServiceProviders;
 
 public class PowerupSystem implements IProcess, IRender {
 
-    private List<Powerup> powerups;
+    private List<Powerup> listOfPowerups;
+    ArrayList<Powerup> listOfPowerupsToBeRemoved = new ArrayList<>();
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
     Entity player = null;
 
     @Override
     public void start(GameData gameData, World world) {
-        powerups = new ArrayList<>();
+        listOfPowerups = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
             Entity e = makePowerup();
-            powerups.add((Powerup) e);
+            listOfPowerups.add((Powerup) e);
             world.addEntity(e);
         }
 
         Dispatcher.subscribe(CollisionEvent.class, pickupCollisionHandler);
+        Dispatcher.subscribe(DisposeEvent.class, disposalHandler);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
-        world.removeEntities(world.<Powerup>getEntitiesByClass(Powerup.class));
-        
         Dispatcher.unsubscribe(CollisionEvent.class, pickupCollisionHandler);
+        Dispatcher.unsubscribe(DisposeEvent.class, disposalHandler);
+        
+        world.removeEntities(world.<Powerup>getEntitiesByClass(Powerup.class));
     }
 
     @Override
@@ -71,21 +75,25 @@ public class PowerupSystem implements IProcess, IRender {
     }
     
     ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
+        listOfPowerupsToBeRemoved.clear();
+        
         Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
         if (targetEntity instanceof Powerup && event.getOtherID().equals(player.getId())) {
             Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
             player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
-            
-            // Cleanup -- this can cause problems, should use the disposeEvent to trigger clean-up instead.
-            world.removeEntity(powerup);
-            powerups.remove(powerup);
+            listOfPowerupsToBeRemoved.add(powerup);
         }
+    };
+    
+    ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
+        world.removeEntities(listOfPowerupsToBeRemoved);
+        listOfPowerups.removeAll(listOfPowerupsToBeRemoved);
     };
 
     @Override
     public void render(Graphics g, World world) {
-        for (Powerup powerup : powerups) {
+        for (Powerup powerup : listOfPowerups) {
             g.drawSprite(powerup.getPosition(), new Vector2(powerup.getBounds().getWidth(), powerup.getBounds().getHeight()), texture, 0);
         }
     }

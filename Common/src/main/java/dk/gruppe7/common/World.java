@@ -36,7 +36,7 @@ public class World {
     }
     
     public void removeEntities(Collection<? extends Entity> col) {
-        col.forEach(entity -> entities.remove(entity));
+        entities.removeAll(col);
     }
     
     public Entity getEntityByID(UUID entityID){

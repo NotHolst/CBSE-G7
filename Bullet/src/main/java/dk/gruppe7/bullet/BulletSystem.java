@@ -35,6 +35,7 @@ public class BulletSystem implements IProcess, IRender
     List<ShootingEvent> events = ShootingData.getEvents();
     //List<UUID> bullets = new ArrayList<>();
     //HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
+    List<Bullet> listOfBulletsToRemove = new ArrayList<>();
     
     Image textureCrossbowBolt;
 
@@ -43,7 +44,7 @@ public class BulletSystem implements IProcess, IRender
     {
         textureCrossbowBolt = gameData.getResourceManager().addImage("bolt", getClass().getResourceAsStream("CrossbowBolt.png"));
 
-        Dispatcher.subscribe(DisposeEvent.class, disposeEventHandler);
+        Dispatcher.subscribe(DisposeEvent.class, disposalHandler);
     }
 
     @Override
@@ -51,12 +52,14 @@ public class BulletSystem implements IProcess, IRender
     {
         world.removeEntities(world.<Bullet>getEntitiesByClass(Bullet.class));
         
-        Dispatcher.unsubscribe(DisposeEvent.class, disposeEventHandler);
+        Dispatcher.unsubscribe(DisposeEvent.class, disposalHandler);
     }
 
     @Override
     public void process(GameData gameData, World world)
     {
+        listOfBulletsToRemove.clear();
+        
         while(events.size() > 0) {
             makeBullet(events.get(0).getBlueprint(), world);
             events.remove(0);
@@ -65,18 +68,14 @@ public class BulletSystem implements IProcess, IRender
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {
             bullet.setDespawnTimer(bullet.getDespawnTimer() - gameData.getDeltaTime()); 
             bullet.setPosition(bullet.getPosition().add(bullet.getVelocity().mul(gameData.getDeltaTime())));
-        } 
-    }
-    
-    ActionEventHandler disposeEventHandler = (event, world) -> {
-        List<Bullet> listOfBulletsToRemove = new ArrayList<>();
-        
-        for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {
+            
             if(0 > bullet.getDespawnTimer()) {  
                 listOfBulletsToRemove.add(bullet);
             }
-        }
-        
+        } 
+    }
+    
+    ActionEventHandler disposalHandler = (event, world) -> {
         world.removeEntities(listOfBulletsToRemove);
     };
     

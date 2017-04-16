@@ -6,6 +6,7 @@
 package dk.gruppe7.mob;
 
 import collision.CollisionEvent;
+import dispose.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
@@ -43,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MobSystem implements IProcess, IRender {
 
     UUID mobID;
+    ArrayList<Mob> listOfMobsToBeRemoved = new ArrayList<>();
 
     Image textureSkeletonRanged;
     Image textureSkeletonMelee;
@@ -105,6 +107,7 @@ public class MobSystem implements IProcess, IRender {
         }
 
         Dispatcher.subscribe(CollisionEvent.class, bulletCollisionHandler);
+        Dispatcher.subscribe(DisposeEvent.class, disposalHandler);
     }
 
     @Override
@@ -114,11 +117,12 @@ public class MobSystem implements IProcess, IRender {
         mobID = null;
 
         Dispatcher.unsubscribe(CollisionEvent.class, bulletCollisionHandler);
+        Dispatcher.unsubscribe(DisposeEvent.class, disposalHandler);
     }
 
     @Override
     public void process(GameData gameData, World world) {
-        ArrayList<Mob> listOfMobsToBeRemoved = new ArrayList<>();
+        listOfMobsToBeRemoved.clear();
 
         for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
             if(mob.getVelocity().len() > .1f){
@@ -140,9 +144,6 @@ public class MobSystem implements IProcess, IRender {
                 MobData.getEvents(gameData.getTickCount()).add(new MobEvent(mob, MobEventType.DEATH, gameData.getTickCount()));
             }
         }
-        
-        // The below line should be moved to a dispose event handler.
-        world.removeEntities(listOfMobsToBeRemoved);
     }
 
     ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
@@ -157,6 +158,10 @@ public class MobSystem implements IProcess, IRender {
                 }
             }
         }
+    };
+    
+    ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
+        world.removeEntities(listOfMobsToBeRemoved);
     };
 
     private Entity createMob(float x, float y, MobType type) {
