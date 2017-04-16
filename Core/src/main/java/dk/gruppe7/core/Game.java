@@ -2,11 +2,13 @@ package dk.gruppe7.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,6 +36,7 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import dk.gruppe7.common.resources.ResourceManager;
+import java.io.File;
 import java.util.Iterator;
 
 /**
@@ -53,7 +56,8 @@ public class Game implements ApplicationListener{
     private List<IProcess> processors = new CopyOnWriteArrayList<>();
     private List<IRender> renderers = new CopyOnWriteArrayList<>();
     private ResourceManager resourceManager = new ResourceManager();
-    private InputStream fallbackInputStream = getClass().getResourceAsStream("default.png");
+    private InputStream fallbackTextureInputStream; 
+    private File fallbackFontFile;
     
     private Lookup.Result<IProcess> processorsResult;
     private Lookup.Result<IRender> renderersResult;
@@ -64,7 +68,8 @@ public class Game implements ApplicationListener{
     
     @Override
     public void create() {
-        
+        fallbackTextureInputStream = getClass().getResourceAsStream("texture.png");
+        fallbackFontFile = new File(getClass().getResource("font.fnt").getFile());
         
         gameData.setScreenWidth(Gdx.graphics.getWidth());
         gameData.setScreenHeight(Gdx.graphics.getHeight());
@@ -95,9 +100,7 @@ public class Game implements ApplicationListener{
         for(IRender renderer : lookup.lookupAll(IRender.class)){
             renderers.add(renderer);
         }
-        
-        
-        
+
         inputProcessor.start();
     }
 
@@ -145,7 +148,7 @@ public class Game implements ApplicationListener{
                     batch.begin();
                     
                     //Texture tex = inputStreamToTexture(cmd.getInputStream());
-                    Texture tex = (cmd.getInputStream() != null) ? inputStreamToTexture(cmd.getInputStream()) : inputStreamToTexture(fallbackInputStream);
+                    Texture tex = (cmd.getInputStream() != null) ? inputStreamToTexture(cmd.getInputStream()) : inputStreamToTexture(fallbackTextureInputStream);
                     
                     float repeatX = 1;
                     float repeatY = 1;
@@ -177,6 +180,15 @@ public class Game implements ApplicationListener{
                             /* flipX     */ false, 
                             /* flipY     */ false
                     );
+                    batch.end();
+                    break;
+                    
+                case STRING: 
+                    batch.begin();
+
+                    BitmapFont font = fileToBitmapFont(fallbackFontFile);
+                    font.draw(batch, cmd.getString(), cmd.getPosition().x, cmd.getPosition().y);
+
                     batch.end();
                     break;
             }
@@ -242,5 +254,24 @@ public class Game implements ApplicationListener{
         
         cachedTextures.put(inputStream.hashCode(), texture);
         return texture;
+    }
+    
+    private HashMap<Integer, BitmapFont> cachedFonts = new HashMap<>();
+    private BitmapFont fileToBitmapFont(File file) {
+        if(cachedFonts.containsKey(file.hashCode()))
+            return cachedFonts.get(file.hashCode());
+        
+        String fontName = file.getName();
+        fontName = fontName.substring(0, fontName.lastIndexOf("."));
+        
+        BitmapFont font = new BitmapFont(
+                new FileHandle(file), 
+                new FileHandle(new File(getClass().getResource(fontName + ".png").getFile())), 
+                false
+        );
+        
+        cachedFonts.put(file.hashCode(), font);
+        
+        return font;
     }
 }
