@@ -138,8 +138,8 @@ public class MobSystem implements IProcess, IRender {
                 }
 
                 if (m.getWanderTimer() <= 0) {
-                    //m.setRotation((GetRandomNumberBetween(0, 100)));
-                    m.setVelocity(new Vector2(getRandomNumberBetween(-10, 100), getRandomNumberBetween(-10, 100)));
+                    //m.setVelocity(new Vector2(getRandomNumberBetween(-10, 100), getRandomNumberBetween(-10, 100)));
+                    moveDirection(gameData, world, m);
                     m.setWanderTimer(getRandomNumberBetween(1, 4));
                 } else {
                     m.setWanderTimer(m.getWanderTimer() - gameData.getDeltaTime());
@@ -153,21 +153,15 @@ public class MobSystem implements IProcess, IRender {
                 }
 
                 // Get Mobs to shoot.
-                // Having problems with direction. Mobs shoots themselfes.
-//                int shootTimer = getRandomNumberBetween(0, 250);
-//                if (shootTimer == 60 && !aimDirection.equals(Vector2.zero)) {
-//                    System.out.println("Shooting");
-//                    m.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-//                    weaponEvents.add(new WeaponEvent(m.getId()));
-//                } else if (m.getVelocity().len() > 50f) {
-//                    m.setRotation((float) Math.toDegrees(Math.atan2(m.getVelocity().y, m.getVelocity().x)));
-//                }
-
-                shootDirection(gameData, world, m);
+                int shootTimer = getRandomNumberBetween(0, 250);
+                if (shootTimer == 60) {
+                    System.out.println("Shooting");
+                    shootDirection(gameData, world, m);
+                }
                 checkCollision(world, gameData, m);
-                
+
             }
-            
+
         }
 
         for (Entity e : remove) {
@@ -202,9 +196,6 @@ public class MobSystem implements IProcess, IRender {
                 }
                 
                 targetEntity.setVelocity(targetEntity.getVelocity().normalize());
-                // Rotate and move away
-                targetEntity.setRotation(targetEntity.getRotation() / 2);
-                // targetEntity.setVelocity(new Vector2(getRandomNumberBetween(-10, 100), getRandomNumberBetween(-10, 100)));
                 iterator.remove();
             }
             else if(Obstacle.class.isInstance(world.getEntityByID(tempi.getTargetID()))) {
@@ -288,30 +279,44 @@ public class MobSystem implements IProcess, IRender {
         for (Entity entity : entities) {
             if (entity instanceof Player) {
                 Player playerEntity = (Player) entity;
-                Point playerPosition = new Point((int) playerEntity.getPosition().x, (int) playerEntity.getPosition().y);
-                Point mobPosition = new Point((int) mob.getPosition().x, (int) mob.getPosition().y);
+                Vector2 playerPosition = new Vector2(playerEntity.getPosition().x, playerEntity.getPosition().y);
+                Vector2 mobPosition = new Vector2(mob.getPosition().x, mob.getPosition().y);
                 float angleBetween = getAngle(mobPosition, playerPosition);
-                System.out.println(angleBetween);
+                // System.out.println(angleBetween);
 
-                int shootTimer = getRandomNumberBetween(0, 250);
-                if (shootTimer == 60) {
-                    System.out.println("Shooting");
-                    mob.setRotation(angleBetween);
-                    weaponEvents.add(new WeaponEvent(mob.getId()));
-
-                }
+                mob.setRotation(angleBetween);
+                weaponEvents.add(new WeaponEvent(mob.getId()));
 
             }
         }
     }
     
+    private void moveDirection(GameData gameData, World world, Mob mob) {
+        Collection<Entity> entities = world.getEntities();
+        for (Entity entity : entities) {
+            if (entity instanceof Player) {
+                Player playerEntity = (Player) entity;
+                float playerPositionX = playerEntity.getPosition().x;
+                float playerPositionY = playerEntity.getPosition().y;
+                
+                float mobPositionX = mob.getPosition().x;
+                float mobPositionY = mob.getPosition().y;
+
+                Vector2 towards = new Vector2((playerPositionX - mobPositionX), (playerPositionY - mobPositionY));
+                towards.normalize().mul(getRandomNumberBetween(-10, 5));
+                
+                mob.setVelocity(towards);
+            }
+        }
+    }
+    
     // Get angle between two points.
-    private float getAngle(Point centerPt, Point targetPt) {
+    private float getAngle(Vector2 centerPt, Vector2 targetPt) {
         
         // Calculate the angle theta from the deltaY and deltaX values
         float theta = (float) Math.atan2(targetPt.y - centerPt.y, targetPt.x - centerPt.x);
         // rotate the theta angle clockwise by 90 degrees
-        theta += Math.PI/2.0;
+        // theta += Math.PI/2.0;
         // Convert from radians to degrees
         float angle = (float) Math.toDegrees(theta);
         // Convert to positive range [0-360)
