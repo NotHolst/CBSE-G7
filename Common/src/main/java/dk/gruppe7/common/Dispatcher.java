@@ -152,7 +152,7 @@ public class Dispatcher {
                 }
             }
             
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | ClassCastException e) {
             System.err.printf("%s was thrown while reflectively resolving for handlers declared by subscriber! -> %s \n", e.getClass().getSimpleName(), subscriber.getClass().getSimpleName());
         }
         
