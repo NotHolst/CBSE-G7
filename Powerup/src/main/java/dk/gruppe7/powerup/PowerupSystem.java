@@ -97,7 +97,7 @@ public class PowerupSystem implements IProcess, IRender {
             {
                 setPosition(new Vector2(200.f, 50.f));
                 setCollidable(true);
-                setBounds(new Rectangle(64, 64));
+                setBounds(new Rectangle(21, 36));
                 setNewMaxVelocity(1000);
             }
         };

@@ -86,7 +86,7 @@ public class BulletSystem implements IProcess, IRender
     public void render(Graphics g, World world) {
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {
             if (bullet.getDamageData().getDamage() != 0) //Need to be replaced, temporary fix to make it look like bullets dissapear
-                 g.drawSprite(bullet.getPosition(), new Vector2(17,3), textureCrossbowBolt.getInputStream(), bullet.getRotation());
+                 g.drawSprite(bullet.getPosition(), new Vector2(17,3), textureCrossbowBolt.getInputStream(), bullet.getRotation(), 5);
         }
     }
 }

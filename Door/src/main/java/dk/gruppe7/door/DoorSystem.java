@@ -189,7 +189,8 @@ public class DoorSystem implements IProcess, IRender
                     /* Position    */ currentDoor.getPosition(), 
                     /* Size        */ size, 
                     /* InputStream */ texture, 
-                    /* Rotation    */ currentDoor.getRotation()
+                    /* Rotation    */ currentDoor.getRotation(),
+                    /* LayerHeight */ 3
             );
         }
 

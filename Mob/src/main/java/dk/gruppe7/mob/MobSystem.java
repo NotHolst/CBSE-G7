@@ -245,15 +245,18 @@ public class MobSystem implements IProcess, IRender {
                     /* Position    */mob.getPosition(),
                     /* Size        */ new Vector2(mob.getBounds().getWidth(), mob.getBounds().getHeight()),
                     /* InputStream */ texture.getInputStream(),
-                    /* Rotation    */ mob.getRotation()
+                    /* Rotation    */ mob.getRotation(),
+                    /* LayerHeight */ 2
             );
             g.drawSprite(
                     /* Position    */mob.getPosition(),
                     /* Size        */ new Vector2(mob.getBounds().getWidth(), mob.getBounds().getHeight()),
                     /* InputStream */ mob.getAnimator().getTexture(),
-                    /* Rotation    */ (float) Math.toDegrees(Math.atan2(mob.getVelocity().y, mob.getVelocity().x))
+                    /* Rotation    */ (float) Math.toDegrees(Math.atan2(mob.getVelocity().y, mob.getVelocity().x)),
+                    /* LayerHeight */ 1
             );
-            g.drawSprite(mob.getPosition().add(0, -2), new Vector2(64 * ((Mob) mob).getHealthData().getHealth() / ((Mob) mob).getHealthData().getStartHealth(), 5), health.getInputStream(), 0);
+
+            g.drawSprite(mob.getPosition().add(0, -2), new Vector2(64 * mob.getHealthData().getHealth() / mob.getHealthData().getStartHealth(), 5), health.getInputStream(), 0, 3);
         }
     }
 }
