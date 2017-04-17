@@ -28,11 +28,13 @@ import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
+import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.shootingcommon.Bullet;
-import dk.gruppe7.weaponcommon.Weapon;
-import java.io.InputStream;
+import dk.gruppe7.weaponcommon.WeaponData;
+import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.UUID;
@@ -53,6 +55,10 @@ public class MobSystem implements IProcess, IRender {
     Image health;
     Image[] framesSkeleton;
     Image[] framesKnight;
+    boolean up, down, left, right;
+    Vector2 aimDirection = Vector2.zero;
+    List<WeaponEvent> weaponEvents = WeaponData.getEvents();
+    float dTimer, dTime;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -98,10 +104,10 @@ public class MobSystem implements IProcess, IRender {
         Entity mob;
         // Add mobs to the world
 
-        for (int i = 0; i < GetRandomNumberBetween(2, 7); i++) {
+        for (int i = 0; i < getRandomNumberBetween(2, 7); i++) {
             mob = createMob(
-                    GetRandomNumberBetween(0, gameData.getScreenWidth()),
-                    GetRandomNumberBetween(0, gameData.getScreenHeight()),
+                    getRandomNumberBetween(0, gameData.getScreenWidth()),
+                    getRandomNumberBetween(0, gameData.getScreenHeight()),
                     pickRandomMobType(MobType.class));
             world.addEntity(mob);
             MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
@@ -127,14 +133,15 @@ public class MobSystem implements IProcess, IRender {
             if (entity instanceof Mob) {
                 Mob m = (Mob) entity;
 
-                if(m.getVelocity().len() > .1f){
-                m.getAnimator().setInterval(15*1.0f/m.getVelocity().len());
-                m.getAnimator().update(gameData);
-            }
+                if (m.getVelocity().len() > .1f) {
+                    m.getAnimator().setInterval(15 * 1.0f / m.getVelocity().len());
+                    m.getAnimator().update(gameData);
+                }
 
                 if (m.getWanderTimer() <= 0) {
-                    m.setVelocity(new Vector2(GetRandomNumberBetween(-10, 10), GetRandomNumberBetween(-10, 10)));
-                    m.setWanderTimer(GetRandomNumberBetween(1, 4));
+                    //m.setRotation((GetRandomNumberBetween(0, 100)));
+                    m.setVelocity(new Vector2(getRandomNumberBetween(-10, 100), getRandomNumberBetween(-10, 100)));
+                    m.setWanderTimer(getRandomNumberBetween(1, 4));
                 } else {
                     m.setWanderTimer(m.getWanderTimer() - gameData.getDeltaTime());
                 }
@@ -146,8 +153,22 @@ public class MobSystem implements IProcess, IRender {
                     MobData.getEvents(gameData.getTickCount()).add(new MobEvent(m, MobEventType.DEATH, gameData.getTickCount()));
                 }
 
+                // Get Mobs to shoot.
+                // Having problems with direction. Mobs shoots themselfes.
+                pickDirection(gameData);
+                int shootTimer = getRandomNumberBetween(0, 250);
+                if (shootTimer == 60 && !aimDirection.equals(Vector2.zero)) {
+                    System.out.println("Shooting");
+                    m.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
+                    weaponEvents.add(new WeaponEvent(m.getId()));
+                } else if (m.getVelocity().len() > 50f) {
+                    m.setRotation((float) Math.toDegrees(Math.atan2(m.getVelocity().y, m.getVelocity().x)));
+                }
+
                 checkCollision(world, gameData, m);
+                
             }
+            
         }
 
         for (Entity e : remove) {
@@ -159,6 +180,37 @@ public class MobSystem implements IProcess, IRender {
     private void checkCollision(World world, GameData gameData, Mob mob) {
         for (ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();) {
             CollisionEvent tempi = iterator.next();
+            
+            if(Obstacle.class.isInstance(world.getEntityByID(tempi.getOtherID())) && tempi.getTargetID().equals(mob.getId())) {
+                Entity targetEntity = world.getEntityByID(tempi.getTargetID());
+                Entity otherEntity = world.getEntityByID(tempi.getOtherID());
+                
+                float sumY = (targetEntity.getBounds().getWidth() + otherEntity.getBounds().getWidth()) * (targetEntity.getPositionCentered().y - otherEntity.getPositionCentered().y);
+                float sumX = (targetEntity.getBounds().getHeight() + otherEntity.getBounds().getHeight()) * (targetEntity.getPositionCentered().x - otherEntity.getPositionCentered().x);
+                
+                if(sumY > sumX) {
+                        if(sumY > -sumX) {
+                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y + otherEntity.getBounds().getHeight() + 0)); 
+                        } else {
+                            targetEntity.setPosition(new Vector2((otherEntity.getPosition().x - targetEntity.getBounds().getWidth() - 0), targetEntity.getPosition().y));
+                        }
+                    } else {
+                        if(sumY > -sumX) {
+                            targetEntity.setPosition(new Vector2(otherEntity.getPosition().x + otherEntity.getBounds().getWidth() + 0, targetEntity.getPosition().y));
+                        } else {
+                            targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y - targetEntity.getBounds().getHeight() - 0));
+                    }
+                }
+                
+                targetEntity.setVelocity(targetEntity.getVelocity().normalize());
+                // Rotate and move away
+                targetEntity.setRotation(targetEntity.getRotation() / 2);
+                // targetEntity.setVelocity(new Vector2(getRandomNumberBetween(-10, 100), getRandomNumberBetween(-10, 100)));
+                iterator.remove();
+            }
+            else if(Obstacle.class.isInstance(world.getEntityByID(tempi.getTargetID()))) {
+                iterator.remove();
+            }
 
             if (tempi.getOtherID().equals(mob.getId())) {
                 Entity hitBy = world.getEntityByID(tempi.getTargetID());
@@ -216,7 +268,7 @@ public class MobSystem implements IProcess, IRender {
         return mob;
     }
 
-    private int GetRandomNumberBetween(int start, int end) {
+    private int getRandomNumberBetween(int start, int end) {
         Random r = new Random();
         return start + r.nextInt(end - start + 1);
     }
@@ -230,6 +282,70 @@ public class MobSystem implements IProcess, IRender {
         Random r = new Random();
         int pick = r.nextInt(mobType.getEnumConstants().length);
         return mobType.getEnumConstants()[pick];
+    }
+    
+    private void pickDirection(GameData g) {
+        
+        dTime = 3;
+        Random r = new Random();
+        
+        if (dTimer > dTime || !up && !down && !left && !right) {
+            up = false;
+            down = false;
+            left = false;
+            right = false;
+            dTimer = 0;
+            
+            int direction = r.nextInt(3);
+
+            switch (direction) {
+                case 0:
+                    up = true;
+                    System.out.println("Direction UP");
+                case 1:
+                    down = true;
+                    System.out.println("Direction DOWN");
+                case 2:
+                    left = true;
+                    System.out.println("Direction LEFT");
+                case 3:
+                    right = true;
+                    System.out.println("Direction RIGHT");
+            }
+        } else {
+            
+            dTimer += g.getDeltaTime();
+
+            if (up == true) {
+                aimDirection = Vector2.up;
+            } else if (aimDirection.equals(Vector2.up)) {
+                aimDirection = Vector2.zero;
+            }
+
+            if (down == true) {
+                aimDirection = Vector2.down;
+            } else if (aimDirection.equals(Vector2.down)) {
+                aimDirection = Vector2.zero;
+            }
+
+            if (left == true) {
+                aimDirection = Vector2.left;
+            } else if (aimDirection.equals(Vector2.left)) {
+                aimDirection = Vector2.zero;
+            }
+
+            if (right == true) {
+                aimDirection = Vector2.right;
+            } else if (aimDirection.equals(Vector2.right)) {
+                aimDirection = Vector2.zero;
+            }
+        }
+
+      
+    }
+    
+    private void checkNewRoom() {
+        
     }
 
     @Override
