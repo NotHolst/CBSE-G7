@@ -100,7 +100,7 @@ public class PlayerSystem implements IProcess, IRender {
             }
         }
     };
-
+    
     @Override
     public void start(GameData gameData, World world) {
 
@@ -145,17 +145,15 @@ public class PlayerSystem implements IProcess, IRender {
         input.registerKeyEventHandler(VirtualKeyCode.VC_DOWN, arrowDownKeyEventHandler);
         input.registerKeyEventHandler(VirtualKeyCode.VC_RIGHT, arrowRightKeyEventHandler);
         
-        Dispatcher.subscribe(CollisionEvent.class, bulletCollisionHandler);
-        Dispatcher.subscribe(CollisionEvent.class, obstacleCollisionHandler);
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
+        Dispatcher.unsubscribe(this);
+        
         input.unregisterKeyEventHandler(wKeyEventHandler, aKeyEventHandler, sKeyEventHandler, dKeyEventHandler);
         input.unregisterKeyEventHandler(arrowUpKeyEventHandler, arrowLeftKeyEventHandler, arrowDownKeyEventHandler, arrowRightKeyEventHandler);
-        
-        Dispatcher.unsubscribe(CollisionEvent.class, bulletCollisionHandler);
-        Dispatcher.unsubscribe(CollisionEvent.class, obstacleCollisionHandler);
         
         world.removeEntity(world.getEntityByID(playerID));
         playerID = null;

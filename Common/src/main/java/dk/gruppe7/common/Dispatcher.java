@@ -1,6 +1,9 @@
 package dk.gruppe7.common;
 
 import dk.gruppe7.common.data.ActionEventHandler;
+import dk.gruppe7.common.data.Pair;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,8 +31,13 @@ public class Dispatcher {
         } else {
             mapOfEventHandlers.get(mapOfEventLinks.get(hashcode)).forEach(handler -> handler.call(event, world));
         }
-        
-        // System.out.println("STATUS : " + mapOfEventHandlers.size() + " | " + mapOfEventLinks.size());
+    }
+    
+    /**
+     * Discovers and registers all handlers declared in object.
+     */
+    public static void subscribe(Object subscriber) {
+        getAllHandlers(subscriber).forEach(pair -> subscribe(pair.getFirst(), pair.getSecond()));
     }
     
     /**
@@ -40,6 +48,13 @@ public class Dispatcher {
         addEventTypeIfUnknown(klass);
         
         mapOfEventHandlers.get(klass.hashCode()).add(handler);
+    }
+    
+    /**
+     * Discovers and unregisters all handlers declared in object.
+     */
+    public static void unsubscribe(Object subscriber) {
+        getAllHandlers(subscriber).forEach(pair -> unsubscribe(pair.getFirst(), pair.getSecond()));
     }
     
     /**
@@ -112,5 +127,35 @@ public class Dispatcher {
         }
         
         mapOfEventHandlers.putIfAbsent(hashcodeSimple, new ArrayList<>());
+    }
+    
+    /**
+     * Gets all handlers declared in object passed as the argument through reflection.
+     */
+    private static ArrayList<Pair<Class, ActionEventHandler>> getAllHandlers(Object subscriber) {
+        ArrayList<Pair<Class, ActionEventHandler>> listOfHandlers = new ArrayList<>();
+        
+        try {
+            for(Field field : subscriber.getClass().getDeclaredFields()) {
+                if(field.getType() == ActionEventHandler.class) {
+                    ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+                    Class klass = ((Class)parameterizedType.getActualTypeArguments()[0]);
+                    
+                    Field reflectedField = subscriber.getClass().getDeclaredField(field.getName());
+                    reflectedField.setAccessible(true);
+                    
+                    ActionEventHandler event = (ActionEventHandler) reflectedField.get(subscriber);
+                    
+                    reflectedField.setAccessible(false);
+                    
+                    listOfHandlers.add(new Pair(klass, event));
+                }
+            }
+            
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            System.err.printf("%s was thrown while reflectively resolving for handlers declared by subscriber! -> %s \n", e.getClass().getSimpleName(), subscriber.getClass().getSimpleName());
+        }
+        
+        return listOfHandlers;
     }
 }

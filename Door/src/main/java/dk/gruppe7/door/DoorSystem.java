@@ -54,13 +54,13 @@ public class DoorSystem implements IProcess, IRender
         doorPosition.put(Direction.NORTH, new Vector2(gameData.getScreenWidth()/2, gameData.getScreenHeight()-38));
         doorPosition.put(Direction.EAST, new Vector2(gameData.getScreenWidth()-38, gameData.getScreenHeight()/2));
         
-        Dispatcher.subscribe(CollisionEvent.class, collisionHandler);
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world)
     {
-        Dispatcher.unsubscribe(CollisionEvent.class, collisionHandler);
+        Dispatcher.unsubscribe(this);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class BulletSystem implements IProcess, IRender
     {
         textureCrossbowBolt = gameData.getResourceManager().addImage("bolt", getClass().getResourceAsStream("CrossbowBolt.png"));
 
-        Dispatcher.subscribe(DisposeEvent.class, disposalHandler);
+        Dispatcher.subscribe(this);
     }
 
     @Override
@@ -52,14 +52,12 @@ public class BulletSystem implements IProcess, IRender
     {
         world.removeEntities(world.<Bullet>getEntitiesByClass(Bullet.class));
         
-        Dispatcher.unsubscribe(DisposeEvent.class, disposalHandler);
+        Dispatcher.unsubscribe(this);
     }
 
     @Override
     public void process(GameData gameData, World world)
     {
-        listOfBulletsToRemove.clear();
-        
         while(events.size() > 0) {
             makeBullet(events.get(0).getBlueprint(), world);
             events.remove(0);
@@ -75,8 +73,9 @@ public class BulletSystem implements IProcess, IRender
         } 
     }
     
-    ActionEventHandler disposalHandler = (event, world) -> {
+    ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
         world.removeEntities(listOfBulletsToRemove);
+        listOfBulletsToRemove.clear();
     };
     
     private void makeBullet(Bullet bullet, World world) {

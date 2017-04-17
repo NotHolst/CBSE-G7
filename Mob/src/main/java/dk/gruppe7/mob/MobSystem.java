@@ -106,24 +106,20 @@ public class MobSystem implements IProcess, IRender {
             MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
         }
 
-        Dispatcher.subscribe(CollisionEvent.class, bulletCollisionHandler);
-        Dispatcher.subscribe(DisposeEvent.class, disposalHandler);
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
+        Dispatcher.unsubscribe(this);
+        
         // Remove mobs from world.
         world.removeEntity(world.getEntityByID(mobID));
         mobID = null;
-
-        Dispatcher.unsubscribe(CollisionEvent.class, bulletCollisionHandler);
-        Dispatcher.unsubscribe(DisposeEvent.class, disposalHandler);
     }
 
     @Override
     public void process(GameData gameData, World world) {
-        listOfMobsToBeRemoved.clear();
-
         for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
             if(mob.getVelocity().len() > .1f){
                 mob.getAnimator().setInterval(15*1.0f/mob.getVelocity().len());
@@ -162,6 +158,7 @@ public class MobSystem implements IProcess, IRender {
     
     ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
         world.removeEntities(listOfMobsToBeRemoved);
+        listOfMobsToBeRemoved.clear();
     };
 
     private Entity createMob(float x, float y, MobType type) {

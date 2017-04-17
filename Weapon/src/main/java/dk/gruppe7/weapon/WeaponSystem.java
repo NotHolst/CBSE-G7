@@ -64,12 +64,12 @@ public class WeaponSystem implements IProcess, IRender {
         
         crossbowSound = gameData.getResourceManager().addAudio("crossbowSound", getClass().getResourceAsStream("bow.wav"));
 
-        Dispatcher.subscribe(CollisionEvent.class, pickupCollisionHandler);
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
-        Dispatcher.unsubscribe(CollisionEvent.class, pickupCollisionHandler);
+        Dispatcher.unsubscribe(this);
     }
 
     @Override
