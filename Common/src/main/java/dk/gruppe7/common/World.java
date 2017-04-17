@@ -30,6 +30,10 @@ public class World {
         entities.add(e);
     }
     
+    public void addEntities(Collection<? extends Entity> col) {
+        entities.addAll(col);
+    }
+    
     public void removeEntity(Entity e)
     {
         entities.remove(e);
