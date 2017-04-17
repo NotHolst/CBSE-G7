@@ -12,6 +12,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
@@ -29,6 +30,7 @@ import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
 import dk.gruppe7.obstaclecommon.Obstacle;
+import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.WeaponData;
 import dk.gruppe7.weaponcommon.WeaponEvent;
@@ -55,10 +57,7 @@ public class MobSystem implements IProcess, IRender {
     Image health;
     Image[] framesSkeleton;
     Image[] framesKnight;
-    boolean up, down, left, right;
-    Vector2 aimDirection = Vector2.zero;
     List<WeaponEvent> weaponEvents = WeaponData.getEvents();
-    float dTimer, dTime;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -155,16 +154,16 @@ public class MobSystem implements IProcess, IRender {
 
                 // Get Mobs to shoot.
                 // Having problems with direction. Mobs shoots themselfes.
-                pickDirection(gameData);
-                int shootTimer = getRandomNumberBetween(0, 250);
-                if (shootTimer == 60 && !aimDirection.equals(Vector2.zero)) {
-                    System.out.println("Shooting");
-                    m.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-                    weaponEvents.add(new WeaponEvent(m.getId()));
-                } else if (m.getVelocity().len() > 50f) {
-                    m.setRotation((float) Math.toDegrees(Math.atan2(m.getVelocity().y, m.getVelocity().x)));
-                }
+//                int shootTimer = getRandomNumberBetween(0, 250);
+//                if (shootTimer == 60 && !aimDirection.equals(Vector2.zero)) {
+//                    System.out.println("Shooting");
+//                    m.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
+//                    weaponEvents.add(new WeaponEvent(m.getId()));
+//                } else if (m.getVelocity().len() > 50f) {
+//                    m.setRotation((float) Math.toDegrees(Math.atan2(m.getVelocity().y, m.getVelocity().x)));
+//                }
 
+                shootDirection(gameData, world, m);
                 checkCollision(world, gameData, m);
                 
             }
@@ -212,16 +211,16 @@ public class MobSystem implements IProcess, IRender {
                 iterator.remove();
             }
 
-            if (tempi.getOtherID().equals(mob.getId())) {
-                Entity hitBy = world.getEntityByID(tempi.getTargetID());
-                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
-                if (b != null) {
-                    mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
-                    //Temporary: to avoid bullets hitting multiple times
-                    b.getDamageData().setDamage(0);
-                }
-
-            }
+//            if (tempi.getOtherID().equals(mob.getId())) {
+//                Entity hitBy = world.getEntityByID(tempi.getTargetID());
+//                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
+//                if (b != null) {
+//                    mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
+//                    //Temporary: to avoid bullets hitting multiple times
+//                    b.getDamageData().setDamage(0);
+//                }
+//
+//            }
         }
     }
 
@@ -284,69 +283,46 @@ public class MobSystem implements IProcess, IRender {
         return mobType.getEnumConstants()[pick];
     }
     
-    private void pickDirection(GameData g) {
-        
-        dTime = 3;
-        Random r = new Random();
-        
-        if (dTimer > dTime || !up && !down && !left && !right) {
-            up = false;
-            down = false;
-            left = false;
-            right = false;
-            dTimer = 0;
-            
-            int direction = r.nextInt(3);
+    private void shootDirection(GameData gameData, World world, Mob mob) {
+        Collection<Entity> entities = world.getEntities();
+        for (Entity entity : entities) {
+            if (entity instanceof Player) {
+                Player playerEntity = (Player) entity;
+                Point playerPosition = new Point((int) playerEntity.getPosition().x, (int) playerEntity.getPosition().y);
+                Point mobPosition = new Point((int) mob.getPosition().x, (int) mob.getPosition().y);
+                float angleBetween = getAngle(mobPosition, playerPosition);
+                System.out.println(angleBetween);
 
-            switch (direction) {
-                case 0:
-                    up = true;
-                    System.out.println("Direction UP");
-                case 1:
-                    down = true;
-                    System.out.println("Direction DOWN");
-                case 2:
-                    left = true;
-                    System.out.println("Direction LEFT");
-                case 3:
-                    right = true;
-                    System.out.println("Direction RIGHT");
-            }
-        } else {
-            
-            dTimer += g.getDeltaTime();
+                int shootTimer = getRandomNumberBetween(0, 250);
+                if (shootTimer == 60) {
+                    System.out.println("Shooting");
+                    mob.setRotation(angleBetween);
+                    weaponEvents.add(new WeaponEvent(mob.getId()));
 
-            if (up == true) {
-                aimDirection = Vector2.up;
-            } else if (aimDirection.equals(Vector2.up)) {
-                aimDirection = Vector2.zero;
-            }
+                }
 
-            if (down == true) {
-                aimDirection = Vector2.down;
-            } else if (aimDirection.equals(Vector2.down)) {
-                aimDirection = Vector2.zero;
-            }
-
-            if (left == true) {
-                aimDirection = Vector2.left;
-            } else if (aimDirection.equals(Vector2.left)) {
-                aimDirection = Vector2.zero;
-            }
-
-            if (right == true) {
-                aimDirection = Vector2.right;
-            } else if (aimDirection.equals(Vector2.right)) {
-                aimDirection = Vector2.zero;
             }
         }
-
-      
     }
     
-    private void checkNewRoom() {
+    // Get angle between two points.
+    private float getAngle(Point centerPt, Point targetPt) {
+        
+        // Calculate the angle theta from the deltaY and deltaX values
+        float theta = (float) Math.atan2(targetPt.y - centerPt.y, targetPt.x - centerPt.x);
+        // rotate the theta angle clockwise by 90 degrees
+        theta += Math.PI/2.0;
+        // Convert from radians to degrees
+        float angle = (float) Math.toDegrees(theta);
+        // Convert to positive range [0-360)
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        return angle;
         
     }
+    
 
     @Override
     public void render(Graphics g, World world) {
