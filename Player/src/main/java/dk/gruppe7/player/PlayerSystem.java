@@ -164,6 +164,11 @@ public class PlayerSystem implements IProcess, IRender {
         Player playerEntity = (Player) world.getEntityByID(playerID);
 
         if (playerEntity != null && playerEntity.getHealthData().getHealth() > 0) {
+            playerEntity.setPosition(playerEntity.getPosition()
+                .add(playerEntity.getVelocity()
+                        .mul(gameData.getDeltaTime())
+                ));
+                    
             playerEntity.setVelocity(playerEntity.getVelocity()
                     .add(
                             playerEntity.getAcceleration() * (booleanToInt(east) - booleanToInt(west)),
@@ -174,10 +179,6 @@ public class PlayerSystem implements IProcess, IRender {
                     .mul(.9f)
             );
 
-            playerEntity.setPosition(playerEntity.getPosition()
-                    .add(playerEntity.getVelocity()
-                            .mul(gameData.getDeltaTime())
-                    ));
 
             if (!aimDirection.equals(Vector2.zero)) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
@@ -243,7 +244,7 @@ public class PlayerSystem implements IProcess, IRender {
                 }
             }
                             
-            targetEntity.setVelocity(targetEntity.getVelocity().normalize());
+            targetEntity.setVelocity(Vector2.zero);
         }
     };
 
