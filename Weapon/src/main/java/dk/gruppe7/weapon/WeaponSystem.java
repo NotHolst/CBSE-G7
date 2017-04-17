@@ -201,7 +201,8 @@ public class WeaponSystem implements IProcess, IRender {
                     /* Position    */e.getPosition(),
                     /* Size        */ new Vector2(e.getBounds().getWidth(), e.getBounds().getHeight()),
                     /* InputStream */ e.getInputStream(),
-                    /* Rotation    */ e.getRotation()
+                    /* Rotation    */ e.getRotation(),
+                    /* LayerHeight */ 4
             );
         }
     }
