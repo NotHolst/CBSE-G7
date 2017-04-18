@@ -69,14 +69,21 @@ public class BulletSystem implements IProcess, IRender
         }
     }
 
+    ArrayList<Entity> removeList = new ArrayList<>();
+    
     @Override
     public void process(GameData gameData, World world)
     {
+        for (Entity entity : removeList)
+            world.removeEntity(entity);
+        
         while(events.size() > 0)
         {
             makeBullet(events.get(0).getBlueprint(), world);
             events.remove(0);
         }
+        
+        
         
         for (ListIterator<Entity> e = world.getEntities().listIterator(); e.hasNext();)
         {
@@ -91,9 +98,21 @@ public class BulletSystem implements IProcess, IRender
                     if(0 > bullet.getDespawnTimer()) {                            
                             e.remove();  
                         }
-                
-            
+                    
+                    for (ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();) {
+                    CollisionEvent tempi = iterator.next();
+
+                    //Bullet collision -- Bullet collides with player the moment it spawns.
+                    if(tempi.getOtherID().equals(bullet.getId()) && !tempi.getTargetID().equals(bullet.getOwner()))
+                    {
+                       removeList.add(entity);
+                    }
+            }
         }
+        
+        
+       
+        
         
     }
     
