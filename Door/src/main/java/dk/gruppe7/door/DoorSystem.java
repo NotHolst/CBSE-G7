@@ -19,6 +19,7 @@ import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
+import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -137,7 +138,11 @@ public class DoorSystem implements IProcess, IRender
         System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
         
-    ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {        
+    ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {  
+        if(world.getEntitiesByClass(Mob.class).size() > 0) {
+            return;
+        }
+        
         for (Door door : currentDoors)
         {
             if(event.getOtherID().equals(door.getId()))
@@ -194,7 +199,5 @@ public class DoorSystem implements IProcess, IRender
                     /* LayerHeight */ 3
             );
         }
-
     }
-    
 }
