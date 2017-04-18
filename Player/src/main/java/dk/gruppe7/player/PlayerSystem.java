@@ -20,7 +20,6 @@ import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
-import dk.gruppe7.weaponcommon.WeaponData;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +42,6 @@ public class PlayerSystem implements IProcess, IRender {
     Image health;
 
     UUID playerID;
-    List<WeaponEvent> weaponEvents = WeaponData.getEvents();
 
     KeyEventHandler<KeyPressedEvent> wKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_W) {
         @Override
@@ -232,7 +230,7 @@ public class PlayerSystem implements IProcess, IRender {
 
             if (!aimDirection.equals(Vector2.zero)) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-                weaponEvents.add(new WeaponEvent(playerEntity.getId()));
+                Dispatcher.post(new WeaponEvent(playerID), world);
             } else if (playerEntity.getVelocity().len() > 50f) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
                 

@@ -5,33 +5,24 @@
  */
 package dk.gruppe7.weaponcommon;
 
+import dk.gruppe7.common.annotations.Event;
 import java.util.UUID;
 
 /**
  *
  * @author haral
  */
+@Event
 public class WeaponEvent {
     private UUID shooter;
-    private long expirationTick;
     
-    @Deprecated
     public WeaponEvent(UUID shooter)
     {
         this.shooter = shooter;
     }
-    
-    public WeaponEvent(UUID shooter, long currentTick) {
-        this.shooter = shooter;
-        this.expirationTick = currentTick + 2;
-    }
-    
     public UUID getShooter()
     {
         return shooter;
     }
-    
-    public long getExpirationTick() {
-        return expirationTick;
-    }
+   
 }
