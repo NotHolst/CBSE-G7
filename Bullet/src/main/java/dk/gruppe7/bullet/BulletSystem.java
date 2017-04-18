@@ -12,6 +12,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
@@ -77,6 +78,15 @@ public class BulletSystem implements IProcess, IRender
         world.removeEntities(listOfBulletsToRemove);
         listOfBulletsToRemove.clear();
     };
+    
+    ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {
+        if(world.isEntityOfClass(event.getOtherID(), Bullet.class)) 
+            if(!world.<Bullet>getEntityByID(event.getOtherID()).getOwner().equals(event.getTargetID()))
+                listOfBulletsToRemove.add(world.getEntityByID(event.getOtherID()));
+    };
+    
+    
+    
     
     private void makeBullet(Bullet bullet, World world) {
         world.addEntity(bullet);        

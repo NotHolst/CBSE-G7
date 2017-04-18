@@ -69,7 +69,11 @@ public class World {
     }
     
     public boolean isEntityOfClass(UUID entityID, Class entityClass) {
-        return entityClass.isAssignableFrom(getEntityByID(entityID).getClass());
+        Entity temp = getEntityByID(entityID);
+        if(temp != null)
+            return entityClass.isAssignableFrom(getEntityByID(entityID).getClass());
+        else
+            return false;
     }
 
     public Room getCurrentRoom() {
