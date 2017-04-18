@@ -5,16 +5,18 @@
  */
 package dk.gruppe7.background;
 
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Audio;
 import dk.gruppe7.common.resources.Image;
-import dk.gruppe7.levelcommon.LevelData;
 import dk.gruppe7.levelcommon.LevelEvent;
+import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import java.util.ListIterator;
 import java.util.Random;
 import org.openide.util.lookup.ServiceProvider;
@@ -55,20 +57,21 @@ public class BackgroundSystem implements IProcess, IRender{
         backgroundSound = gameData.getResourceManager().addAudio("backgroundSound", getClass().getResourceAsStream("background.wav"));
         gameData.getAudioPlayer().play(backgroundSound, .65f);
         
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
+        Dispatcher.unsubscribe(this);
     }
 
     @Override
     public void process(GameData gameData, World world) {
-        for(ListIterator<LevelEvent> i = LevelData.getEvents().listIterator(); i.hasNext();){
-            LevelEvent lvlEvent = i.next();
-            currentSeed = new Random().nextInt();
-            i.remove();
-        }
     }
+    
+    ActionEventHandler<RoomChangedEvent> roomChangedHandler = (RoomChangedEvent event, World world) -> {
+        currentSeed = new Random().nextInt();
+    };
 
     @Override
     public void render(Graphics g, World world) {

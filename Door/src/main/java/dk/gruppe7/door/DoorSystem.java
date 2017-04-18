@@ -18,7 +18,6 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
-import dk.gruppe7.levelcommon.LevelData;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
@@ -81,9 +80,7 @@ public class DoorSystem implements IProcess, IRender
     int w = 25;
     private void RoomChange(Room newRoom, World world)
     {
-        for (Entity currentDoor : currentDoors)
-            world.removeEntity(currentDoor);
-        
+        world.removeEntities(currentDoors);
         
         currentDoors = new ArrayList<>();
         if(newRoom.getNorth() != null)
@@ -134,10 +131,9 @@ public class DoorSystem implements IProcess, IRender
             
         }
         
-        for (Entity currentDoor : currentDoors)
-            world.addEntity(currentDoor);
+        world.addEntities(currentDoors);
         
-        LevelData.getEvents().add(new RoomChangedEvent(newRoom));
+        Dispatcher.post(new RoomChangedEvent(newRoom), world);
         System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
         
