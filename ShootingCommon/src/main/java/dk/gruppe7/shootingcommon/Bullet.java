@@ -7,6 +7,7 @@ package dk.gruppe7.shootingcommon;
 
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.damagecommon.DamageData;
+import java.util.UUID;
 
 /**
  *
@@ -16,8 +17,21 @@ public class Bullet extends Entity {
 
     private ShootingType bulletType;
     private DamageData damage = new DamageData() {{setDamage(1);}};
+    private UUID owner;
     private float despawnTimer = 10;
 
+    public UUID getOwner()
+    {
+        return owner;
+    }
+
+    public void setOwner(UUID owner)
+    {
+        this.owner = owner;
+    }
+
+    
+    
     public DamageData getDamageData()
     {
         return damage;

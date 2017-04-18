@@ -39,7 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
 
 public class DoorSystem implements IProcess, IRender
 {
-    InputStream texture = getClass().getResourceAsStream("door.png");
+    InputStream doorHorizontal = getClass().getResourceAsStream("door.png");
+    InputStream doorVertical = getClass().getResourceAsStream("door_vertical.png");
     
     Room currentRoom = null;
     List<Door> currentDoors = new ArrayList<>();
@@ -104,7 +105,7 @@ public class DoorSystem implements IProcess, IRender
                         setPositionCentered(doorPosition.get(Direction.WEST));
                         
                         
-                        //setRotation(90);
+                        setRotation(180);
                         setDirection(Direction.WEST);
             }});
         }
@@ -180,15 +181,19 @@ public class DoorSystem implements IProcess, IRender
         Vector2 size;
         for (Door currentDoor : currentDoors)
         {
-            //if(currentDoor.getDirection() == Direction.EAST || currentDoor.getDirection() == Direction.WEST)
-            //    size = new Vector2(currentDoor.getBounds().getHeight(), currentDoor.getBounds().getWidth());
-            //else
-                size = new Vector2(currentDoor.getBounds().getWidth(), currentDoor.getBounds().getHeight());
             
-            g.drawSprite(
-                    /* Position    */ currentDoor.getPosition(), 
+            InputStream temp;
+            
+            if(currentDoor.getDirection() == Direction.EAST || currentDoor.getDirection() == Direction.WEST)
+                temp = doorVertical;
+            else
+                temp = doorHorizontal;
+            
+            size = new Vector2(currentDoor.getBounds().getWidth(), currentDoor.getBounds().getHeight());
+            
+            g.drawSprite(/* Position    */ currentDoor.getPosition(), 
                     /* Size        */ size, 
-                    /* InputStream */ texture, 
+                    /* InputStream */ temp, 
                     /* Rotation    */ currentDoor.getRotation(),
                     /* LayerHeight */ 3
             );
