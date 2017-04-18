@@ -44,27 +44,32 @@ public class World {
         entities.removeAll(col);
     }
     
-    public Entity getEntityByID(UUID entityID){
+    public <T extends Entity> T getEntityByID(UUID entityID){
         for(Entity e : entities)
-            if(e.getId().equals(entityID)) return e;
+            if(e.getId().equals(entityID)) return (T) e;
         return null;
     }
     
-    public <T extends Entity> ArrayList<T> getEntitiesByClass(Class klass) {
+    
+    public <T extends Entity> ArrayList<T> getEntitiesByClass(Class entityClass) {
         ArrayList<Entity> list = new ArrayList<>();
         
         for(Entity e : entities) {
-            if(e.getClass().equals(klass)) {
+            if(e.getClass().equals(entityClass)) {
                 list.add(e);
                 continue;
             }
             
-            if(e.getClass().getSuperclass().equals(klass)) {
+            if(e.getClass().getSuperclass().equals(entityClass)) {
                 list.add(e);
             }
         }
             
         return (ArrayList<T>)list;
+    }
+    
+    public boolean isEntityOfClass(UUID entityID, Class entityClass) {
+        return entityClass.isAssignableFrom(getEntityByID(entityID).getClass());
     }
 
     public Room getCurrentRoom() {
