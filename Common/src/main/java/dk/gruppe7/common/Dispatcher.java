@@ -1,11 +1,11 @@
 package dk.gruppe7.common;
 
-import dk.gruppe7.eventtypes.KeyReleasedEvent;
-import dk.gruppe7.eventtypes.KeyPressedEvent;
-import dk.gruppe7.annotations.Event;
-import dk.gruppe7.annotations.EventHandler;
-import dk.gruppe7.eventhandlers.ActionEventHandler;
-import dk.gruppe7.eventhandlers.KeyEventHandler;
+import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
+import dk.gruppe7.common.eventtypes.KeyPressedEvent;
+import dk.gruppe7.common.annotations.Event;
+import dk.gruppe7.common.annotations.EventHandler;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
+import dk.gruppe7.common.eventhandlers.KeyEventHandler;
 import dk.gruppe7.common.data.Pair;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;

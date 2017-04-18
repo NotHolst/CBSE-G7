@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import dk.gruppe7.eventtypes.DisposeEvent;
+import dk.gruppe7.common.eventtypes.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dk.gruppe7.eventtypes;
+package dk.gruppe7.common.eventtypes;
 
 import dk.gruppe7.common.data.Entity;
-import dk.gruppe7.annotations.Event;
+import dk.gruppe7.common.annotations.Event;
 import java.util.UUID;
 
 /**

@@ -1,4 +1,4 @@
-package dk.gruppe7.utils;
+package dk.gruppe7.common.utils;
 
 public class ConverterUtil 
 {

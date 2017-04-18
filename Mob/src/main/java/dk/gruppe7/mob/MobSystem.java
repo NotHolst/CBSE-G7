@@ -5,15 +5,15 @@
  */
 package dk.gruppe7.mob;
 
-import dk.gruppe7.eventtypes.CollisionEvent;
-import dk.gruppe7.eventtypes.DisposeEvent;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
+import dk.gruppe7.common.eventtypes.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
-import dk.gruppe7.eventhandlers.ActionEventHandler;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;

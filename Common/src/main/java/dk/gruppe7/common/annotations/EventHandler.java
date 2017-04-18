@@ -1,4 +1,4 @@
-package dk.gruppe7.annotations;
+package dk.gruppe7.common.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

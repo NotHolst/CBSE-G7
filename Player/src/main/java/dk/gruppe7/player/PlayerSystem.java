@@ -1,17 +1,17 @@
 package dk.gruppe7.player;
 
-import dk.gruppe7.eventtypes.CollisionEvent;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
-import dk.gruppe7.eventtypes.KeyPressedEvent;
-import dk.gruppe7.eventtypes.KeyReleasedEvent;
+import dk.gruppe7.common.eventtypes.KeyPressedEvent;
+import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.common.World;
-import dk.gruppe7.eventhandlers.ActionEventHandler;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.VirtualKeyCode;
-import dk.gruppe7.eventhandlers.KeyEventHandler;
+import dk.gruppe7.common.eventhandlers.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import dk.gruppe7.common.resources.Image;
-import dk.gruppe7.utils.ConverterUtil;
+import dk.gruppe7.common.utils.ConverterUtil;
 
 @ServiceProvider(service = IProcess.class)
 

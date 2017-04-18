@@ -5,7 +5,7 @@
  */
 package dk.gruppe7.collision;
 
-import dk.gruppe7.eventtypes.CollisionEvent;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
