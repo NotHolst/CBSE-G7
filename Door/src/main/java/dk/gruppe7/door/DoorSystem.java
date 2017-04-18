@@ -108,7 +108,7 @@ public class DoorSystem implements IProcess, IRender
                         setPositionCentered(doorPosition.get(Direction.WEST));
                         
                         
-                        //setRotation(90);
+                        setRotation(180);
                         setDirection(Direction.WEST);
             }});
         }
