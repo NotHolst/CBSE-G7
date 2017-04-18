@@ -18,8 +18,8 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Audio;
+import dk.gruppe7.common.utils.RandomUtil;
 import static dk.gruppe7.data.MobType.MELEE;
-import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.playercommon.Player;
@@ -32,10 +32,6 @@ import dk.gruppe7.weaponcommon.WeaponType;
 import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -77,30 +73,17 @@ public class WeaponSystem implements IProcess, IRender {
 
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity e : world.getEntities()) {
-            if (!(e instanceof Weapon)) {
-                continue;
-            }
-            Boolean shoot = false;
-            Weapon weaponEntity = (Weapon) e;
-            Entity owner = null;
-            if (weaponEntity.getOwner() != null) {
-                owner = world.getEntityByID(weaponEntity.getOwner());
-            }
-            
-            if (owner != null) {
-                //Vector2 offset = new Vector2((float)Math.cos(Math.toRadians(weaponEntity.getRotation()-20)), (float)Math.sin(Math.toRadians(weaponEntity.getRotation()-20)));
-                weaponEntity.setPositionCentered(
-                        owner.getPositionCentered()
-                                .add(weaponEntity.getOwnerOffset().rotated(owner.getRotation()))
-                //.sub(new Vector2(weaponEntity.getBounds().getWidth(), weaponEntity.getBounds().getHeight()).div(2))
+        Entity owner = null;
+        for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
+            if ((owner = world.getEntityByID(weapon.getOwner())) != null) {
+                weapon.setPositionCentered(owner.getPositionCentered()
+                    .add(weapon.getOwnerOffset().rotated(owner.getRotation()))
                 );
-                weaponEntity.setRotation(owner.getRotation());
+                
+                weapon.setRotation(owner.getRotation());
             }
 
-            weaponEntity.setCooldown(weaponEntity.getCooldown() - gameData.getDeltaTime()); //Each update lowers the cooldown of the weapon.
-            if (shoot) {
-            }
+            weapon.setCooldown(weapon.getCooldown() - gameData.getDeltaTime()); //Each update lowers the cooldown of the weapon.
         }
     }
     
@@ -133,30 +116,23 @@ public class WeaponSystem implements IProcess, IRender {
     };
     
     ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
-        for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
-            if (event.getOtherID().equals(weapon.getId())) {
-                if (world.getEntityByID(event.getTargetID()) instanceof Player) {
-                    if(currentWeapon != null) {
-                        currentWeapon.setOwner(null);
-                        currentWeapon.setCollidable(true);
-                        if (Math.random() <= 0.5) {
-                            currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y - 80));
-                        } else {
-                            currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y + 80));
-                        }
-                    }
-                    
-                    weapon.setOwner(event.getTargetID());
-                    weapon.setCollidable(false);
-                    currentWeapon = weapon;
-                }
+        if(world.isEntityOfClass(event.getTargetID(), Player.class) && world.isEntityOfClass(event.getOtherID(), Weapon.class)) {
+            if(currentWeapon != null) {
+                currentWeapon.setOwner(null);
+                currentWeapon.setCollidable(true);
+                currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition()).add(0, RandomUtil.GetRandomInteger(-80, 80)));
             }
+            
+            Weapon weapon = world.<Weapon>getEntityByID(event.getOtherID());
+            weapon.setOwner(event.getTargetID());
+            weapon.setCollidable(false);
+            currentWeapon = weapon;
         }
     };
     
     ActionEventHandler<WeaponEvent> weaponEventHandler = (event, world) -> {
         for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)){
-            if(weapon.getOwner() != null && weapon.getOwner().equals(event.getShooter()) && weapon.getCooldown() <= 0){
+            if(weapon.getOwner() != null && weapon.getOwner().equals(event.getShooter()) && weapon.getCooldown() <= 0) {
                 weapon.setCooldown(weapon.getFireRate());
                 ShootingEvent sEvent = new ShootingEvent(new Bullet() {
                     {
@@ -170,7 +146,7 @@ public class WeaponSystem implements IProcess, IRender {
                         if (weapon.getOwner() != null) {
                             ownerVel = world.getEntityByID(weapon.getOwner()).getVelocity();
                         }
-                        
+
                         switch (weapon.getType()) {
                             case CROSSBOW:
                                 setBulletType(ShootingType.PROJECTILE);

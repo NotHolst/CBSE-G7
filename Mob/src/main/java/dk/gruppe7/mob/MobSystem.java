@@ -242,11 +242,6 @@ public class MobSystem implements IProcess, IRender {
         return start + r.nextInt(end - start + 1);
     }
 
-    private float GetRandomNumber(float range) {
-        Random r = new Random();
-        return r.nextFloat() * range;
-    }
-
     private static <T extends Enum<?>> T pickRandomMobType(Class<T> mobType) {
         Random r = new Random();
         int pick = r.nextInt(mobType.getEnumConstants().length);
