@@ -143,6 +143,8 @@ public class DoorSystem implements IProcess, IRender
             return;
         }
         
+        currentRoom.setCleared(true);
+        
         for (Door door : currentDoors)
         {
             if(event.getOtherID().equals(door.getId()))

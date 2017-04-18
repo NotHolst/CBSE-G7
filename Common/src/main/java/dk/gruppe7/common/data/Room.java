@@ -6,6 +6,8 @@ public class Room {
     Room east = null;
     Room south = null;
     Room west = null;
+    
+    private boolean cleared = false;
 
     public Room() {
 
@@ -62,5 +64,15 @@ public class Room {
     public void setWest(Room west) {
         this.west = west;
     }
+
+    public boolean isCleared() {
+        return cleared;
+    }
+
+    public void setCleared(boolean cleared) {
+        this.cleared = cleared;
+    }
+    
+    
 
 }

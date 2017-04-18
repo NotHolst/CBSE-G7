@@ -18,7 +18,6 @@ import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.shootingcommon.Bullet;
-import dk.gruppe7.shootingcommon.ShootingData;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import org.openide.util.lookup.ServiceProvider;
  
 public class BulletSystem implements IProcess, IRender
 {
-    List<ShootingEvent> events = ShootingData.getEvents();
     //List<UUID> bullets = new ArrayList<>();
     //HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
     List<Bullet> listOfBulletsToRemove = new ArrayList<>();
@@ -59,11 +57,6 @@ public class BulletSystem implements IProcess, IRender
     @Override
     public void process(GameData gameData, World world)
     {
-        while(events.size() > 0) {
-            makeBullet(events.get(0).getBlueprint(), world);
-            events.remove(0);
-        }
-        
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {
             bullet.setDespawnTimer(bullet.getDespawnTimer() - gameData.getDeltaTime()); 
             bullet.setPosition(bullet.getPosition().add(bullet.getVelocity().mul(gameData.getDeltaTime())));
@@ -85,12 +78,13 @@ public class BulletSystem implements IProcess, IRender
                 listOfBulletsToRemove.add(world.getEntityByID(event.getOtherID()));
     };
     
-    
-    
-    
     private void makeBullet(Bullet bullet, World world) {
         world.addEntity(bullet);        
     }
+
+    ActionEventHandler<ShootingEvent> shootingHandler = (event, world) -> {
+        world.addEntity(event.getBlueprint());
+    };
 
     @Override
     public void render(Graphics g, World world) {

@@ -13,6 +13,6 @@ import java.io.Serializable;
  */
 public enum MobType implements Serializable {
     
-    CHAMPION, SUPPORT, DEFENDER, RANGED, MELEE; 
+    RANGED, MELEE; 
     
 }
