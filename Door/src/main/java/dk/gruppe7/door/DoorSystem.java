@@ -25,9 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,8 +37,10 @@ import org.openide.util.lookup.ServiceProvider;
 
 public class DoorSystem implements IProcess, IRender
 {
-    InputStream doorHorizontal = getClass().getResourceAsStream("door.png");
-    InputStream doorVertical = getClass().getResourceAsStream("door_vertical.png");
+    InputStream doorClosedHorizontal = getClass().getResourceAsStream("doorClosed.png");
+    InputStream doorClosedVertical = getClass().getResourceAsStream("doorClosed_vertical.png");
+    InputStream doorOpenHorizontal = getClass().getResourceAsStream("doorOpen.png");
+    InputStream doorOpenVertical = getClass().getResourceAsStream("doorOpen_vertical.png");
     
     Room currentRoom = null;
     List<Door> currentDoors = new ArrayList<>();
@@ -180,16 +180,17 @@ public class DoorSystem implements IProcess, IRender
     @Override
     public void render(Graphics g, World world)
     {
+        boolean cleared = (world.<Mob>getEntitiesByClass(Mob.class).size() <= 0);
+        
         Vector2 size;
         for (Door currentDoor : currentDoors)
         {
-            
             InputStream temp;
             
             if(currentDoor.getDirection() == Direction.EAST || currentDoor.getDirection() == Direction.WEST)
-                temp = doorVertical;
+                temp = (cleared) ? doorOpenVertical : doorClosedVertical;
             else
-                temp = doorHorizontal;
+                temp = (cleared) ? doorOpenHorizontal : doorClosedHorizontal;
             
             size = new Vector2(currentDoor.getBounds().getWidth(), currentDoor.getBounds().getHeight());
             
