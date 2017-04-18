@@ -45,6 +45,7 @@ public class PlayerSystem implements IProcess, IRender {
 
     Image texture;
     Image[] frames;
+    Image health;
 
     UUID playerID;
     List<WeaponEvent> weaponEvents = WeaponData.getEvents();
@@ -125,7 +126,8 @@ public class PlayerSystem implements IProcess, IRender {
             gameData.getResourceManager().addImage("frame12", getClass().getResourceAsStream("PlayerFeet12.png"))
 
         };
-
+        health = gameData.getResourceManager().addImage("healthBar", getClass().getResourceAsStream("healthGreen.png"));
+        
         Player temp = makePlayer();
         playerID = temp.getId();
         temp.setAnimator(
@@ -213,18 +215,18 @@ public class PlayerSystem implements IProcess, IRender {
         for (ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();) {
             CollisionEvent tempi = iterator.next();
             
-            // Bullet collision -- Bullet collides with player the moment it spawns.
-            //if(tempi.getOtherID().equals(player.getId()))
-            //{
-            //    Entity hitBy = world.getEntityByID(tempi.getTargetID());
-            //    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
-            //    if(b != null)
-            //    {
-            //        player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
-            //        //Temporary: to avoid bullets hitting multiple times
-            //        b.getDamageData().setDamage(0);
-            //    }  
-            //}
+            //Bullet collision -- Bullet collides with player the moment it spawns.
+            if(tempi.getOtherID().equals(player.getId()))
+            {
+                Entity hitBy = world.getEntityByID(tempi.getTargetID());
+                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
+                if(b != null && b.getOwner() != player.getId())
+                {
+                    player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
+                    //Temporary: to avoid bullets hitting multiple times
+                    b.getDamageData().setDamage(0);
+                }  
+            }
             
             // Obstacle collision -- Corners can bug the player out of the screen.
             if(Obstacle.class.isInstance(world.getEntityByID(tempi.getOtherID())) && tempi.getTargetID().equals(player.getId())) { 
@@ -253,16 +255,6 @@ public class PlayerSystem implements IProcess, IRender {
                 iterator.remove();
             } else if (Obstacle.class.isInstance(world.getEntityByID(tempi.getTargetID()))) { 
                 iterator.remove();
-
-            if (tempi.getOtherID().equals(player.getId())) {
-                Entity hitBy = world.getEntityByID(tempi.getTargetID());
-                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
-                if (b != null) {
-                    player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
-                    //Temporary: to avoid bullets hitting multiple times
-                    b.getDamageData().setDamage(0);
-                }
-            }
         }
     }
     }
@@ -305,5 +297,7 @@ public class PlayerSystem implements IProcess, IRender {
         );
         
         g.drawString(new Vector2(50, 670), String.format("Score : %d", playerEntity.getScore()));
+        g.drawSprite(playerEntity.getPosition().add(0, -2), new Vector2(64 * playerEntity.getHealthData().getHealth() / playerEntity.getHealthData().getStartHealth(), 5), health.getInputStream(), 0, 3);
+
     }
 }

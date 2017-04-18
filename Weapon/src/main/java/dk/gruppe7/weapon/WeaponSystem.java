@@ -119,9 +119,11 @@ public class WeaponSystem implements IProcess, IRender {
             if (shoot) {
                 Vector2 ownerPos = owner.getPosition();
                 Vector2 ownerVel = owner.getVelocity();
+                UUID ownerid = owner.getId();
                 Vector2 directionVel = new Vector2((float) Math.cos(Math.toRadians(weaponEntity.getRotation())), (float) Math.sin(Math.toRadians(weaponEntity.getRotation())));
                 sEvents.add(new ShootingEvent(new Bullet() {
                     {
+                                setOwner(ownerid);
                                 setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
                                 setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
                                 setCollidable(true);
