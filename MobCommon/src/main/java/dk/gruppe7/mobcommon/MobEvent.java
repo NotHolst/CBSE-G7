@@ -5,25 +5,21 @@
  */
 package dk.gruppe7.mobcommon;
 
+import dk.gruppe7.common.annotations.Event;
+
 /**
  *
  * @author haral
  */
+@Event
 public class MobEvent {
     private Mob mob;
     private MobEventType type;
     private long expirationTick;
     
-    @Deprecated
     public MobEvent(Mob mob, MobEventType type){
         this.mob = mob;
         this.type = type;
-    }
-    
-    public MobEvent(Mob mob, MobEventType type, long currentTick){
-        this.mob = mob;
-        this.type = type;
-        this.expirationTick = currentTick + 2;
     }
 
     public Mob getMob() {

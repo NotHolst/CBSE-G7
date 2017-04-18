@@ -25,7 +25,6 @@ import static dk.gruppe7.data.MobType.MELEE;
 import static dk.gruppe7.data.MobType.RANGED;
 import static dk.gruppe7.data.MobType.SUPPORT;
 import dk.gruppe7.mobcommon.Mob;
-import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
@@ -93,17 +92,16 @@ public class MobSystem implements IProcess, IRender {
         textureSkeletonMelee = gameData.getResourceManager().addImage("torso", getClass().getResourceAsStream("SkeletonMelee.png"));
         textureKnightRanged = gameData.getResourceManager().addImage("torso", getClass().getResourceAsStream("KnightRanged.png"));
         health = gameData.getResourceManager().addImage("healthBar", getClass().getResourceAsStream("healthGreen.png"));
-
-        Entity mob;
-        // Add mobs to the world
-
+        
         for (int i = 0; i < GetRandomNumberBetween(2, 7); i++) {
-            mob = createMob(
-                    GetRandomNumberBetween(0, gameData.getScreenWidth()),
-                    GetRandomNumberBetween(0, gameData.getScreenHeight()),
-                    pickRandomMobType(MobType.class));
+            Entity mob = createMob(new Vector2(GetRandomNumberBetween(0, gameData.getScreenWidth()), 
+                                               GetRandomNumberBetween(0, gameData.getScreenHeight())), 
+                                               pickRandomMobType(MobType.class)
+            );
+            
             world.addEntity(mob);
-            MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
+            
+            Dispatcher.post(new MobEvent((Mob) mob, SPAWN), world);
         }
 
         Dispatcher.subscribe(this);
@@ -137,7 +135,7 @@ public class MobSystem implements IProcess, IRender {
 
             if (mob.getHealthData().getHealth() <= 0) {
                 listOfMobsToBeRemoved.add(mob);
-                MobData.getEvents(gameData.getTickCount()).add(new MobEvent(mob, MobEventType.DEATH, gameData.getTickCount()));
+                Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
             }
         }
     }
@@ -161,10 +159,10 @@ public class MobSystem implements IProcess, IRender {
         listOfMobsToBeRemoved.clear();
     };
 
-    private Entity createMob(float x, float y, MobType type) {
+    private Entity createMob(Vector2 position, MobType type) {
         Mob mob = new Mob();
         MobID.setMobID(mobID = mob.getId());
-        mob.setPosition(new Vector2(x, y));
+        mob.setPosition(new Vector2(position.x, position.y));
         mob.setMobType(type);
         mob.setMaxVelocity(300.f);
         mob.setAcceleration(80.f);

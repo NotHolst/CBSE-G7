@@ -16,7 +16,6 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.graphics.Graphics;
-import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.obstaclecommon.Obstacle;
@@ -247,13 +246,13 @@ public class PlayerSystem implements IProcess, IRender {
                 playerEntity.getAnimator().setInterval(15*1.0f/playerEntity.getVelocity().len());
                 playerEntity.getAnimator().update(gameData);
             }
-
-            for (MobEvent event : MobData.getEvents(gameData.getTickCount())) {
-                if (event.getType() == MobEventType.DEATH) {
-                    playerEntity.incrementScoreBy(1);
-                }
-            }
     }
+    
+    ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {
+        if (event.getType() == MobEventType.DEATH) {
+            ((Player)world.getEntityByID(playerID)).incrementScoreBy(1);
+        }
+    };
 
     ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
         // Bullet collision -- Bullet collides with player the moment it spawns.

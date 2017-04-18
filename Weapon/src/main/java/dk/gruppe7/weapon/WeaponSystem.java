@@ -19,7 +19,6 @@ import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Audio;
 import static dk.gruppe7.data.MobType.MELEE;
 import dk.gruppe7.mobcommon.Mob;
-import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.playercommon.Player;
@@ -34,6 +33,7 @@ import dk.gruppe7.weaponcommon.WeaponType;
 import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
@@ -155,43 +155,35 @@ public class WeaponSystem implements IProcess, IRender {
                 shoot = false;
             }
         }
-        
-        for (ListIterator<MobEvent> i = MobData.getEvents().listIterator(); i.hasNext();) {
-            MobEvent mobEvent = i.next();
-            if (mobEvent.getType() == MobEventType.SPAWN) {
-                Mob mob = mobEvent.getMob();
-                switch (mob.getMobType()) {
-                    case MELEE:
-                        Weapon mobWeaponMelee = generateWeapon(MACE);
-                        mobWeaponMelee.setOwner(mob.getId());
-                        mobWeaponMelee.setCollidable(false);
-                        world.addEntity(mobWeaponMelee);
-                        System.out.println("Melee mob equipped with weapon");
-                        break;
+    }
+    
+    ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {
+        if (event.getType() == MobEventType.SPAWN) {
+            switch (event.getMob().getMobType()) {
+                case MELEE:
+                    Weapon mobWeaponMelee = generateWeapon(MACE);
+                    mobWeaponMelee.setOwner(event.getMob().getId());
+                    mobWeaponMelee.setCollidable(false);
+                    world.addEntity(mobWeaponMelee);
+                    System.out.println("Melee mob equipped with weapon");
+                    break;
 
-                    default:
-                        Weapon mobWeaponRanged = generateWeapon(CROSSBOW);
-                        mobWeaponRanged.setOwner(mob.getId());
-                        mobWeaponRanged.setCollidable(false);
-                        world.addEntity(mobWeaponRanged);
-                        System.out.println("Ranged mob equipped with weapon");
-                        break;
-                }
-                i.remove();
-            } else if (mobEvent.getType().equals(mobEvent.getType().DEATH)) {
-                for (Entity e : world.getEntities()) {
-                    if (e instanceof Weapon) {
-                        Weapon weapon;
-                        weapon = (Weapon) e;
-                        UUID ownerUUID = weapon.getOwner();
-                        if (world.getEntityByID(ownerUUID) == null) {
-                            weapon.setCollidable(true);
-                        }
-                    }
+                default:
+                    Weapon mobWeaponRanged = generateWeapon(CROSSBOW);
+                    mobWeaponRanged.setOwner(event.getMob().getId());
+                    mobWeaponRanged.setCollidable(false);
+                    world.addEntity(mobWeaponRanged);
+                    System.out.println("Ranged mob equipped with weapon");
+                    break;
+            }
+        } else if (event.getType() == MobEventType.DEATH) {
+            for (Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
+                if(weapon.getOwner() == event.getMob().getId()) {
+                    weapon.setCollidable(true);
                 }
             }
         }
-    }
+    };
     
     ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
         for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
