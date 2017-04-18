@@ -1,10 +1,14 @@
 package dk.gruppe7.common.data;
 
-/**
- *
- * @author Mikkel
- */
-public interface KeyEventHandler {
-    // false -> not active.
-    public abstract void call(boolean newKeyState);
+import dk.gruppe7.common.EventHandler;
+
+@EventHandler
+public abstract class KeyEventHandler<T> {
+    private final int virtualKeyCode;
+    
+    public KeyEventHandler(int virtualKeyCode) {
+        this.virtualKeyCode = virtualKeyCode;
+    }
+    
+    public abstract void call(T event);
 }

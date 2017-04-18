@@ -6,7 +6,8 @@ import dk.gruppe7.common.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
-import dk.gruppe7.common.Input;
+import dk.gruppe7.common.KeyPressedEvent;
+import dk.gruppe7.common.KeyReleasedEvent;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.ActionEventHandler;
 import dk.gruppe7.common.data.VirtualKeyCode;
@@ -34,7 +35,6 @@ import dk.gruppe7.common.resources.Image;
  * @author Mikkel
  */
 public class PlayerSystem implements IProcess, IRender {
-    Input input;
     boolean north, south, west, east;
     Vector2 aimDirection = Vector2.zero;
 
@@ -44,63 +44,126 @@ public class PlayerSystem implements IProcess, IRender {
     UUID playerID;
     List<WeaponEvent> weaponEvents = WeaponData.getEvents();
 
-    KeyEventHandler wKeyEventHandler = (newKeyState) -> {
-        north = newKeyState;
-    };
-    KeyEventHandler aKeyEventHandler = (newKeyState) -> {
-        west = newKeyState;
-    };
-    KeyEventHandler sKeyEventHandler = (newKeyState) -> {
-        south = newKeyState;
-    };
-    KeyEventHandler dKeyEventHandler = (newKeyState) -> {
-        east = newKeyState;
-    };
-
-    KeyEventHandler arrowUpKeyEventHandler = new KeyEventHandler() {
+    KeyEventHandler<KeyPressedEvent> wKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_W) {
         @Override
-        public void call(boolean newKeyState) {
-            if (newKeyState == true) {
-                aimDirection = Vector2.up;
-            } else if (aimDirection.equals(Vector2.up)) {
-                aimDirection = Vector2.zero;
-            }
+        public void call(KeyPressedEvent event) {
+            north = event.getState();
         }
     };
-
-    KeyEventHandler arrowLeftKeyEventHandler = new KeyEventHandler() {
+    
+    KeyEventHandler<KeyReleasedEvent> wKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_W) {
         @Override
-        public void call(boolean newKeyState) {
-            if (newKeyState == true) {
-                aimDirection = Vector2.left;
-            } else if (aimDirection.equals(Vector2.left)) {
-                aimDirection = Vector2.zero;
-            }
+        public void call(KeyReleasedEvent event) {
+            north = event.getState();
         }
     };
-
-    KeyEventHandler arrowDownKeyEventHandler = new KeyEventHandler() {
+    
+    KeyEventHandler<KeyPressedEvent> aKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_A) {
         @Override
-        public void call(boolean newKeyState) {
-            if (newKeyState == true) {
-                aimDirection = Vector2.down;
-            } else if (aimDirection.equals(Vector2.down)) {
-                aimDirection = Vector2.zero;
-            }
+        public void call(KeyPressedEvent event) {
+            west = event.getState();
         }
     };
-
-    KeyEventHandler arrowRightKeyEventHandler = new KeyEventHandler() {
+    
+    KeyEventHandler<KeyReleasedEvent> aKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_A) {
         @Override
-        public void call(boolean newKeyState) {
-            if (newKeyState == true) {
-                aimDirection = Vector2.right;
-            } else if (aimDirection.equals(Vector2.right)) {
+        public void call(KeyReleasedEvent event) {
+            west = event.getState();
+        }
+    };
+    
+    KeyEventHandler<KeyPressedEvent> sKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_S) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            south = event.getState();
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> sKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_S) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            south = event.getState();
+        }
+    };
+    
+    KeyEventHandler<KeyPressedEvent> dKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_D) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            east = event.getState();
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> dKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_D) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            east = event.getState();
+        }
+    };
+    
+    KeyEventHandler<KeyPressedEvent> arrowUpKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_UP) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            aimDirection = Vector2.up;
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> arrowUpKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_UP) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            if(aimDirection.equals(Vector2.up)) {
                 aimDirection = Vector2.zero;
             }
         }
     };
     
+    KeyEventHandler<KeyPressedEvent> arrowLeftKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_LEFT) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            aimDirection = Vector2.left;
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> arrowLeftKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_LEFT) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            if(aimDirection.equals(Vector2.left)) {
+                aimDirection = Vector2.zero;
+            }
+        }
+    };
+    
+    KeyEventHandler<KeyPressedEvent> arrowDownKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_DOWN) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            aimDirection = Vector2.down;
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> arrowDownKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_DOWN) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            if(aimDirection.equals(Vector2.down)) {
+                aimDirection = Vector2.zero;
+            }
+        }
+    };
+    
+    KeyEventHandler<KeyPressedEvent> arrowRightKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_RIGHT) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            aimDirection = Vector2.right;
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> arrowRightKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_RIGHT) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            if(aimDirection.equals(Vector2.right)) {
+                aimDirection = Vector2.zero;
+            }
+        }
+    };
+
     @Override
     public void start(GameData gameData, World world) {
 
@@ -134,27 +197,13 @@ public class PlayerSystem implements IProcess, IRender {
         //Image image = new Image(stream);
         //texture = 
 
-        input = gameData.getInput();
-        input.registerKeyEventHandler(VirtualKeyCode.VC_W, wKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_A, aKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_S, sKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_D, dKeyEventHandler);
-
-        input.registerKeyEventHandler(VirtualKeyCode.VC_UP, arrowUpKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_LEFT, arrowLeftKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_DOWN, arrowDownKeyEventHandler);
-        input.registerKeyEventHandler(VirtualKeyCode.VC_RIGHT, arrowRightKeyEventHandler);
-        
         Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
-        
-        input.unregisterKeyEventHandler(wKeyEventHandler, aKeyEventHandler, sKeyEventHandler, dKeyEventHandler);
-        input.unregisterKeyEventHandler(arrowUpKeyEventHandler, arrowLeftKeyEventHandler, arrowDownKeyEventHandler, arrowRightKeyEventHandler);
-        
+
         world.removeEntity(world.getEntityByID(playerID));
         playerID = null;
     }
