@@ -1,17 +1,17 @@
 package dk.gruppe7.player;
 
-import collision.CollisionEvent;
+import dk.gruppe7.eventtypes.CollisionEvent;
 import dk.gruppe7.common.Dispatcher;
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
-import dk.gruppe7.common.KeyPressedEvent;
-import dk.gruppe7.common.KeyReleasedEvent;
+import dk.gruppe7.eventtypes.KeyPressedEvent;
+import dk.gruppe7.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.common.World;
-import dk.gruppe7.common.data.ActionEventHandler;
+import dk.gruppe7.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.VirtualKeyCode;
-import dk.gruppe7.common.data.KeyEventHandler;
+import dk.gruppe7.eventhandlers.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import dk.gruppe7.common.resources.Image;
+import dk.gruppe7.utils.ConverterUtil;
 
 @ServiceProvider(service = IProcess.class)
 
@@ -219,9 +220,8 @@ public class PlayerSystem implements IProcess, IRender {
                 ));
                     
             playerEntity.setVelocity(playerEntity.getVelocity()
-                    .add(
-                            playerEntity.getAcceleration() * (booleanToInt(east) - booleanToInt(west)),
-                            playerEntity.getAcceleration() * (booleanToInt(north) - booleanToInt(south)))
+                    .add(playerEntity.getAcceleration() * (ConverterUtil.BooleanToInt(east) - ConverterUtil.BooleanToInt(west)),
+                            playerEntity.getAcceleration() * (ConverterUtil.BooleanToInt(north) - ConverterUtil.BooleanToInt(south)))
                     .clampLength(
                             playerEntity.getMaxVelocity()
                     )
@@ -307,11 +307,6 @@ public class PlayerSystem implements IProcess, IRender {
                 setBounds(new Rectangle(64, 64));
             }
         };
-    }
-
-    // Skal muligvis flyttes til en common util pakke?
-    private int booleanToInt(boolean b) {
-        return (b) ? 1 : 0;
     }
 
     @Override

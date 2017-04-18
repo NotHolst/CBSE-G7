@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dispose;
+package dk.gruppe7.eventtypes;
 
-import collision.*;
-import dk.gruppe7.common.Entity;
-import dk.gruppe7.common.Event;
+import dk.gruppe7.common.data.Entity;
+import dk.gruppe7.annotations.Event;
 import java.util.UUID;
 
 /**

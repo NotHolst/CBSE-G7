@@ -1,5 +1,6 @@
 package dk.gruppe7.common;
 
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
 import java.util.ArrayList;

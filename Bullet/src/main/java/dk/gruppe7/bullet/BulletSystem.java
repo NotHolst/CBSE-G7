@@ -5,14 +5,14 @@
  */
 package dk.gruppe7.bullet;
 
-import collision.CollisionEvent;
-import dispose.DisposeEvent;
+import dk.gruppe7.eventtypes.CollisionEvent;
+import dk.gruppe7.eventtypes.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
-import dk.gruppe7.common.data.ActionEventHandler;
+import dk.gruppe7.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;

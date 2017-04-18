@@ -2,8 +2,8 @@ package dk.gruppe7.core;
 
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
-import dk.gruppe7.common.KeyPressedEvent;
-import dk.gruppe7.common.KeyReleasedEvent;
+import dk.gruppe7.eventtypes.KeyPressedEvent;
+import dk.gruppe7.eventtypes.KeyReleasedEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jnativehook.GlobalScreen;

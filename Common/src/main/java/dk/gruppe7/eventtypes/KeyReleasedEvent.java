@@ -1,4 +1,6 @@
-package dk.gruppe7.common;
+package dk.gruppe7.eventtypes;
+
+import dk.gruppe7.annotations.Event;
 
 @Event
 public class KeyReleasedEvent {

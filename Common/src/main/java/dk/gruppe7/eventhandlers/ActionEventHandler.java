@@ -1,6 +1,6 @@
-package dk.gruppe7.common.data;
+package dk.gruppe7.eventhandlers;
 
-import dk.gruppe7.common.EventHandler;
+import dk.gruppe7.annotations.EventHandler;
 import dk.gruppe7.common.World;
 
 @EventHandler

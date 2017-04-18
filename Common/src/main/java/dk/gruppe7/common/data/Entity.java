@@ -1,4 +1,4 @@
-package dk.gruppe7.common;
+package dk.gruppe7.common.data;
 
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;

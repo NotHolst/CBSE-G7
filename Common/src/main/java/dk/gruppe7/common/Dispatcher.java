@@ -1,7 +1,11 @@
 package dk.gruppe7.common;
 
-import dk.gruppe7.common.data.ActionEventHandler;
-import dk.gruppe7.common.data.KeyEventHandler;
+import dk.gruppe7.eventtypes.KeyReleasedEvent;
+import dk.gruppe7.eventtypes.KeyPressedEvent;
+import dk.gruppe7.annotations.Event;
+import dk.gruppe7.annotations.EventHandler;
+import dk.gruppe7.eventhandlers.ActionEventHandler;
+import dk.gruppe7.eventhandlers.KeyEventHandler;
 import dk.gruppe7.common.data.Pair;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -82,7 +86,7 @@ public class Dispatcher {
     }
     
     // Unregisters a specific handler from a event type.
-    public static void unsubscribe(Class<?> klass, Object handler) {
+    public static void unsubscribe(Class klass, Object handler) {
         if(!isEventValid(klass)) {
             return;
         }
@@ -124,7 +128,7 @@ public class Dispatcher {
     }
     
     // Checks whether a event class is annotated as an event and throws IllegalArgumentException in case it isn't.
-    private static boolean isEventValid(Class<?> klass) {
+    private static boolean isEventValid(Class klass) {
         if(!klass.isAnnotationPresent(Event.class)) {
             System.err.println("Event class that was passed is not a valid event. Is the event class annotated as an actual event?");
             return false;
@@ -157,7 +161,7 @@ public class Dispatcher {
     }
     
     // Registers new event types based on the event classes that pass through the dispatcher.
-    private static void addEventTypeIfUnknown(Class<?> klass) {
+    private static void addEventTypeIfUnknown(Class klass) {
         int hashcodeSimple = klass.hashCode();
         
         if(mapOfEventHandlerObjects.containsKey(klass.hashCode())) {
