@@ -19,6 +19,7 @@ import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
+import dk.gruppe7.common.utils.RandomUtil;
 import dk.gruppe7.data.MobType;
 import static dk.gruppe7.data.MobType.MELEE;
 import static dk.gruppe7.data.MobType.RANGED;
@@ -208,12 +209,12 @@ public class MobSystem implements IProcess, IRender {
     };
     
     private void spawnMobs(World world){
-        for (int i = 0; i < GetRandomNumberBetween(2, 7); i++) {
+        for (int i = 0; i < RandomUtil.GetRandomInteger(2, 7); i++) {
             Entity mob = createMob(
             new Vector2(
-                    GetRandomNumberBetween(25, screenWidth-100), 
-                    GetRandomNumberBetween(25, screenHeight-100)), 
-            pickRandomMobType(MobType.class)
+                    RandomUtil.GetRandomInteger(100, screenWidth-100), 
+                    RandomUtil.GetRandomInteger(100, screenHeight-100)), 
+            MobType.getRandom()
             );
             world.addEntity(mob);
             Dispatcher.post(new MobEvent((Mob) mob, SPAWN), world);
@@ -235,17 +236,6 @@ public class MobSystem implements IProcess, IRender {
         mob.setAttackRange((type == RANGED)?600:50);
         System.out.println(type);
         return mob;
-    }
-
-    private int GetRandomNumberBetween(int start, int end) {
-        Random r = new Random();
-        return start + r.nextInt(end - start + 1);
-    }
-
-    private static <T extends Enum<?>> T pickRandomMobType(Class<T> mobType) {
-        Random r = new Random();
-        int pick = r.nextInt(mobType.getEnumConstants().length);
-        return mobType.getEnumConstants()[pick];
     }
 
     @Override
