@@ -57,7 +57,8 @@ public class Game implements ApplicationListener{
     private List<IRender> renderers = new CopyOnWriteArrayList<>();
     private ResourceManager resourceManager = new ResourceManager();
     private InputStream fallbackTextureInputStream; 
-    private File fallbackFontFile;
+    
+    private BitmapFont font;
     
     private Lookup.Result<IProcess> processorsResult;
     private Lookup.Result<IRender> renderersResult;
@@ -68,8 +69,8 @@ public class Game implements ApplicationListener{
     
     @Override
     public void create() {
+        font  = new BitmapFont();
         fallbackTextureInputStream = getClass().getResourceAsStream("texture.png");
-        fallbackFontFile = new File(getClass().getResource("font.fnt").getFile());
         
         gameData.setScreenWidth(Gdx.graphics.getWidth());
         gameData.setScreenHeight(Gdx.graphics.getHeight());
@@ -186,7 +187,7 @@ public class Game implements ApplicationListener{
                 case STRING: 
                     batch.begin();
 
-                    BitmapFont font = fileToBitmapFont(fallbackFontFile);
+                    
                     font.draw(batch, cmd.getString(), cmd.getPosition().x, cmd.getPosition().y);
 
                     batch.end();
@@ -254,24 +255,5 @@ public class Game implements ApplicationListener{
         
         cachedTextures.put(inputStream.hashCode(), texture);
         return texture;
-    }
-    
-    private HashMap<Integer, BitmapFont> cachedFonts = new HashMap<>();
-    private BitmapFont fileToBitmapFont(File file) {
-        if(cachedFonts.containsKey(file.hashCode()))
-            return cachedFonts.get(file.hashCode());
-        
-        String fontName = file.getName();
-        fontName = fontName.substring(0, fontName.lastIndexOf("."));
-        
-        BitmapFont font = new BitmapFont(
-                new FileHandle(file), 
-                new FileHandle(new File(getClass().getResource(fontName + ".png").getFile())), 
-                false
-        );
-        
-        cachedFonts.put(file.hashCode(), font);
-        
-        return font;
     }
 }
