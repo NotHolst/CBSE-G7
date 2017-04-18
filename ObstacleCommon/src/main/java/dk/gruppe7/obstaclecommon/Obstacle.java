@@ -1,6 +1,6 @@
 package dk.gruppe7.obstaclecommon;
 
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.data.Entity;
 
 public class Obstacle extends Entity
 {

@@ -5,7 +5,7 @@
  */
 package dk.gruppe7.weaponcommon;
 
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.data.Vector2;
 import java.io.IOException;
 import java.io.InputStream;

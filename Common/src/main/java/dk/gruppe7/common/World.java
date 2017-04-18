@@ -1,10 +1,14 @@
 package dk.gruppe7.common;
 
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -15,9 +19,9 @@ public class World {
     private int currentLevel;
     private Room currentRoom = null;
     private HashMap<Point, Point[]> map;
-    private ArrayList<Entity> entities = new ArrayList<>(); //Jan bruger hashmap med <entityID (string), Entity>. Det er nok smart ift. lookup af en bestemt entity
+    private List<Entity> entities = new CopyOnWriteArrayList<>(); //Jan bruger hashmap med <entityID (string), Entity>. Det er nok smart ift. lookup af en bestemt entity
     
-    public ArrayList<Entity> getEntities()
+    public List<Entity> getEntities()
     {
         return entities;
     }
@@ -27,9 +31,17 @@ public class World {
         entities.add(e);
     }
     
+    public void addEntities(Collection<? extends Entity> col) {
+        entities.addAll(col);
+    }
+    
     public void removeEntity(Entity e)
     {
         entities.remove(e);
+    }
+    
+    public void removeEntities(Collection<? extends Entity> col) {
+        entities.removeAll(col);
     }
     
     public Entity getEntityByID(UUID entityID){
@@ -38,13 +50,21 @@ public class World {
         return null;
     }
     
-    public ArrayList<Entity> getEntitiesByClass(Class c)
-    {
-        ArrayList<Entity> list = new ArrayList<Entity>();
-        for(Entity e : entities)
-            if(e.getClass().equals(c)) list.add(e);
+    public <T extends Entity> ArrayList<T> getEntitiesByClass(Class klass) {
+        ArrayList<Entity> list = new ArrayList<>();
         
-        return list;
+        for(Entity e : entities) {
+            if(e.getClass().equals(klass)) {
+                list.add(e);
+                continue;
+            }
+            
+            if(e.getClass().getSuperclass().equals(klass)) {
+                list.add(e);
+            }
+        }
+            
+        return (ArrayList<T>)list;
     }
 
     public Room getCurrentRoom() {

@@ -5,10 +5,9 @@
  */
 package dk.gruppe7.playercommon;
 
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.damagecommon.HealthData;
-import java.util.UUID;
 
 /**
  *

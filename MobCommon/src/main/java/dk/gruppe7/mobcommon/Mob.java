@@ -5,7 +5,7 @@
  */
 package dk.gruppe7.mobcommon;
 
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.damagecommon.HealthData;
 import dk.gruppe7.data.MobType;

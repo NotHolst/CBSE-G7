@@ -5,14 +5,14 @@
  */
 package dk.gruppe7.weapon;
 
-import collision.CollisionData;
-import static collision.CollisionData.getEvents;
-import collision.CollisionEvent;
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
+import dk.gruppe7.common.Dispatcher;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
@@ -34,7 +34,6 @@ import dk.gruppe7.weaponcommon.WeaponType;
 import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
@@ -67,11 +66,12 @@ public class WeaponSystem implements IProcess, IRender {
 
         crossbowSound = gameData.getResourceManager().addAudio("crossbowSound", getClass().getResourceAsStream("bow.wav"));
 
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
-
+        Dispatcher.unsubscribe(this);
     }
 
     @Override
@@ -154,32 +154,8 @@ public class WeaponSystem implements IProcess, IRender {
                 }));
                 shoot = false;
             }
-
-            for (ListIterator<CollisionEvent> i = CollisionData.getEvents(gameData.getTickCount()).listIterator(); i.hasNext();) {
-                CollisionEvent colEv = i.next(); //Iterates CollisionEvents to see if there are any pertaining to the Weapon and a possible Owner.
-                if (colEv.getOtherID().equals(weaponEntity.getId())) {
-                    if (world.getEntityByID(colEv.getTargetID()) instanceof Player) {
-                        if (currentWeapon != null) {
-                            System.out.println("Dropping weapon");
-                            currentWeapon.setOwner(null);
-                            currentWeapon.setCollidable(true);
-                            if (Math.random() <= 0.5) {
-                                currentWeapon.setPosition(new Vector2(world.getEntityByID(colEv.getTargetID()).getPosition().x, world.getEntityByID(colEv.getTargetID()).getPosition().y - 80));
-                            } else {
-                                currentWeapon.setPosition(new Vector2(world.getEntityByID(colEv.getTargetID()).getPosition().x, world.getEntityByID(colEv.getTargetID()).getPosition().y + 80));
-                            }
-                        }
-                        System.out.println("Weapons equipped");
-                        weaponEntity.setOwner(colEv.getTargetID());
-                        weaponEntity.setCollidable(false);
-                        currentWeapon = weaponEntity;
-
-                    }
-                    i.remove();
-                }
-            }
-
         }
+        
         for (ListIterator<MobEvent> i = MobData.getEvents().listIterator(); i.hasNext();) {
             MobEvent mobEvent = i.next();
             if (mobEvent.getType() == MobEventType.SPAWN) {
@@ -202,10 +178,7 @@ public class WeaponSystem implements IProcess, IRender {
                         break;
                 }
                 i.remove();
-            }
-        }
-        for (MobEvent mobEvent : MobData.getEvents(gameData.getTickCount())) {
-            if (mobEvent.getType().equals(mobEvent.getType().DEATH)) {
+            } else if (mobEvent.getType().equals(mobEvent.getType().DEATH)) {
                 for (Entity e : world.getEntities()) {
                     if (e instanceof Weapon) {
                         Weapon weapon;
@@ -218,20 +191,38 @@ public class WeaponSystem implements IProcess, IRender {
                 }
             }
         }
-
     }
+    
+    ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
+        for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
+            if (event.getOtherID().equals(weapon.getId())) {
+                if (world.getEntityByID(event.getTargetID()) instanceof Player) {
+                    if(currentWeapon != null) {
+                        currentWeapon.setOwner(null);
+                        currentWeapon.setCollidable(true);
+                        if (Math.random() <= 0.5) {
+                            currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y - 80));
+                        } else {
+                            currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y + 80));
+                        }
+                    }
+                    
+                    weapon.setOwner(event.getTargetID());
+                    weapon.setCollidable(false);
+                    currentWeapon = weapon;
+                }
+            }
+        }
+    };
 
     @Override
     public void render(Graphics g, World world) {
-        for (Entity e : world.getEntities()) {
-            if (!(e instanceof Weapon)) {
-                continue;
-            }
+        for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
             g.drawSprite(
-                    /* Position    */e.getPosition(),
-                    /* Size        */ new Vector2(e.getBounds().getWidth(), e.getBounds().getHeight()),
-                    /* InputStream */ e.getInputStream(),
-                    /* Rotation    */ e.getRotation(),
+                    /* Position    */weapon.getPosition(),
+                    /* Size        */ new Vector2(weapon.getBounds().getWidth(), weapon.getBounds().getHeight()),
+                    /* InputStream */ weapon.getInputStream(),
+                    /* Rotation    */ weapon.getRotation(),
                     /* LayerHeight */ 4
             );
         }

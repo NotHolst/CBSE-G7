@@ -24,6 +24,14 @@
                         <publicPackage>dk.gruppe7.common.graphics</publicPackage>
                         <publicPackage>dk.gruppe7.common.resources</publicPackage>
                         <publicPackage>dk.gruppe7.common.audio</publicPackage>
+                        <publicPackage>dk.gruppe7.eventtypes</publicPackage>
+                        <publicPackage>dk.gruppe7.annotations</publicPackage>
+                        <publicPackage>dk.gruppe7.eventhandlers</publicPackage>
+                        <publicPackage>dk.gruppe7.utils</publicPackage>
+                        <publicPackage>dk.gruppe7.common.annotations</publicPackage>
+                        <publicPackage>dk.gruppe7.common.eventhandlers</publicPackage>
+                        <publicPackage>dk.gruppe7.common.eventtypes</publicPackage>
+                        <publicPackage>dk.gruppe7.common.utils</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

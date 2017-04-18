@@ -5,9 +5,8 @@
  */
 package dk.gruppe7.obstacle;
 
-import collision.CollisionData;
-import collision.CollisionEvent;
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;

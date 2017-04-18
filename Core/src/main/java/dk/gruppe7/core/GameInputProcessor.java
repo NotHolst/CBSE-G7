@@ -1,6 +1,9 @@
 package dk.gruppe7.core;
 
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
+import dk.gruppe7.common.eventtypes.KeyPressedEvent;
+import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jnativehook.GlobalScreen;
@@ -28,7 +31,7 @@ public class GameInputProcessor {
         public void nativeKeyPressed(NativeKeyEvent nke) {
             try {
                 //System.out.printf("KeyPress caught : {%d} \n", nke.getRawCode());
-                gameData.getInput().setKey(nke.getKeyCode(), true);
+                Dispatcher.post(new KeyPressedEvent(nke.getKeyCode()), null);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -38,7 +41,7 @@ public class GameInputProcessor {
         public void nativeKeyReleased(NativeKeyEvent nke) {
             try {
                 //System.out.printf("KeyRelease caught : {%d} \n", nke.getRawCode());
-                gameData.getInput().setKey(nke.getKeyCode(), false);
+                Dispatcher.post(new KeyReleasedEvent(nke.getKeyCode()), null);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }

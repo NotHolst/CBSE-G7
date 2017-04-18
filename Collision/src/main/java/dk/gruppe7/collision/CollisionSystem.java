@@ -5,9 +5,9 @@
  */
 package dk.gruppe7.collision;
 
-import collision.CollisionData;
-import collision.CollisionEvent;
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
+import dk.gruppe7.common.Dispatcher;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
@@ -43,8 +43,8 @@ public class CollisionSystem implements IProcess {
                 */
                 if(!target.equals(other) && target.isCollidable() && other.isCollidable() && intersects(target, other)) {
                     //System.out.println("Adding new CollisionEvent");
-                    CollisionData.getEvents(gameData.getTickCount()).add(new CollisionEvent(target.getId(), other.getId(), gameData.getTickCount())); // CollisionEvent for the first
-                    CollisionData.getEvents(gameData.getTickCount()).add(new CollisionEvent(other.getId(), target.getId(), gameData.getTickCount())); // CollisionEvent for the second
+                    Dispatcher.post(new CollisionEvent(target.getId(), other.getId()), world);
+                    Dispatcher.post(new CollisionEvent(other.getId(), target.getId()), world);
                 }
             }
         }

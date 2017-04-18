@@ -5,13 +5,14 @@
  */
 package dk.gruppe7.door;
 
-import collision.CollisionData;
-import collision.CollisionEvent;
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
+import dk.gruppe7.common.Dispatcher;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Direction;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
@@ -54,12 +55,13 @@ public class DoorSystem implements IProcess, IRender
         doorPosition.put(Direction.NORTH, new Vector2(gameData.getScreenWidth()/2, gameData.getScreenHeight()-38));
         doorPosition.put(Direction.EAST, new Vector2(gameData.getScreenWidth()-38, gameData.getScreenHeight()/2));
         
+        Dispatcher.subscribe(this);
     }
 
     @Override
     public void stop(GameData gameData, World world)
     {
-        
+        Dispatcher.unsubscribe(this);
     }
 
     @Override
@@ -72,12 +74,7 @@ public class DoorSystem implements IProcess, IRender
                 currentRoom = world.getCurrentRoom();
                 RoomChange(currentRoom, world);
             }
-        }
-        
-        Collision(world, gameData);
-        
-        
-            
+        }   
     }
     
     int h = 125;
@@ -143,51 +140,40 @@ public class DoorSystem implements IProcess, IRender
         LevelData.getEvents().add(new RoomChangedEvent(newRoom));
         System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
-    
-    private void Collision(World world, GameData gameData)
-    {
-        for(ListIterator<CollisionEvent> iterator = CollisionData.getEvents(gameData.getTickCount()).listIterator(); iterator.hasNext();)
+        
+    ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {        
+        for (Door door : currentDoors)
         {
-            CollisionEvent tempi = iterator.next();
-            for (Door door : currentDoors)
+            if(event.getOtherID().equals(door.getId()))
             {
-                if(tempi.getOtherID().equals(door.getId()))
+                Entity entity = world.getEntityByID(event.getTargetID());
+               
+                Player temp = entity instanceof Player ? (Player)entity : null;
+                //System.out.println(temp);
+                if(temp != null)
                 {
-                    Entity e = world.getEntityByID(tempi.getTargetID());
-                   
-                    Player temp = e instanceof Player ? (Player)e : null;
-                    //System.out.println(temp);
-                    if(temp != null)
+                    switch(((Door)world.getEntityByID(event.getOtherID())).getDirection())
                     {
-                        switch(((Door)world.getEntityByID(tempi.getOtherID())).getDirection())
-                        {
-                            case NORTH:
-                                world.setCurrentRoom(currentRoom.getNorth());
-                                break;
-                            case WEST:
-                                world.setCurrentRoom(currentRoom.getWest());
-                                break;
-                            case SOUTH:
-                                world.setCurrentRoom(currentRoom.getSouth());
-                                break;
-                            case EAST:
-                                world.setCurrentRoom(currentRoom.getEast());
-                                break;
-                        }
-                        currentRoom = world.getCurrentRoom();
-                        temp.setPosition(new Vector2(650,380));
-                        RoomChange(currentRoom, world);
-                        iterator.remove();
+                        case NORTH:
+                            world.setCurrentRoom(currentRoom.getNorth());
+                            break;
+                        case WEST:
+                            world.setCurrentRoom(currentRoom.getWest());
+                            break;
+                        case SOUTH:
+                            world.setCurrentRoom(currentRoom.getSouth());
+                            break;
+                        case EAST:
+                            world.setCurrentRoom(currentRoom.getEast());
+                            break;
                     }
-                    else
-                        iterator.remove();
+                    currentRoom = world.getCurrentRoom();
+                    temp.setPosition(new Vector2(650,380));
+                    RoomChange(currentRoom, world);
                 }
-                
-                
-
             }
         }
-    }
+    };
 
     @Override
     public void render(Graphics g, World world)

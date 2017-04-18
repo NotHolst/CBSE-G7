@@ -5,7 +5,7 @@
  */
 package dk.gruppe7.door;
 
-import dk.gruppe7.common.Entity;
+import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.data.Direction;
 
 /**
