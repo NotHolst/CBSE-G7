@@ -53,7 +53,7 @@ public class BackgroundSystem implements IProcess, IRender{
         screenWidth = gameData.getScreenWidth();
         
         backgroundSound = gameData.getResourceManager().addAudio("backgroundSound", getClass().getResourceAsStream("background.wav"));
-        gameData.getAudioPlayer().play(backgroundSound, .55f);
+        gameData.getAudioPlayer().play(backgroundSound, .65f);
         
     }
 
