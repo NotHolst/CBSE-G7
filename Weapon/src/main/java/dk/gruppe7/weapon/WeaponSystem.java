@@ -55,6 +55,7 @@ public class WeaponSystem implements IProcess, IRender {
     List<ShootingEvent> sEvents = ShootingData.getEvents();
     List<WeaponEvent> wEvents = WeaponData.getEvents();
     Audio crossbowSound;
+    private Weapon currentWeapon = null;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -62,7 +63,7 @@ public class WeaponSystem implements IProcess, IRender {
         Weapon addedWeapon = generateWeapon(CROSSBOW);
         world.addEntity(addedWeapon);
         //addedWeapon.setOwner(world.getEntitiesByClass(Player.class).get(0).getId());
-        
+
         crossbowSound = gameData.getResourceManager().addAudio("crossbowSound", getClass().getResourceAsStream("bow.wav"));
 
         Dispatcher.subscribe(this);
@@ -123,31 +124,31 @@ public class WeaponSystem implements IProcess, IRender {
                 Vector2 directionVel = new Vector2((float) Math.cos(Math.toRadians(weaponEntity.getRotation())), (float) Math.sin(Math.toRadians(weaponEntity.getRotation())));
                 sEvents.add(new ShootingEvent(new Bullet() {
                     {
-                                setOwner(ownerid);
-                                setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
-                                setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
-                                setCollidable(true);
-                                setRotation(weaponEntity.getRotation());
-                        switch (weaponEntity.getType()){
+                        setOwner(ownerid);
+                        setBounds(new Rectangle(weaponEntity.getBarrelRadius(), weaponEntity.getBarrelRadius()));
+                        setPositionCentered(weaponEntity.getPositionCentered().add(weaponEntity.getBarrelOffset().rotated(weaponEntity.getRotation())));
+                        setCollidable(true);
+                        setRotation(weaponEntity.getRotation());
+                        switch (weaponEntity.getType()) {
                             case CROSSBOW:
                                 setBulletType(ShootingType.PROJECTILE);
                                 setAcceleration(1.f);
                                 setVelocity(
-                                    directionVel.mul(666.f)
-                                        .add((ownerVel).div(2))                                       
+                                        directionVel.mul(666.f)
+                                                .add((ownerVel).div(2))
                                 );
-                                
+
                                 gameData.getAudioPlayer().play(crossbowSound);
                                 break;
-                        
+
                             case MACE:
                                 setBulletType(ShootingType.MELEE);
                                 setAcceleration(0.f);
                                 setVelocity(
-                                    directionVel.mul(0.f)
+                                        directionVel.mul(0.f)
                                 );
                                 break;
-                                
+
                         }
                     }
                 }));
@@ -177,16 +178,38 @@ public class WeaponSystem implements IProcess, IRender {
                         break;
                 }
                 i.remove();
+            } else if (mobEvent.getType().equals(mobEvent.getType().DEATH)) {
+                for (Entity e : world.getEntities()) {
+                    if (e instanceof Weapon) {
+                        Weapon weapon;
+                        weapon = (Weapon) e;
+                        UUID ownerUUID = weapon.getOwner();
+                        if (world.getEntityByID(ownerUUID) == null) {
+                            weapon.setCollidable(true);
+                        }
+                    }
+                }
             }
         }
     }
     
-    ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
+    ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
         for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
             if (event.getOtherID().equals(weapon.getId())) {
                 if (world.getEntityByID(event.getTargetID()) instanceof Player) {
+                    if(currentWeapon != null) {
+                        currentWeapon.setOwner(null);
+                        currentWeapon.setCollidable(true);
+                        if (Math.random() <= 0.5) {
+                            currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y - 80));
+                        } else {
+                            currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y + 80));
+                        }
+                    }
+                    
                     weapon.setOwner(event.getTargetID());
                     weapon.setCollidable(false);
+                    currentWeapon = weapon;
                 }
             }
         }
@@ -210,7 +233,7 @@ public class WeaponSystem implements IProcess, IRender {
             {
                 setType(CROSSBOW);
                 switch (type) {
-                                                      
+
                     case MACE:
                         setPosition(new Vector2(200.f, 200.f));
                         setMaxVelocity(0.f);
@@ -224,7 +247,7 @@ public class WeaponSystem implements IProcess, IRender {
                         setCooldown(0);
                         setInputStream(textureMace);
                         break;
-                    
+
                     case CROSSBOW:
                         setPosition(new Vector2(200.f, 200.f));
                         setMaxVelocity(0.f);
@@ -237,7 +260,7 @@ public class WeaponSystem implements IProcess, IRender {
                         setFireRate(0.3f);
                         setCooldown(0);
                         setInputStream(textureCrossbow);
-                        break; 
+                        break;
                 }
             }
         };
