@@ -16,12 +16,10 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.graphics.Graphics;
-import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
-import dk.gruppe7.weaponcommon.WeaponData;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +42,6 @@ public class PlayerSystem implements IProcess, IRender {
     Image health;
 
     UUID playerID;
-    List<WeaponEvent> weaponEvents = WeaponData.getEvents();
 
     KeyEventHandler<KeyPressedEvent> wKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_W) {
         @Override
@@ -233,7 +230,7 @@ public class PlayerSystem implements IProcess, IRender {
 
             if (!aimDirection.equals(Vector2.zero)) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
-                weaponEvents.add(new WeaponEvent(playerEntity.getId()));
+                Dispatcher.post(new WeaponEvent(playerID), world);
             } else if (playerEntity.getVelocity().len() > 50f) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
                 
@@ -247,13 +244,13 @@ public class PlayerSystem implements IProcess, IRender {
                 playerEntity.getAnimator().setInterval(15*1.0f/playerEntity.getVelocity().len());
                 playerEntity.getAnimator().update(gameData);
             }
-
-            for (MobEvent event : MobData.getEvents(gameData.getTickCount())) {
-                if (event.getType() == MobEventType.DEATH) {
-                    playerEntity.incrementScoreBy(1);
-                }
-            }
     }
+    
+    ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {
+        if (event.getType() == MobEventType.DEATH) {
+            ((Player)world.getEntityByID(playerID)).incrementScoreBy(1);
+        }
+    };
 
     ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
         // Bullet collision -- Bullet collides with player the moment it spawns.

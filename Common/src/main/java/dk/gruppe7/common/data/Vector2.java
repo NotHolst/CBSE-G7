@@ -14,6 +14,7 @@ public class Vector2 {
     public float x,y;
     
     public Vector2(){this.x = 0; this.y = 0;}
+    public Vector2(Vector2 other){this.x = other.x; this.y = other.y;}
     public Vector2(float x, float y){this.x = x; this.y = y;}
    
     public Vector2 add(float x, float y) {
@@ -52,6 +53,10 @@ public class Vector2 {
         return ((float) Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)));
     }
     
+    public float distance(Vector2 other){
+        return other.sub(this).len();
+    } 
+    
     public Vector2 normalize() {
         return new Vector2(this.x / this.len(), this.y / this.len());
     }
@@ -77,6 +82,11 @@ public class Vector2 {
         rotatedVector.x = (float) (x * Math.cos(Math.toRadians(rotation)) - y * Math.sin(Math.toRadians(rotation)));
         rotatedVector.y =  (float) (x * Math.sin(Math.toRadians(rotation)) + y * Math.cos(Math.toRadians(rotation)));
         return rotatedVector;
+    }
+    
+    public float getAngleTowards(Vector2 other){
+        Vector2 diff = other.sub(this);
+        return (float) Math.toDegrees(Math.atan2(diff.y, diff.x));
     }
     
     @Override

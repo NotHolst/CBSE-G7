@@ -5,7 +5,10 @@
  */
 package dk.gruppe7.data;
 
+import dk.gruppe7.common.utils.RandomUtil;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -13,6 +16,11 @@ import java.io.Serializable;
  */
 public enum MobType implements Serializable {
     
-    CHAMPION, SUPPORT, DEFENDER, RANGED, MELEE; 
+    RANGED, MELEE; 
     
+    private static ArrayList<MobType> listOfValues = new ArrayList<>(Arrays.asList(values()));
+    
+    public static MobType getRandom() {
+        return listOfValues.get(RandomUtil.GetRandomInteger(listOfValues.size()));
+    }    
 }

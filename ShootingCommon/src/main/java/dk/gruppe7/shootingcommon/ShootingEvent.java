@@ -5,32 +5,25 @@
  */
 package dk.gruppe7.shootingcommon;
 
+import dk.gruppe7.common.annotations.Event;
+
 /**
  *
  * @author Mathies H
  */
+@Event
 public class ShootingEvent
 {
     private Bullet bullet;
-    private long expirationTick;
 
-    @Deprecated
     public ShootingEvent(Bullet bluePrint)
     {
         this.bullet = bluePrint;
     }
-    
-    public ShootingEvent(Bullet bluePrint, long currentTick) {
-        this.bullet = bluePrint;
-        this.expirationTick = currentTick + 2;
-    }
+
 
     public Bullet getBlueprint()
     {
         return bullet;
-    }
-    
-    public long getExpirationTick() {
-        return expirationTick;
     }
 }

@@ -19,8 +19,8 @@ public class Mob extends Entity {
     private MobType type;
     private HealthData health = new HealthData(5);
     private Animator animator;
-    
-    private float wanderTimer;
+    private Entity target;
+    private float attackRange;
 
     public HealthData getHealthData()
     {
@@ -35,20 +35,28 @@ public class Mob extends Entity {
         this.type = type;
     }
 
-    public float getWanderTimer() {
-        return wanderTimer;
-    }
-
-    public void setWanderTimer(float wanderTimer) {
-        this.wanderTimer = wanderTimer;
-    }
-
     public Animator getAnimator() {
         return animator;
     }
 
     public void setAnimator(Animator animator) {
         this.animator = animator;
+    }
+
+    public Entity getTarget() {
+        return target;
+    }
+
+    public void setTarget(Entity target) {
+        this.target = target;
+    }
+
+    public float getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttackRange(float attackRange) {
+        this.attackRange = attackRange;
     }
     
     

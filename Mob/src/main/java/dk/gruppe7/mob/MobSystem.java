@@ -19,18 +19,20 @@ import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
+import dk.gruppe7.common.utils.RandomUtil;
 import dk.gruppe7.data.MobType;
-import static dk.gruppe7.data.MobType.DEFENDER;
 import static dk.gruppe7.data.MobType.MELEE;
 import static dk.gruppe7.data.MobType.RANGED;
-import static dk.gruppe7.data.MobType.SUPPORT;
+import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.mobcommon.Mob;
-import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.mobcommon.MobID;
+import dk.gruppe7.obstaclecommon.Obstacle;
+import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.shootingcommon.Bullet;
+import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -53,6 +55,10 @@ public class MobSystem implements IProcess, IRender {
     Image[] framesSkeleton;
     Image[] framesKnight;
 
+    Player playerEntity = null;
+    
+    private int screenHeight,screenWidth;
+    
     @Override
     public void start(GameData gameData, World world) {
 
@@ -93,20 +99,11 @@ public class MobSystem implements IProcess, IRender {
         textureSkeletonMelee = gameData.getResourceManager().addImage("torso", getClass().getResourceAsStream("SkeletonMelee.png"));
         textureKnightRanged = gameData.getResourceManager().addImage("torso", getClass().getResourceAsStream("KnightRanged.png"));
         health = gameData.getResourceManager().addImage("healthBar", getClass().getResourceAsStream("healthGreen.png"));
-
-        Entity mob;
-        // Add mobs to the world
-
-        for (int i = 0; i < GetRandomNumberBetween(2, 7); i++) {
-            mob = createMob(
-                    GetRandomNumberBetween(0, gameData.getScreenWidth()),
-                    GetRandomNumberBetween(0, gameData.getScreenHeight()),
-                    pickRandomMobType(MobType.class));
-            world.addEntity(mob);
-            MobData.getEvents().add(new MobEvent((Mob) mob, SPAWN));
-        }
-
+        
         Dispatcher.subscribe(this);
+        
+        screenWidth = gameData.getScreenWidth();
+        screenHeight = gameData.getScreenHeight();
     }
 
     @Override
@@ -125,19 +122,37 @@ public class MobSystem implements IProcess, IRender {
                 mob.getAnimator().setInterval(15*1.0f/mob.getVelocity().len());
                 mob.getAnimator().update(gameData);
             }
-
-            if (mob.getWanderTimer() <= 0) {
-                mob.setVelocity(new Vector2(GetRandomNumberBetween(-10, 10), GetRandomNumberBetween(-10, 10)));
-                mob.setWanderTimer(GetRandomNumberBetween(1, 4));
-            } else {
-                mob.setWanderTimer(mob.getWanderTimer() - gameData.getDeltaTime());
+            
+            if(mob.getTarget() != null){
+                //The mob has a target, follow it
+                Vector2 newVel = mob.getTarget().getPositionCentered()
+                        .sub(mob.getPositionCentered())
+                        .normalize().mul(mob.getMaxVelocity());
+                //if the player is within the mobs attack range, stop moving
+                if(mob.getPositionCentered().distance(mob.getTarget().getPositionCentered()) < mob.getAttackRange())
+                    newVel = Vector2.zero;
+                mob.setVelocity(newVel);
+                mob.setRotation(mob.getPositionCentered().getAngleTowards(mob.getTarget().getPositionCentered()));
+                
+                //shoot if they feel like it
+                if(Math.random() < 0.1f){
+                    Dispatcher.post(new WeaponEvent(mob.getId()), world);
+                }
+                
+            }else if(playerEntity == null){
+                //the player entity is not set, find it
+                for(Player p : world.<Player>getEntitiesByClass(Player.class))
+                    playerEntity = p; break;
+            }else{
+                //set the target of the mob as the player entity
+                mob.setTarget(playerEntity);
             }
 
             mob.setPosition(mob.getPosition().add(mob.getVelocity().mul(gameData.getDeltaTime())));
 
             if (mob.getHealthData().getHealth() <= 0) {
                 listOfMobsToBeRemoved.add(mob);
-                MobData.getEvents(gameData.getTickCount()).add(new MobEvent(mob, MobEventType.DEATH, gameData.getTickCount()));
+                Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
             }
         }
     }
@@ -147,7 +162,7 @@ public class MobSystem implements IProcess, IRender {
             if (event.getOtherID().equals(mob.getId())) {
                 Entity hitBy = world.getEntityByID(event.getTargetID());
                 Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
-                if (b != null) {
+                if (b != null && b.getOwner() != mob.getId()) {
                     mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
                     //Temporary: to avoid bullets hitting multiple times
                     b.getDamageData().setDamage(0);
@@ -156,68 +171,71 @@ public class MobSystem implements IProcess, IRender {
         }
     };
     
+    ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {
+        if(world.getEntityByID(event.getTargetID()) instanceof Mob
+        && world.getEntityByID(event.getOtherID()) instanceof Obstacle){
+            Entity targetEntity = world.getEntityByID(event.getTargetID());
+            Entity otherEntity = world.getEntityByID(event.getOtherID());
+
+            float sumY = (targetEntity.getBounds().getWidth() + otherEntity.getBounds().getWidth()) * (targetEntity.getPositionCentered().y - otherEntity.getPositionCentered().y);
+            float sumX = (targetEntity.getBounds().getHeight() + otherEntity.getBounds().getHeight()) * (targetEntity.getPositionCentered().x - otherEntity.getPositionCentered().x);
+            
+            if(sumY > sumX) {
+                    if(sumY > -sumX) {
+                        targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y + otherEntity.getBounds().getHeight() + 0)); 
+                    } else {
+                        targetEntity.setPosition(new Vector2((otherEntity.getPosition().x - targetEntity.getBounds().getWidth() - 0), targetEntity.getPosition().y));
+                    }
+                } else {
+                    if(sumY > -sumX) {
+                        targetEntity.setPosition(new Vector2(otherEntity.getPosition().x + otherEntity.getBounds().getWidth() + 0, targetEntity.getPosition().y));
+                    } else {
+                        targetEntity.setPosition(new Vector2(targetEntity.getPosition().x, otherEntity.getPosition().y - targetEntity.getBounds().getHeight() - 0));
+                }
+            }
+                            
+            targetEntity.setVelocity(Vector2.zero);
+        }
+    };
+    
+    ActionEventHandler<RoomChangedEvent> roomChangeHandler = (event, world) ->{
+        if(event.getRoom().isCleared()) return;
+        spawnMobs(world);
+    };
+    
     ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
         world.removeEntities(listOfMobsToBeRemoved);
         listOfMobsToBeRemoved.clear();
     };
+    
+    private void spawnMobs(World world){
+        for (int i = 0; i < RandomUtil.GetRandomInteger(2, 7); i++) {
+            Entity mob = createMob(
+            new Vector2(
+                    RandomUtil.GetRandomInteger(100, screenWidth-100), 
+                    RandomUtil.GetRandomInteger(100, screenHeight-100)), 
+            MobType.getRandom()
+            );
+            world.addEntity(mob);
+            Dispatcher.post(new MobEvent((Mob) mob, SPAWN), world);
+        }
+    }
 
-    private Entity createMob(float x, float y, MobType type) {
+    private Entity createMob(Vector2 position, MobType type) {
         Mob mob = new Mob();
         MobID.setMobID(mobID = mob.getId());
-        mob.setPosition(new Vector2(x, y));
+        mob.setPosition(new Vector2(position.x, position.y));
         mob.setMobType(type);
-        mob.setMaxVelocity(300.f);
+        mob.setMaxVelocity(1.f);
         mob.setAcceleration(80.f);
         mob.setCollidable(true);
         mob.setBounds(new Rectangle(64, 64));
         mob.setAnimator(new Animator(framesSkeleton, 1.f));
-
-        // Create different types of mobs with different behavior
-        if (type == SUPPORT) {
-            // TO DO
-            System.out.println("Support Mob " + mobID);
-            mob.setMaxVelocity(250.f);
-            mob.setAcceleration(90);
-        }
-
-        if (type == DEFENDER) {
-            // TO DO
-            System.out.println("Defender Mob " + mobID);
-            mob.setMaxVelocity(200.f);
-            mob.setAcceleration(70);
-        }
-
-        if (type == RANGED) {
-            // TO DO
-            System.out.println("Ranged Mob " + mobID);
-            mob.setMaxVelocity(150.f);
-            mob.setAcceleration(50);
-        }
-
-        if (type == MELEE) {
-            // TO DO
-            System.out.println("Melee Mob " + mobID);
-            mob.setMaxVelocity(100.f);
-            mob.setAcceleration(30);
-        }
-
+        mob.setMaxVelocity(250.f);
+        mob.setAcceleration(90);
+        mob.setAttackRange((type == RANGED)?600:50);
+        System.out.println(type);
         return mob;
-    }
-
-    private int GetRandomNumberBetween(int start, int end) {
-        Random r = new Random();
-        return start + r.nextInt(end - start + 1);
-    }
-
-    private float GetRandomNumber(float range) {
-        Random r = new Random();
-        return r.nextFloat() * range;
-    }
-
-    private static <T extends Enum<?>> T pickRandomMobType(Class<T> mobType) {
-        Random r = new Random();
-        int pick = r.nextInt(mobType.getEnumConstants().length);
-        return mobType.getEnumConstants()[pick];
     }
 
     @Override
@@ -227,20 +245,6 @@ public class MobSystem implements IProcess, IRender {
             //Temporary, until we can distinguish between skeletons and knights.
             texture = textureSkeletonRanged;
 
-            /*switch (mob.getMobType()){
-                case MELEE:
-                    texture = textureSkeletonMelee;
-                    break;
-                    
-                default:
-                    //Random selection of texture for the ranged mobs.
-                    Random r = new Random(mob.getId().hashCode());
-                    if(r.nextDouble() >= 0.51){
-                        texture = textureSkeletonRanged;
-                    }
-                    else texture = textureKnightRanged;
-                    break;
-            }*/
             g.drawSprite(
                     /* Position    */mob.getPosition(),
                     /* Size        */ new Vector2(mob.getBounds().getWidth(), mob.getBounds().getHeight()),
