@@ -22,6 +22,15 @@ public class Entity {
     private Rectangle bounds;
     private boolean collidable;
     private InputStream inputStream;
+    private boolean roomPersistent = true;
+
+    public boolean isRoomPersistent() {
+        return roomPersistent;
+    }
+
+    public void setRoomPersistent(boolean roomPersistent) {
+        this.roomPersistent = roomPersistent;
+    }
     
     public UUID getId()
     {

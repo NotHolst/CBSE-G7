@@ -1,11 +1,18 @@
 package dk.gruppe7.common.data;
 
+import java.util.ArrayList;
+
 public class Room {
 
     Room north = null;
     Room east = null;
     Room south = null;
     Room west = null;
+    private ArrayList<Entity> entities = new ArrayList<>();
+
+    public ArrayList<Entity> getEntities() {
+        return entities;
+    }
 
     public Room() {
 

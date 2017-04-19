@@ -19,6 +19,8 @@ import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.powerupcommon.Powerup;
 import dk.gruppe7.common.data.Rectangle;
+import dk.gruppe7.common.data.Room;
+import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,13 +43,10 @@ public class PowerupSystem implements IProcess, IRender {
     ArrayList<Powerup> listOfPowerupsToBeRemoved = new ArrayList<>();
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
     Entity player = null;
+    private ArrayList<Room> roomBeenIn = new ArrayList<>();
 
     @Override
     public void start(GameData gameData, World world) {
-        for (int i = 0; i < 1; i++) {
-            world.addEntity(makePowerup());
-        }
-
         Dispatcher.subscribe(this);
     }
 
@@ -60,6 +59,7 @@ public class PowerupSystem implements IProcess, IRender {
 
     @Override
     public void process(GameData gameData, World world) {
+        
         if (player == null) {
             // finds and sets the player object
             for (Entity element : world.getEntities()) {
@@ -69,6 +69,13 @@ public class PowerupSystem implements IProcess, IRender {
             }
         }
     }
+    
+    ActionEventHandler<RoomChangedEvent> RoomChangeHandler = (event, world) -> {
+        if (!roomBeenIn.contains(world.getCurrentRoom())) {
+            roomBeenIn.add(world.getCurrentRoom());
+            world.addEntity(makePowerup());
+        }
+    };
     
     ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
         Entity targetEntity = world.getEntityByID(event.getTargetID());
@@ -95,10 +102,11 @@ public class PowerupSystem implements IProcess, IRender {
     private Entity makePowerup() {
         return new Powerup() {
             {
-                setPosition(new Vector2(200.f, 50.f));
+                setPosition(new Vector2((float) Math.random() * 500.f + 64, (float) Math.random() * 500.f + 64));
                 setCollidable(true);
                 setBounds(new Rectangle(21, 36));
                 setNewMaxVelocity(666);
+                setRoomPersistent(false);
             }
         };
     }

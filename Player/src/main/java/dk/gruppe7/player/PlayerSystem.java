@@ -307,6 +307,7 @@ public class PlayerSystem implements IProcess, IRender {
                 setAcceleration(100.f);
                 setCollidable(true);
                 setBounds(new Rectangle(64, 64));
+                setRoomPersistent(true);
             }
         };
     }

@@ -14,10 +14,12 @@ import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Rectangle;
+import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Audio;
 import static dk.gruppe7.data.MobType.MELEE;
+import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobData;
 import dk.gruppe7.mobcommon.MobEvent;
@@ -34,6 +36,7 @@ import dk.gruppe7.weaponcommon.WeaponType;
 import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
@@ -56,6 +59,7 @@ public class WeaponSystem implements IProcess, IRender {
     List<WeaponEvent> wEvents = WeaponData.getEvents();
     Audio crossbowSound;
     private Weapon currentWeapon = null;
+    private ArrayList<Room> roomBeenIn = new ArrayList<>();
 
     @Override
     public void start(GameData gameData, World world) {
@@ -156,7 +160,7 @@ public class WeaponSystem implements IProcess, IRender {
             }
         }
         
-        for (ListIterator<MobEvent> i = MobData.getEvents().listIterator(); i.hasNext();) {
+        for (ListIterator<MobEvent> i = MobData.getEvents(gameData.getTickCount()).listIterator(); i.hasNext();) {
             MobEvent mobEvent = i.next();
             if (mobEvent.getType() == MobEventType.SPAWN) {
                 Mob mob = mobEvent.getMob();
@@ -165,12 +169,14 @@ public class WeaponSystem implements IProcess, IRender {
                         Weapon mobWeaponMelee = generateWeapon(MACE);
                         mobWeaponMelee.setOwner(mob.getId());
                         mobWeaponMelee.setCollidable(false);
+                        mobWeaponMelee.setRoomPersistent(true);
                         world.addEntity(mobWeaponMelee);
                         System.out.println("Melee mob equipped with weapon");
                         break;
 
                     default:
                         Weapon mobWeaponRanged = generateWeapon(CROSSBOW);
+                        mobWeaponRanged.setRoomPersistent(true);
                         mobWeaponRanged.setOwner(mob.getId());
                         mobWeaponRanged.setCollidable(false);
                         world.addEntity(mobWeaponRanged);
@@ -186,12 +192,21 @@ public class WeaponSystem implements IProcess, IRender {
                         UUID ownerUUID = weapon.getOwner();
                         if (world.getEntityByID(ownerUUID) == null) {
                             weapon.setCollidable(true);
+                            weapon.setRoomPersistent(false);
                         }
                     }
                 }
             }
         }
     }
+    
+    ActionEventHandler<RoomChangedEvent> RoomChangeHandler = (event, world) -> {
+        if (!roomBeenIn.contains(world.getCurrentRoom())) {
+            roomBeenIn.add(world.getCurrentRoom());
+            world.addEntity(generateWeapon(CROSSBOW));
+        }
+    };
+    
     
     ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
         for(Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
@@ -200,6 +215,7 @@ public class WeaponSystem implements IProcess, IRender {
                     if(currentWeapon != null) {
                         currentWeapon.setOwner(null);
                         currentWeapon.setCollidable(true);
+                        currentWeapon.setRoomPersistent(false);
                         if (Math.random() <= 0.5) {
                             currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition().x, world.getEntityByID(event.getTargetID()).getPosition().y - 80));
                         } else {
@@ -209,11 +225,14 @@ public class WeaponSystem implements IProcess, IRender {
                     
                     weapon.setOwner(event.getTargetID());
                     weapon.setCollidable(false);
+                    weapon.setRoomPersistent(true);
                     currentWeapon = weapon;
                 }
             }
         }
     };
+    
+    
 
     @Override
     public void render(Graphics g, World world) {
@@ -246,10 +265,11 @@ public class WeaponSystem implements IProcess, IRender {
                         setFireRate(0.5f);
                         setCooldown(0);
                         setInputStream(textureMace);
+                        setRoomPersistent(false);
                         break;
 
                     case CROSSBOW:
-                        setPosition(new Vector2(200.f, 200.f));
+                        setPosition(new Vector2((float) Math.random() * 500.f + 64, (float) Math.random() * 500.f + 64));
                         setMaxVelocity(0.f);
                         setAcceleration(0.f);
                         setCollidable(true);
@@ -260,6 +280,7 @@ public class WeaponSystem implements IProcess, IRender {
                         setFireRate(0.3f);
                         setCooldown(0);
                         setInputStream(textureCrossbow);
+                        setRoomPersistent(false);
                         break;
                 }
             }

@@ -134,6 +134,11 @@ public class DoorSystem implements IProcess, IRender
         world.addEntities(currentDoors);
         
         Dispatcher.post(new RoomChangedEvent(newRoom), world);
+        
+        for (int i = world.getCurrentRoom().getEntities().size() - 1; i >= 0; i--) {
+            world.addEntity(world.getCurrentRoom().getEntities().get(i));
+            world.getCurrentRoom().getEntities().remove(i);
+        }
         System.out.println("DoorSystem(RoomChange:143)\t"+"Room Changed");
     }
         
@@ -148,6 +153,19 @@ public class DoorSystem implements IProcess, IRender
                 //System.out.println(temp);
                 if(temp != null)
                 {
+                    // Adding all the entities that are not room persistent to the currentRoom.
+                    for (Entity persistentEntity: world.getEntities()) {
+                        if (!persistentEntity.isRoomPersistent()) {
+                            currentRoom.getEntities().add(persistentEntity);
+                        }
+                    }
+                    // Removing all the entities that are not room persisten from the world.
+                    for (int i = world.getEntities().size() - 1; i >= 0; i--) {
+                        if (!world.getEntities().get(i).isRoomPersistent()) {
+                            world.getEntities().remove(i);
+                        }
+                    }
+                    
                     switch(((Door)world.getEntityByID(event.getOtherID())).getDirection())
                     {
                         case NORTH:
