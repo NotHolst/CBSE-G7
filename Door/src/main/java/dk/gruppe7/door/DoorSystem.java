@@ -163,8 +163,8 @@ public class DoorSystem implements IProcess, IRender {
                                 world.getEntities().remove(i);
                             }
                         }
-                        Door switchDoor = (Door) world.getEntityByID(event.getOtherID());
-                        switch (switchDoor.getDirection()) {
+                        
+                        switch (door.getDirection()) {
                             case NORTH:
                                 world.setCurrentRoom(currentRoom.getNorth());
                                 break;
@@ -178,6 +178,7 @@ public class DoorSystem implements IProcess, IRender {
                                 world.setCurrentRoom(currentRoom.getEast());
                                 break;
                         }
+                        
                         currentRoom = world.getCurrentRoom();
                         player.setPosition(new Vector2(650, 380));
                         RoomChange(currentRoom, world);
