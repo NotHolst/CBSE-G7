@@ -16,6 +16,7 @@ import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
+import dk.gruppe7.damagecommon.DamageEvent;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.util.ArrayList;
@@ -69,9 +70,15 @@ public class BulletSystem implements IProcess, IRender
     };
     
     ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {
-        if(world.isEntityOfClass(event.getOtherID(), Bullet.class) && !world.isEntityOfClass(event.getTargetID(), Bullet.class)) 
-            if(!world.<Bullet>getEntityByID(event.getOtherID()).getOwner().equals(event.getTargetID()))
+        if(world.isEntityOfClass(event.getOtherID(), Bullet.class) && !world.isEntityOfClass(event.getTargetID(), Bullet.class))
+        {
+            Bullet bullet = world.getEntityByID(event.getOtherID());
+            if(!bullet.getOwner().equals(event.getTargetID()))
+            {
                 listOfBulletsToRemove.add(world.getEntityByID(event.getOtherID()));
+                Dispatcher.post(new DamageEvent(bullet.getDamageData(), event.getTargetID()), world);
+            }
+        }     
     };
     
     ActionEventHandler<ShootingEvent> shootingHandler = (event, world) -> {

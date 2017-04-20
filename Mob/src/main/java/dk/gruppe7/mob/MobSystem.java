@@ -20,6 +20,7 @@ import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.RandomUtil;
+import dk.gruppe7.damagecommon.DamageEvent;
 import dk.gruppe7.data.MobType;
 import static dk.gruppe7.data.MobType.RANGED;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
@@ -29,7 +30,6 @@ import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
 import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
-import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -154,18 +154,9 @@ public class MobSystem implements IProcess, IRender {
         }
     }
 
-    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
-        for(Mob mob : world.<Mob>getEntitiesByClass(Mob.class)) {
-            if (event.getOtherID().equals(mob.getId())) {
-                Entity hitBy = world.getEntityByID(event.getTargetID());
-                Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet) hitBy : null;
-                if (b != null && b.getOwner() != mob.getId()) {
-                    mob.getHealthData().setHealth(mob.getHealthData().getHealth() - b.getDamageData().getDamage());
-                    //Temporary: to avoid bullets hitting multiple times
-                    b.getDamageData().setDamage(0);
-                }
-            }
-        }
+    ActionEventHandler<DamageEvent> damageHandler = (event, world) -> {
+        if (world.isEntityOfClass(event.getTarget(), Mob.class))
+            world.<Mob>getEntityByID(event.getTarget()).getHealthData().decreaseHealth(event.getDamageDealt().getDamage());
     };
     
     ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {

@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Bullet extends Entity {
 
     private ShootingType bulletType;
-    private DamageData damage = new DamageData() {{setDamage(1);}};
+    private DamageData damage = new DamageData(1);
     private UUID owner;
     private float despawnTimer = 10;
 
