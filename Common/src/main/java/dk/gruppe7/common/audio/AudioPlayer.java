@@ -6,10 +6,6 @@
 package dk.gruppe7.common.audio;
 
 import dk.gruppe7.common.resources.Audio;
-import java.io.EOFException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
@@ -22,6 +18,7 @@ public class AudioPlayer {
     public void play(Audio audio){
         play(audio, 1);
     }
+    //StackOverflow
     public void play(Audio audio, float volume) {
         try {
             Clip clip = audio.getAudioClip();

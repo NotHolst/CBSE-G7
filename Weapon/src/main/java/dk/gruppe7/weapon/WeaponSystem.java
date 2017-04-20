@@ -22,7 +22,6 @@ import dk.gruppe7.common.resources.Audio;
 import dk.gruppe7.common.utils.RandomUtil;
 import static dk.gruppe7.data.MobType.MELEE;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
-import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.playercommon.Player;
@@ -36,9 +35,6 @@ import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -52,9 +48,9 @@ import org.openide.util.lookup.ServiceProviders;
  */
 public class WeaponSystem implements IProcess, IRender {
 
-    InputStream textureMace = getClass().getResourceAsStream("Mace.png");
-    InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
-    Audio crossbowSound;
+    private InputStream textureMace = getClass().getResourceAsStream("Mace.png");
+    private InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
+    private Audio crossbowSound;
     private Weapon currentWeapon = null;
     private ArrayList<Room> roomBeenIn = new ArrayList<>();
 
@@ -103,7 +99,7 @@ public class WeaponSystem implements IProcess, IRender {
                     mobWeaponMelee.setOwner(event.getMob().getId());
                     mobWeaponMelee.setCollidable(false);
                     world.addEntity(mobWeaponMelee);
-                    System.out.println("Melee mob equipped with weapon");
+                    //System.out.println("Melee mob equipped with weapon");
                     break;
 
                 default:
@@ -111,7 +107,7 @@ public class WeaponSystem implements IProcess, IRender {
                     mobWeaponRanged.setOwner(event.getMob().getId());
                     mobWeaponRanged.setCollidable(false);
                     world.addEntity(mobWeaponRanged);
-                    System.out.println("Ranged mob equipped with weapon");
+                    //System.out.println("Ranged mob equipped with weapon");
                     break;
             }
         } else if (event.getType() == MobEventType.DEATH) {

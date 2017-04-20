@@ -5,7 +5,6 @@
  */
 package dk.gruppe7.obstacle;
 
-import dk.gruppe7.common.eventtypes.CollisionEvent;
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -18,8 +17,6 @@ import dk.gruppe7.obstaclecommon.Obstacle;
 import org.openide.util.lookup.ServiceProvider;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.UUID;
 
 /**

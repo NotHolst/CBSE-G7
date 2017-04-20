@@ -1,11 +1,9 @@
 package dk.gruppe7.common;
 
 import dk.gruppe7.common.data.Entity;
-import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,7 +16,6 @@ public class World {
     
     private int currentLevel;
     private Room currentRoom = null;
-    private HashMap<Point, Point[]> map;
     private List<Entity> entities = new CopyOnWriteArrayList<>(); //Jan bruger hashmap med <entityID (string), Entity>. Det er nok smart ift. lookup af en bestemt entity
     
     public List<Entity> getEntities()

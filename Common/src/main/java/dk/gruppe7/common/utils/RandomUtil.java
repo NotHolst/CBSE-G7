@@ -12,7 +12,7 @@ public class RandomUtil
     
     public static int GetRandomInteger(int min, int max) {
         if(min > max) {
-            throw new IllegalArgumentException("Min cannot be lower than max!");
+            throw new IllegalArgumentException("Min cannot be higher than max!");
         }
         
         return random.nextInt(max + 1 - min) + min;

@@ -1,7 +1,5 @@
 package dk.gruppe7.common.data;
 
-import dk.gruppe7.common.data.Rectangle;
-import dk.gruppe7.common.data.Vector2;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -23,14 +21,6 @@ public class Entity {
     private boolean collidable;
     private InputStream inputStream;
     private boolean roomPersistent = true;
-
-    public boolean isRoomPersistent() {
-        return roomPersistent;
-    }
-
-    public void setRoomPersistent(boolean roomPersistent) {
-        this.roomPersistent = roomPersistent;
-    }
     
     public UUID getId()
     {
@@ -123,6 +113,14 @@ public class Entity {
 
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+    }
+
+    public boolean isRoomPersistent() {
+        return roomPersistent;
+    }
+
+    public void setRoomPersistent(boolean roomPersistent) {
+        this.roomPersistent = roomPersistent;
     }
    
 }

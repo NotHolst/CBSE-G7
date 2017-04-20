@@ -5,9 +5,7 @@
  */
 package dk.gruppe7.common.eventtypes;
 
-import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.annotations.Event;
-import java.util.UUID;
 
 /**
  *
@@ -19,16 +17,5 @@ public class DisposeEvent
     public DisposeEvent() {
         
     }
-    //private UUID target;
-
-    //public DisposeEvent(UUID target, UUID other)
-    //{
-    //    this.target = target;
-    //}
-
-    //public UUID getTargetEntity()
-    //{
-    //    return target;
-    //}
 
 }

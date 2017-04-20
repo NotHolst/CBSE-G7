@@ -21,7 +21,6 @@ import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.weaponcommon.WeaponEvent;
-import java.util.List;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import dk.gruppe7.common.resources.Image;
@@ -239,11 +238,7 @@ public class PlayerSystem implements IProcess, IRender {
                 playerEntity.getAnimator().setInterval(15*1.0f/playerEntity.getVelocity().len());
                 playerEntity.getAnimator().update(gameData);
             }
-            }
-            if(playerEntity.getVelocity().len() > .1f){
-                playerEntity.getAnimator().setInterval(15*1.0f/playerEntity.getVelocity().len());
-                playerEntity.getAnimator().update(gameData);
-            }
+        }    
     }
     
     ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {

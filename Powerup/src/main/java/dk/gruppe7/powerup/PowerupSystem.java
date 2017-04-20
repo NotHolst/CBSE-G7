@@ -14,7 +14,6 @@ import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
-import dk.gruppe7.common.data.Pair;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.powerupcommon.Powerup;
@@ -24,8 +23,6 @@ import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 

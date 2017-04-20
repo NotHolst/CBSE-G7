@@ -21,20 +21,17 @@ import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.RandomUtil;
 import dk.gruppe7.data.MobType;
-import static dk.gruppe7.data.MobType.MELEE;
 import static dk.gruppe7.data.MobType.RANGED;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import static dk.gruppe7.mobcommon.MobEventType.SPAWN;
-import dk.gruppe7.mobcommon.MobID;
 import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -223,7 +220,6 @@ public class MobSystem implements IProcess, IRender {
 
     private Entity createMob(Vector2 position, MobType type) {
         Mob mob = new Mob();
-        MobID.setMobID(mobID = mob.getId());
         mob.setPosition(new Vector2(position.x, position.y));
         mob.setMobType(type);
         mob.setMaxVelocity(1.f);

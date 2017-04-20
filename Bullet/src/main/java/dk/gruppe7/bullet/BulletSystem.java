@@ -12,7 +12,6 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
-import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
@@ -32,8 +31,6 @@ import org.openide.util.lookup.ServiceProvider;
  
 public class BulletSystem implements IProcess, IRender
 {
-    //List<UUID> bullets = new ArrayList<>();
-    //HashMap<UUID, ShootingType> bulletTypes = new HashMap<>();
     List<Bullet> listOfBulletsToRemove = new ArrayList<>();
     
     Image textureCrossbowBolt;
@@ -49,9 +46,8 @@ public class BulletSystem implements IProcess, IRender
     @Override
     public void stop(GameData gameData, World world)
     {
-        world.removeEntities(world.<Bullet>getEntitiesByClass(Bullet.class));
-        
         Dispatcher.unsubscribe(this);
+        world.removeEntities(world.<Bullet>getEntitiesByClass(Bullet.class));
     }
 
     @Override
@@ -78,10 +74,6 @@ public class BulletSystem implements IProcess, IRender
                 listOfBulletsToRemove.add(world.getEntityByID(event.getOtherID()));
     };
     
-    private void makeBullet(Bullet bullet, World world) {
-        world.addEntity(bullet);        
-    }
-
     ActionEventHandler<ShootingEvent> shootingHandler = (event, world) -> {
         world.addEntity(event.getBlueprint());
     };
@@ -89,8 +81,7 @@ public class BulletSystem implements IProcess, IRender
     @Override
     public void render(Graphics g, World world) {
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {
-            if (bullet.getDamageData().getDamage() != 0) //Need to be replaced, temporary fix to make it look like bullets dissapear
-                 g.drawSprite(bullet.getPosition(), new Vector2(17,3), textureCrossbowBolt.getInputStream(), bullet.getRotation(), 5);
+            g.drawSprite(bullet.getPosition(), new Vector2(17,3), textureCrossbowBolt.getInputStream(), bullet.getRotation(), 5);
         }
     }
 }

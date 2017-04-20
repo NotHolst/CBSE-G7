@@ -133,7 +133,6 @@ public class DoorSystem implements IProcess, IRender {
             world.addEntity(world.getCurrentRoom().getEntities().get(i));
             world.getCurrentRoom().getEntities().remove(i);
         }
-        System.out.println("DoorSystem(RoomChange:143)\t" + "Room Changed");
     }
 
     ActionEventHandler<CollisionEvent> collisionHandler = new ActionEventHandler<CollisionEvent>() {
