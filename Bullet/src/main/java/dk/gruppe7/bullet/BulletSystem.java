@@ -69,7 +69,7 @@ public class BulletSystem implements IProcess, IRender
     };
     
     ActionEventHandler<CollisionEvent> collisionHandler = (event, world) -> {
-        if(world.isEntityOfClass(event.getOtherID(), Bullet.class)) 
+        if(world.isEntityOfClass(event.getOtherID(), Bullet.class) && !world.isEntityOfClass(event.getTargetID(), Bullet.class)) 
             if(!world.<Bullet>getEntityByID(event.getOtherID()).getOwner().equals(event.getTargetID()))
                 listOfBulletsToRemove.add(world.getEntityByID(event.getOtherID()));
     };
