@@ -12,6 +12,7 @@ import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Rectangle;
+import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,17 +35,12 @@ public class CollisionSystem implements IProcess {
 
     @Override
     public void process(GameData gameData, World world) {
-        for(Entity target: world.getEntities()) {
-            for(Entity other: world.getEntities()) {
-                /*
-                System.out.println(target.getPosition().x + " | " + target.getPosition().y + " | " 
-                        + target.getBounds().getWidth() + " | " + target.getBounds().getHeight() + " | "
-                        + target.isCollidable());
-                */
-                if(!target.equals(other) && target.isCollidable() && other.isCollidable() && intersects(target, other)) {
-                    //System.out.println("Adding new CollisionEvent");
-                    Dispatcher.post(new CollisionEvent(target.getId(), other.getId()), world);
-                    Dispatcher.post(new CollisionEvent(other.getId(), target.getId()), world);
+        List<Entity> list = world.getEntities();
+        for(int i = 0; i < list.size(); i++) {
+            for(int j = i + 1; j < list.size(); j++) {
+                if(list.get(i).isCollidable() && list.get(j).isCollidable() && intersects(list.get(i), list.get(j))) {
+                    Dispatcher.post(new CollisionEvent(list.get(i).getId(), list.get(j).getId()), world);
+                    Dispatcher.post(new CollisionEvent(list.get(j).getId(), list.get(i).getId()), world);
                 }
             }
         }
