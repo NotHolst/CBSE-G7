@@ -19,6 +19,10 @@ import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.powerupcommon.Powerup;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
+import dk.gruppe7.common.data.VirtualKeyCode;
+import dk.gruppe7.common.eventhandlers.KeyEventHandler;
+import dk.gruppe7.common.eventtypes.KeyPressedEvent;
+import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
@@ -42,6 +46,22 @@ public class PowerupSystem implements IProcess, IRender {
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
     UUID player = null;
     private ArrayList<Room> roomBeenIn = new ArrayList<>();
+    boolean pressingE = false;
+
+    KeyEventHandler<KeyPressedEvent> eKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_E) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            
+            pressingE = event.getState();
+        }
+    };
+
+    KeyEventHandler<KeyReleasedEvent> eKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_E) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            pressingE = event.getState();
+        }
+    };
 
     @Override
     public void start(GameData gameData, World world) {
@@ -51,13 +71,13 @@ public class PowerupSystem implements IProcess, IRender {
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
-        
+
         world.removeEntities(world.<Powerup>getEntitiesByClass(Powerup.class));
     }
 
     @Override
     public void process(GameData gameData, World world) {
-        
+
         if (player == null) {
             // finds and sets the player object
             for (Entity element : world.getEntities()) {
@@ -67,24 +87,24 @@ public class PowerupSystem implements IProcess, IRender {
             }
         }
     }
-    
+
     ActionEventHandler<RoomChangedEvent> RoomChangeHandler = (event, world) -> {
         if (!roomBeenIn.contains(world.getCurrentRoom())) {
             roomBeenIn.add(world.getCurrentRoom());
             world.addEntity(makePowerup());
         }
     };
-    
+
     ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
         Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
-        if (targetEntity instanceof Powerup && event.getOtherID().equals(player)) {
+        if (targetEntity instanceof Powerup && event.getOtherID().equals(player) && pressingE) {
             Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
             world.getEntityByID(player).setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
             listOfPowerupsToBeRemoved.add(powerup);
         }
     };
-    
+
     ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
         world.removeEntities(listOfPowerupsToBeRemoved);
         listOfPowerupsToBeRemoved.clear();
