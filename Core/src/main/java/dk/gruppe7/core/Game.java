@@ -2,30 +2,23 @@ package dk.gruppe7.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dk.gruppe7.common.eventtypes.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
-import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.audio.AudioPlayer;
-import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.DrawCommand;
 import dk.gruppe7.common.graphics.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -37,8 +30,6 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import dk.gruppe7.common.resources.ResourceManager;
-import java.io.File;
-import java.util.Iterator;
 
 /**
  *

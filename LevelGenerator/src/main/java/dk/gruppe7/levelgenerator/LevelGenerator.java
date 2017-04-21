@@ -1,10 +1,12 @@
 package dk.gruppe7.levelgenerator;
 
+import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
+import dk.gruppe7.levelcommon.events.LevelGenerationEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import org.openide.util.lookup.ServiceProvider;
@@ -25,6 +27,7 @@ public class LevelGenerator implements IProcess
         int[][] gridMap = generateGridMap(15);
         Room start = graphifyGridMap(gridMap);
         world.setCurrentRoom(start);
+        Dispatcher.post(new LevelGenerationEvent(), world);
     }
 
     @Override
