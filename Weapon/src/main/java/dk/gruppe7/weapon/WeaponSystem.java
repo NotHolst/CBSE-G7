@@ -39,6 +39,7 @@ import static dk.gruppe7.weaponcommon.WeaponType.CROSSBOW;
 import static dk.gruppe7.weaponcommon.WeaponType.MACE;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -108,11 +109,13 @@ public class WeaponSystem implements IProcess, IRender {
 
             weapon.setCooldown(weapon.getCooldown() - gameData.getDeltaTime()); //Each update lowers the cooldown of the weapon.
         }
+        
+        // drops the currentWeapon if you have one and i pressing g.
         if (currentWeapon != null && pressingG) {
             currentWeapon.setOwner(null);
             currentWeapon.setCollidable(true);
             currentWeapon.setRoomPersistent(false);
-            currentWeapon.setPosition(new Vector2(currentWeapon.getPosition()).add(0, RandomUtil.GetRandomInteger(-80, 80)));
+            currentWeapon.setPosition(new Vector2(currentWeapon.getPosition()).add(0, RandomUtil.GetRandomInteger(-100, 100)));
             currentWeapon = null;
         }
     }
@@ -147,20 +150,12 @@ public class WeaponSystem implements IProcess, IRender {
 
     ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
         if (world.isEntityOfClass(event.getTargetID(), Player.class) && world.isEntityOfClass(event.getOtherID(), Weapon.class) && currentWeapon == null) {
-            if (currentWeapon != null) {
-                currentWeapon.setOwner(null);
-                currentWeapon.setCollidable(true);
-                currentWeapon.setRoomPersistent(false);
-                currentWeapon.setPosition(new Vector2(currentWeapon.getPosition()).add(0, RandomUtil.GetRandomInteger(-80, 80)));
-            }
-
             Weapon weapon = world.<Weapon>getEntityByID(event.getOtherID());
             weapon.setOwner(event.getTargetID());
             weapon.setCollidable(false);
             weapon.setRoomPersistent(true);
             currentWeapon = weapon;
         }
-
     };
 
     ActionEventHandler<WeaponEvent> weaponEventHandler = (event, world) -> {
