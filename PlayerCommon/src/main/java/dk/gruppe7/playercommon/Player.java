@@ -17,7 +17,7 @@ public class Player extends Entity {
     
     private Animator animator;
 
-    private HealthData healthData = new HealthData(10);
+    private HealthData healthData = new HealthData(100);
     private int score = 0;
     
 

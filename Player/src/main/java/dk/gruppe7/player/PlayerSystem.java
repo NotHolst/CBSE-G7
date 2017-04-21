@@ -25,6 +25,7 @@ import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.ConverterUtil;
+import dk.gruppe7.damagecommon.DamageEvent;
 
 @ServiceProvider(service = IProcess.class)
 
@@ -246,23 +247,10 @@ public class PlayerSystem implements IProcess, IRender {
             ((Player)world.getEntityByID(playerID)).incrementScoreBy(1);
         }
     };
-
-    ActionEventHandler<CollisionEvent> bulletCollisionHandler = (event, world) -> {
-        // Bullet collision -- Bullet collides with player the moment it spawns.
-        //if(event.getOtherID().equals(playerID))
-        //{
-        //    Entity hitBy = world.getEntityByID(event.getTargetID());
-        //    Player player = (Player) world.getEntityByID(playerID);
-
-        //    Bullet b = Bullet.class.isInstance(hitBy) ? (Bullet)hitBy : null;
-        //    if(b != null)
-        //    {
-        //        
-        //        player.getHealthData().setHealth(player.getHealthData().getHealth() - b.getDamageData().getDamage());
-        //        //Temporary: to avoid bullets hitting multiple times
-        //        b.getDamageData().setDamage(0);
-        //    }  
-        //}
+    
+    ActionEventHandler<DamageEvent> damageHandler = (event, world) -> {
+        if(event.getTarget().equals(playerID))
+            world.<Player>getEntityByID(playerID).getHealthData().decreaseHealth(event.getDamageDealt().getDamage());
     };
     
     ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {

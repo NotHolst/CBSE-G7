@@ -13,6 +13,11 @@ public class DamageData
 {
     private float damage;
 
+    public DamageData(float damage)
+    {
+        this.damage = damage;
+    }
+
     public float getDamage()
     {
         return damage;
@@ -21,5 +26,10 @@ public class DamageData
     public void setDamage(float damage)
     {
         this.damage = damage;
+    }
+    
+    public DamageData copy()
+    {
+        return new DamageData(damage);
     }
 }

@@ -29,6 +29,11 @@ public class HealthData
     {
         this.health = health;
     }
+    
+    public void decreaseHealth(float amount)
+    {
+        this.health-=amount;
+    }
 
     public float getStartHealth()
     {
