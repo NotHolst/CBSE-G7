@@ -163,7 +163,7 @@ public class DoorSystem implements IProcess, IRender {
                             }
                         }
                         
-                        int distFromEdge = 80;
+                        int distFromEdge = 120;
                         switch (door.getDirection()) {
                             case NORTH:
                                 world.setCurrentRoom(currentRoom.getNorth());
