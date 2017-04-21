@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Room {
 
-    Room north = null;
-    Room east = null;
-    Room south = null;
-    Room west = null;
+    private Room north = null;
+    private Room east = null;
+    private Room south = null;
+    private Room west = null;
     private ArrayList<Entity> entities = new ArrayList<>();
+    
+    private int distanceFromStart;
 
     public ArrayList<Entity> getEntities() {
         return entities;
@@ -78,6 +80,14 @@ public class Room {
 
     public void setCleared(boolean cleared) {
         this.cleared = cleared;
+    }
+
+    public int getDistanceFromStart() {
+        return distanceFromStart;
+    }
+
+    public void setDistanceFromStart(int distanceFromStart) {
+        this.distanceFromStart = distanceFromStart;
     }
     
     

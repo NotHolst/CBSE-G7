@@ -73,7 +73,7 @@ public class ObstacleSystem implements IProcess, IRender {
         bounds[4] = new Obstacle() {
             {
                 setCollidable(true);
-                setPosition(new Vector2(608, 328));
+                setPosition(new Vector2(100, 100));
                 setBounds(new Rectangle(64, 64));
             }
         };

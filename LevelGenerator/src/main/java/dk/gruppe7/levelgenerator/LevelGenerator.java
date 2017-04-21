@@ -119,7 +119,9 @@ public class LevelGenerator implements IProcess
         for(int x = 0; x < grid.length; x++) {
             for(int y = 0; y < grid.length; y++) {
                 if(grid[x][y] == 1) {
-                    roomGridMap[x][y] = new Room();
+                    Room r = new Room();
+                    r.setDistanceFromStart(x+y); // since the first room is always the start room, this distance estimate is good enough
+                    roomGridMap[x][y] = r;
                 }
             }
         }

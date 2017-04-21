@@ -197,7 +197,7 @@ public class MobSystem implements IProcess, IRender {
     
     ActionEventHandler<RoomChangedEvent> roomChangeHandler = (event, world) ->{
         if(event.getRoom().isCleared()) return;
-        spawnMobs(world);
+        //spawnMobs(world);
     };
     
     ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {

@@ -91,6 +91,7 @@
         <module>DamageCommon</module>
         <module>ObstacleCommon</module>
         <module>Background</module>
+        <module>Boss</module>
     </modules>
 
     <properties>

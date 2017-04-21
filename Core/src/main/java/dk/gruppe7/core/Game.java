@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -163,24 +164,37 @@ public class Game implements ApplicationListener{
                         //calculated manually
                     }
                     
-                    batch.draw(
-                            /* Texture   */ tex, 
-                            /* X         */ cmd.getPosition().x, 
-                            /* Y         */ cmd.getPosition().y, 
-                            /* originX   */ cmd.getSize().x/2f, 
-                            /* originY   */ cmd.getSize().y/2f,
-                            /* width     */ cmd.getSize().x, 
-                            /* height    */ cmd.getSize().y, 
-                            /* scaleX    */ 1.f, 
-                            /* scaleY    */ 1.f, 
-                            /* Rotation  */ cmd.getRotation(), 
-                            /* srcX      */ 0, 
-                            /* srcY      */ 0, 
-                            /* srcWidth  */ (int)(tex.getWidth()*repeatX), 
-                            /* srcHeight */ (int)(tex.getHeight()*repeatY), 
-                            /* flipX     */ false, 
-                            /* flipY     */ false
-                    );
+                    Sprite s = new Sprite(tex);
+                    s.setPosition(cmd.getPosition().x, cmd.getPosition().y);
+                    s.setRotation(cmd.getRotation());
+                    s.setSize(cmd.getSize().x, cmd.getSize().y);
+                    s.setOriginCenter();
+                    if(cmd.getSpriteRenderType() == DrawCommand.SpriteRenderMode.REPEAT){
+                        s.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+                        s.setRegionWidth((int) (s.getWidth()/s.getTexture().getWidth()));                        
+                        s.setRegionHeight((int) (s.getTexture().getHeight()*(s.getHeight()/s.getTexture().getHeight())));                        
+                    }
+                    
+                    s.draw(batch);
+                    
+//                    batch.draw(
+//                            /* Texture   */ tex, 
+//                            /* X         */ cmd.getPosition().x, 
+//                            /* Y         */ cmd.getPosition().y, 
+//                            /* originX   */ cmd.getSize().x/2f, 
+//                            /* originY   */ cmd.getSize().y/2f,
+//                            /* width     */ cmd.getSize().x, 
+//                            /* height    */ cmd.getSize().y, 
+//                            /* scaleX    */ 1.f, 
+//                            /* scaleY    */ 1.f, 
+//                            /* Rotation  */ cmd.getRotation(), 
+//                            /* srcX      */ 0, 
+//                            /* srcY      */ 0, 
+//                            /* srcWidth  */ (int)(tex.getWidth()*repeatX), 
+//                            /* srcHeight */ (int)(tex.getHeight()*repeatY), 
+//                            /* flipX     */ false, 
+//                            /* flipY     */ false
+//                    );
                     batch.end();
                     break;
                     

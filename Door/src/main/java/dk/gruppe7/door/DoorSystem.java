@@ -163,24 +163,29 @@ public class DoorSystem implements IProcess, IRender {
                             }
                         }
                         
+                        int distFromEdge = 80;
                         switch (door.getDirection()) {
                             case NORTH:
                                 world.setCurrentRoom(currentRoom.getNorth());
+                                player.setPositionCentered(new Vector2(1280/2, distFromEdge));
                                 break;
                             case WEST:
                                 world.setCurrentRoom(currentRoom.getWest());
+                                player.setPositionCentered(new Vector2(1280-distFromEdge, 720/2));
                                 break;
                             case SOUTH:
                                 world.setCurrentRoom(currentRoom.getSouth());
+                                player.setPositionCentered(new Vector2(1280/2, 720-distFromEdge));
                                 break;
                             case EAST:
                                 world.setCurrentRoom(currentRoom.getEast());
+                                player.setPositionCentered(new Vector2(distFromEdge, 720/2));
                                 break;
                         }
                         
                         currentRoom = world.getCurrentRoom();
-                        player.setPosition(new Vector2(650, 380));
                         RoomChange(currentRoom, world);
+                        System.out.println(currentRoom.getDistanceFromStart());
                     }
                 }
             }
