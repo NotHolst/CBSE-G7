@@ -23,6 +23,7 @@ import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -39,7 +40,7 @@ public class PowerupSystem implements IProcess, IRender {
 
     ArrayList<Powerup> listOfPowerupsToBeRemoved = new ArrayList<>();
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
-    Entity player = null;
+    UUID player = null;
     private ArrayList<Room> roomBeenIn = new ArrayList<>();
 
     @Override
@@ -61,7 +62,7 @@ public class PowerupSystem implements IProcess, IRender {
             // finds and sets the player object
             for (Entity element : world.getEntities()) {
                 if (element instanceof Player) {
-                    player = (Player) element;
+                    player = element.getId();
                 }
             }
         }
@@ -77,9 +78,9 @@ public class PowerupSystem implements IProcess, IRender {
     ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
         Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
-        if (targetEntity instanceof Powerup && event.getOtherID().equals(player.getId())) {
+        if (targetEntity instanceof Powerup && event.getOtherID().equals(player)) {
             Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
-            player.setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
+            world.getEntityByID(player).setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
             listOfPowerupsToBeRemoved.add(powerup);
         }
     };
