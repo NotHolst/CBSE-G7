@@ -27,6 +27,7 @@ public class DrawCommand {
     private String string;
     private float rotation;
     private int zIndex;
+    private boolean filled;
 
     public DrawCommandType getType() {
         return type;
@@ -110,6 +111,14 @@ public class DrawCommand {
 
     public void setzIndex(int zIndex) {
         this.zIndex = zIndex;
+    }
+
+    public boolean isFilled() {
+        return filled;
+    }
+
+    public void setFilled(boolean filled) {
+        this.filled = filled;
     }
     
     

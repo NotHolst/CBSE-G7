@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dk.gruppe7.common.eventtypes.DisposeEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
@@ -40,6 +41,7 @@ public class Game implements ApplicationListener{
     private static OrthographicCamera cam;
     private Graphics graphics;
     private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
     
     private final GameData gameData = new GameData();
     private World world = new World();
@@ -76,6 +78,7 @@ public class Game implements ApplicationListener{
         
         graphics = new Graphics();
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
         
         processorsResult = lookup.lookupResult(IProcess.class);
         processorsResult.addLookupListener(lookupListener);
@@ -192,11 +195,16 @@ public class Game implements ApplicationListener{
                 case STRING: 
                     batch.begin();
 
-                    
+                    font.setColor(cmd.getColor().r, cmd.getColor().g, cmd.getColor().b, cmd.getColor().a);
                     font.draw(batch, cmd.getString(), cmd.getPosition().x, cmd.getPosition().y);
 
                     batch.end();
                     break;
+                case RECTANGLE:
+                    shapeRenderer.begin(cmd.isFilled()?ShapeRenderer.ShapeType.Filled:ShapeRenderer.ShapeType.Line);
+                    shapeRenderer.setColor(cmd.getColor().r, cmd.getColor().g, cmd.getColor().b, cmd.getColor().a);
+                    shapeRenderer.rect(cmd.getPosition().x, cmd.getPosition().y, cmd.getSize().x, cmd.getSize().y);
+                    shapeRenderer.end();
             }
         }
        

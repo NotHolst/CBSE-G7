@@ -92,6 +92,7 @@
         <module>ObstacleCommon</module>
         <module>Background</module>
         <module>Boss</module>
+        <module>DebugTools</module>
     </modules>
 
     <properties>

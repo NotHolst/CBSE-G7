@@ -60,14 +60,49 @@ public class Graphics {
     }
     
     public void drawString(Vector2 position, String string) {
-        drawString(position, string, 1);
+        drawString(position, string, new Color(1,1,1), 1);
     }
     
-    public void drawString(Vector2 position, String string, int zIndex) {
+    public void drawString(Vector2 position, String string, Color color, int zIndex) {
         DrawCommand cmd = new DrawCommand();
         cmd.setString(string);
         cmd.setPosition(position);
         cmd.setType(DrawCommand.DrawCommandType.STRING);
+        cmd.setColor(color);
+        cmd.setzIndex(zIndex);
+        drawCommands.add(cmd);
+    }
+    
+    public void drawRectangle(Vector2 position, Vector2 size, Color color){
+        drawRectangle(position, size, color, true, 0);
+    }
+    public void drawRectangle(Vector2 position, Vector2 size, Color color, boolean filled){
+        drawRectangle(position, size, color, filled, 0);
+    }
+    public void drawRectangle(Vector2 position, Vector2 size, Color color, boolean filled, int zIndex){
+        DrawCommand cmd = new DrawCommand();
+        cmd.setType(DrawCommand.DrawCommandType.RECTANGLE);
+        cmd.setPosition(position);
+        cmd.setSize(size);
+        cmd.setColor(color);
+        cmd.setFilled(filled);
+        cmd.setzIndex(zIndex);
+        drawCommands.add(cmd);
+    }
+    
+    public void drawCircle(Vector2 position, float radius, Color color){
+        drawCircle(position, radius, color, true, 0);
+    }
+    public void drawCircle(Vector2 position, float radius, Color color, boolean filled){
+        drawCircle(position, radius, color, filled, 0);
+    }
+    public void drawCircle(Vector2 position, float radius, Color color, boolean filled, int zIndex){
+        DrawCommand cmd = new DrawCommand();
+        cmd.setType(DrawCommand.DrawCommandType.RECTANGLE);
+        cmd.setPosition(position);
+        cmd.setSize(new Vector2(radius, radius));
+        cmd.setColor(color);
+        cmd.setFilled(filled);
         cmd.setzIndex(zIndex);
         drawCommands.add(cmd);
     }
