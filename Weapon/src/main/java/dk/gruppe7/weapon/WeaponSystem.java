@@ -17,6 +17,10 @@ import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.data.VirtualKeyCode;
+import dk.gruppe7.common.eventhandlers.KeyEventHandler;
+import dk.gruppe7.common.eventtypes.KeyPressedEvent;
+import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Audio;
 import dk.gruppe7.common.utils.RandomUtil;
@@ -53,8 +57,23 @@ public class WeaponSystem implements IProcess, IRender {
     private Audio crossbowSound;
     private Weapon currentWeapon = null;
     private ArrayList<Room> roomBeenIn = new ArrayList<>();
+    private boolean pressingG = false;
 
     private AudioPlayer audioPlayer;
+
+    KeyEventHandler<KeyPressedEvent> gKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_G) {
+        @Override
+        public void call(KeyPressedEvent event) {
+            pressingG = event.getState();
+        }
+    };
+
+    KeyEventHandler<KeyReleasedEvent> gKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_G) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            pressingG = event.getState();
+        }
+    };
 
     @Override
     public void start(GameData gameData, World world) {
@@ -89,6 +108,13 @@ public class WeaponSystem implements IProcess, IRender {
 
             weapon.setCooldown(weapon.getCooldown() - gameData.getDeltaTime()); //Each update lowers the cooldown of the weapon.
         }
+        if (currentWeapon != null && pressingG) {
+            currentWeapon.setOwner(null);
+            currentWeapon.setCollidable(true);
+            currentWeapon.setRoomPersistent(false);
+            currentWeapon.setPosition(new Vector2(currentWeapon.getPosition()).add(0, RandomUtil.GetRandomInteger(-80, 80)));
+            currentWeapon = null;
+        }
     }
 
     ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {
@@ -120,12 +146,12 @@ public class WeaponSystem implements IProcess, IRender {
     };
 
     ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
-        if (world.isEntityOfClass(event.getTargetID(), Player.class) && world.isEntityOfClass(event.getOtherID(), Weapon.class)) {
+        if (world.isEntityOfClass(event.getTargetID(), Player.class) && world.isEntityOfClass(event.getOtherID(), Weapon.class) && currentWeapon == null) {
             if (currentWeapon != null) {
                 currentWeapon.setOwner(null);
                 currentWeapon.setCollidable(true);
                 currentWeapon.setRoomPersistent(false);
-                currentWeapon.setPosition(new Vector2(world.getEntityByID(event.getTargetID()).getPosition()).add(0, RandomUtil.GetRandomInteger(-80, 80)));
+                currentWeapon.setPosition(new Vector2(currentWeapon.getPosition()).add(0, RandomUtil.GetRandomInteger(-80, 80)));
             }
 
             Weapon weapon = world.<Weapon>getEntityByID(event.getOtherID());
@@ -180,7 +206,7 @@ public class WeaponSystem implements IProcess, IRender {
             }
         }
     };
-    
+
     // Will check if we have been in the room before. If we haven't we spawn some new weapons
     ActionEventHandler<RoomChangedEvent> RoomChangeHandler = (event, world) -> {
         if (!roomBeenIn.contains(world.getCurrentRoom())) {
