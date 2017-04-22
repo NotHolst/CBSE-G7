@@ -17,8 +17,6 @@ import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
-import static dk.gruppe7.mobcommon.MobEventType.DEATH;
-import java.util.ListIterator;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -57,7 +55,6 @@ public class DebugToolsSystem implements IProcess, IRender {
     @Override
     public void process(GameData gameData, World world) {
         if(killAllMobs) {
-            System.out.println("killing shit");
             for (Entity entity : world.getEntitiesByClass(Mob.class)) {
                 Mob mob = (Mob) entity;
                 Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
