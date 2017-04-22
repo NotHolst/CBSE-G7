@@ -148,7 +148,6 @@ public class MobSystem implements IProcess, IRender {
             mob.setPosition(mob.getPosition().add(mob.getVelocity().mul(gameData.getDeltaTime())));
 
             if (mob.getHealthData().getHealth() <= 0) {
-                listOfMobsToBeRemoved.add(mob);
                 Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
             }
         }
@@ -189,6 +188,12 @@ public class MobSystem implements IProcess, IRender {
     ActionEventHandler<RoomChangedEvent> roomChangeHandler = (event, world) ->{
         if(event.getRoom().isCleared()) return;
         spawnMobs(world);
+    };
+    
+    ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {
+        if(event.getType().equals(MobEventType.DEATH)) {
+            listOfMobsToBeRemoved.add(event.getMob());
+        }
     };
     
     ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
