@@ -15,13 +15,19 @@ import dk.gruppe7.common.data.Entity;
  */
 public class Powerup extends Entity {
     
-    private float newMaxVelocity; 
+    private PowerupData powerupData;
 
-    public float getNewMaxVelocity() {
-        return newMaxVelocity;
+    public Powerup() {
+        this.powerupData = new PowerupData();
     }
 
-    public void setNewMaxVelocity(float newMaxVelocity) {
-        this.newMaxVelocity = newMaxVelocity;
+    public PowerupData getPowerupData() {
+        return powerupData;
     }
+
+    public void setPowerupData(PowerupData powerupData) {
+        this.powerupData = powerupData;
+    }
+    
+    
 }

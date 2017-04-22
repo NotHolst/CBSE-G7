@@ -26,6 +26,7 @@ import org.openide.util.lookup.ServiceProvider;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.ConverterUtil;
 import dk.gruppe7.damagecommon.DamageEvent;
+import dk.gruppe7.powerupcommon.PowerupEvent;
 
 @ServiceProvider(service = IProcess.class)
 
@@ -239,7 +240,7 @@ public class PlayerSystem implements IProcess, IRender {
                 playerEntity.getAnimator().setInterval(15*1.0f/playerEntity.getVelocity().len());
                 playerEntity.getAnimator().update(gameData);
             }
-        }    
+        }
     }
     
     ActionEventHandler<MobEvent> mobEventHandler = (event, world) -> {
@@ -277,6 +278,11 @@ public class PlayerSystem implements IProcess, IRender {
                             
             targetEntity.setVelocity(Vector2.zero);
         }
+    };
+    
+    ActionEventHandler<PowerupEvent> powerupHandler = (event, world) -> {
+        Player player = (Player) world.getEntityByID(event.getTarget());
+        player.multiplyMaxVelocity(event.getPowerupData().getBoostMaxVelocity());
     };
 
     private Player makePlayer() {

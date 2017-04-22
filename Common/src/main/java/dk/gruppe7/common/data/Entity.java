@@ -85,6 +85,10 @@ public class Entity {
     {
         this.maxVelocity = maxVelocity;
     }
+    
+    public void multiplyMaxVelocity(float multiplier) {
+        this.maxVelocity = this.maxVelocity * multiplier;
+    }
 
     public Rectangle getBounds()
     {

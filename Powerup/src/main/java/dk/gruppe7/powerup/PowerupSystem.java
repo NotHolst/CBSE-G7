@@ -25,6 +25,8 @@ import dk.gruppe7.common.eventtypes.KeyPressedEvent;
 import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
+import dk.gruppe7.powerupcommon.PowerupData;
+import dk.gruppe7.powerupcommon.PowerupEvent;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -86,6 +88,7 @@ public class PowerupSystem implements IProcess, IRender {
                 }
             }
         }
+        
     }
 
     ActionEventHandler<RoomChangedEvent> RoomChangeHandler = (event, world) -> {
@@ -99,8 +102,8 @@ public class PowerupSystem implements IProcess, IRender {
         Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
         if (targetEntity instanceof Powerup && event.getOtherID().equals(player) && pressingE) {
-            Powerup powerup = (Powerup) targetEntity; // we know it is a Powerup so we set it to a Powerup Object type;
-            world.getEntityByID(player).setMaxVelocity(powerup.getNewMaxVelocity()); // sets the new value;
+            Powerup powerup = (Powerup) targetEntity;
+            Dispatcher.post(new PowerupEvent(powerup.getPowerupData(), event.getOtherID()), world);
             listOfPowerupsToBeRemoved.add(powerup);
         }
     };
@@ -120,10 +123,10 @@ public class PowerupSystem implements IProcess, IRender {
     private Entity makePowerup() {
         return new Powerup() {
             {
+                getPowerupData().setBoostMaxVelocity(1.5f);
                 setPosition(new Vector2((float) Math.random() * 500.f + 64, (float) Math.random() * 500.f + 64));
                 setCollidable(true);
                 setBounds(new Rectangle(21, 36));
-                setNewMaxVelocity(666);
                 setRoomPersistent(false);
             }
         };
