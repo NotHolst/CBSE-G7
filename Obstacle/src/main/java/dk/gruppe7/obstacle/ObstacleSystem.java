@@ -87,7 +87,7 @@ public class ObstacleSystem implements IProcess, IRender {
 
     @Override
     public void stop(GameData gameData, World world) {
-
+        world.removeEntities(world.<Obstacle>getEntitiesByClass(Obstacle.class));
     }
 
     @Override

@@ -59,6 +59,7 @@ public class DoorSystem implements IProcess, IRender {
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
+        world.removeEntities(world.<Door>getEntitiesByClass(Door.class));
     }
 
     @Override

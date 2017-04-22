@@ -42,7 +42,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = IProcess.class)
 public class MobSystem implements IProcess, IRender {
 
-    UUID mobID;
     ArrayList<Mob> listOfMobsToBeRemoved = new ArrayList<>();
 
     Image textureSkeletonRanged;
@@ -104,10 +103,7 @@ public class MobSystem implements IProcess, IRender {
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
-        
-        // Remove mobs from world.
-        world.removeEntity(world.getEntityByID(mobID));
-        mobID = null;
+        world.removeEntities(world.<Mob>getEntitiesByClass(Mob.class));
     }
 
     @Override

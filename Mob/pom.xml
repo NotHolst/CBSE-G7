@@ -16,9 +16,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <useOSGiDependencies>true</useOSGiDependencies>
-                    <publicPackages>
-                        <publicPackage>dk.gruppe7.mob</publicPackage>
-                    </publicPackages>
                 </configuration>
             </plugin>
             <plugin>

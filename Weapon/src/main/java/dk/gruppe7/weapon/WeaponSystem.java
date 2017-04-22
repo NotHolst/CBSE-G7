@@ -93,6 +93,7 @@ public class WeaponSystem implements IProcess, IRender {
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
+        world.removeEntities(world.<Weapon>getEntitiesByClass(Weapon.class));
     }
 
     @Override
