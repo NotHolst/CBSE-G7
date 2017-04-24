@@ -130,6 +130,11 @@
             <artifactId>DebugTools</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>MiniMap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
