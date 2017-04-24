@@ -219,10 +219,8 @@ public class PlayerSystem implements IProcess, IRender {
                         .mul(gameData.getDeltaTime())
                 ));
             
-            System.out.println("BEFORE -> " + playerEntity.getPosition());
             playerEntity.setPosition(playerEntity.getPosition().clampX(25, gameData.getScreenWidth() - (playerEntity.getBounds().getWidth() + 25)));
             playerEntity.setPosition(playerEntity.getPosition().clampY(25, gameData.getScreenHeight() - (playerEntity.getBounds().getHeight() + 25)));
-            System.out.println("AFTER -> " + playerEntity.getPosition());
                     
             playerEntity.setVelocity(playerEntity.getVelocity()
                     .add(playerEntity.getAcceleration() * (ConverterUtil.BooleanToInt(east) - ConverterUtil.BooleanToInt(west)),
