@@ -61,6 +61,18 @@ public class Vector2 {
         return new Vector2(this.x / this.len(), this.y / this.len());
     }
     
+    public Vector2 clampX(float min, float max) {
+        return new Vector2(this.x, this.y) {{
+            x = Math.max(min, Math.min(x, max));
+        }};
+    }
+    
+    public Vector2 clampY(float min, float max) {
+        return new Vector2(this.x, this.y) {{
+            y = Math.max(min, Math.min(y, max));
+        }};
+    }
+        
     public Vector2 clampRange(float min, float max) {
         return new Vector2(this.x, this.y) {{
             x = Math.max(min, Math.min(x, max));
