@@ -5,8 +5,10 @@
  */
 package dk.gruppe7.core;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import java.io.File;
 import org.openide.modules.ModuleInstall;
 
 public class Installer extends ModuleInstall {
@@ -26,6 +28,10 @@ public class Installer extends ModuleInstall {
         cfg.y = -1; 
         cfg.useGL30 = false;
         cfg.resizable = false;
+        cfg.addIcon("dk/gruppe7/core/icon128.png", Files.FileType.Local);
+        cfg.addIcon("dk/gruppe7/core/icon32.png", Files.FileType.Local);
+        cfg.addIcon("dk/gruppe7/core/icon16.png", Files.FileType.Local);
+        //Needs 3 sizes of icons, because different operating systems will accomodate different sizes (128x128, 32x32, and 16x16.
         
         new LwjglApplication(game, cfg);
     }

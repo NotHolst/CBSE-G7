@@ -55,6 +55,7 @@ public class WeaponSystem implements IProcess, IRender {
 
     private InputStream textureMace = getClass().getResourceAsStream("Mace.png");
     private InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
+    private InputStream maceSwing = getClass().getResourceAsStream("MaceSwing.png");
     private Audio crossbowSound;
     private Weapon currentWeapon = null;
     private ArrayList<Room> roomBeenIn = new ArrayList<>();
@@ -193,6 +194,7 @@ public class WeaponSystem implements IProcess, IRender {
                                 setVelocity(
                                         directionVel.mul(0.f)
                                 );
+                                setDespawnTimer(.3f);
                                 break;
 
                         }
@@ -228,7 +230,7 @@ public class WeaponSystem implements IProcess, IRender {
     private Weapon generateWeapon(WeaponType type) {
         return new Weapon() {
             {
-                setType(CROSSBOW);
+                setType(type);
                 switch (type) {
 
                     case MACE:
