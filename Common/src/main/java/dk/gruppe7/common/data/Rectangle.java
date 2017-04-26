@@ -47,6 +47,10 @@ public class Rectangle
     public Rectangle move(int x, int y) {
         return new Rectangle(this.x + x, this.y + y, this.width, this.height);
     }
+    
+    public Rectangle mul(int multiplier) {
+        return new Rectangle(this.x, this.y, this.width * multiplier, this.height * multiplier);
+    }
 
     public int getWidth() {
         return width;
