@@ -217,7 +217,6 @@ public class WeaponSystem implements IProcess, IRender {
 
     ActionEventHandler<PowerupEvent> PowerupHandler = (event, world) -> {
         if (event.getPowerupData().getPowerupType() == PowerupType.WEAPON) {
-            System.out.println("boosting firerate");
             if(currentWeapon != null) {
                 currentWeapon.setFireRate(currentWeapon.getFireRate() * event.getPowerupData().getFireRate());
             }
