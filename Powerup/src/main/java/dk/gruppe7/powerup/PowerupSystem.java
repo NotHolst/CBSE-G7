@@ -27,6 +27,7 @@ import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.powerupcommon.PowerupData;
 import dk.gruppe7.powerupcommon.PowerupEvent;
+import dk.gruppe7.powerupcommon.PowerupType;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -77,7 +78,21 @@ public class PowerupSystem implements IProcess, IRender {
     ActionEventHandler<RoomChangedEvent> RoomChangeHandler = (event, world) -> {
         if (!roomBeenIn.contains(world.getCurrentRoom())) {
             roomBeenIn.add(world.getCurrentRoom());
-            world.addEntity(makePowerup());
+            if(Math.random() <= 1) {
+                Powerup powerup = (Powerup) makePowerup();
+                double chance = Math.random();
+                if(chance <= 0.3) { // movementspeedboost
+                    powerup.getPowerupData().setPowerupType(PowerupType.PLAYER);
+                    powerup.getPowerupData().setBoostMaxVelocity(1.5f);
+                } else if (chance >= 0.6) { // size
+                    powerup.getPowerupData().setPowerupType(PowerupType.PLAYER);
+                    powerup.getPowerupData().setBoostBounds(2);
+                } else {
+                    powerup.getPowerupData().setPowerupType(PowerupType.WEAPON);
+                    powerup.getPowerupData().setFireRate(0.5f);
+                }
+                world.addEntity(powerup);
+            }
         }
     };
 
@@ -106,7 +121,6 @@ public class PowerupSystem implements IProcess, IRender {
     private Entity makePowerup() {
         return new Powerup() {
             {
-                getPowerupData().setBoostMaxVelocity(1.5f);
                 setPosition(new Vector2((float) Math.random() * 500.f + 64, (float) Math.random() * 500.f + 64));
                 setCollidable(true);
                 setBounds(new Rectangle(21, 36));

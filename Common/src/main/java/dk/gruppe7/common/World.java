@@ -80,4 +80,9 @@ public class World {
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
     }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+    
 }

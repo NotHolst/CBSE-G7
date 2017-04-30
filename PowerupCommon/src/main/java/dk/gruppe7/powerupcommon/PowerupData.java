@@ -12,11 +12,16 @@ package dk.gruppe7.powerupcommon;
 public class PowerupData {
     
     private float boostMaxVelocity;
+    private int boostBounds;
+    private float fireRate;
+    private PowerupType powerupType;
 
     public PowerupData() {
         this.boostMaxVelocity = 1;
+        this.boostBounds = 1;
+        this.fireRate = 1;
     }
-
+    
     public float getBoostMaxVelocity() {
         return boostMaxVelocity;
     }
@@ -25,5 +30,28 @@ public class PowerupData {
         this.boostMaxVelocity = boostMaxVelocity;
     }
     
-    
+    public int getBoostBounds() {
+        return boostBounds;
+    }
+
+    public void setBoostBounds(int boostBounds) {
+        this.boostBounds = boostBounds;
+    }
+
+    public float getFireRate() {
+        return fireRate;
+    }
+
+    public void setFireRate(float fireRate) {
+        this.fireRate = fireRate;
+    }
+
+    public PowerupType getPowerupType() {
+        return powerupType;
+    }
+
+    public void setPowerupType(PowerupType powerupType) {
+        this.powerupType = powerupType;
+    }
+
 }

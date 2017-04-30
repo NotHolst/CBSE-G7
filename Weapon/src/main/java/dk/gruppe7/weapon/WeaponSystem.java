@@ -30,6 +30,8 @@ import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
 import dk.gruppe7.playercommon.Player;
+import dk.gruppe7.powerupcommon.PowerupEvent;
+import dk.gruppe7.powerupcommon.PowerupType;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 import dk.gruppe7.shootingcommon.ShootingType;
@@ -121,7 +123,7 @@ public class WeaponSystem implements IProcess, IRender {
 
             weapon.setCooldown(weapon.getCooldown() - gameData.getDeltaTime()); //Each update lowers the cooldown of the weapon.
         }
-        
+
         // drops the currentWeapon if you have one and i pressing g.
         if (currentWeapon != null && pressingG) {
             currentWeapon.setOwner(null);
@@ -221,6 +223,14 @@ public class WeaponSystem implements IProcess, IRender {
         if (!roomBeenIn.contains(world.getCurrentRoom())) {
             roomBeenIn.add(world.getCurrentRoom());
             world.addEntity(generateWeapon(CROSSBOW));
+        }
+    };
+
+    ActionEventHandler<PowerupEvent> PowerupHandler = (event, world) -> {
+        if (event.getPowerupData().getPowerupType() == PowerupType.WEAPON) {
+            if(currentWeapon != null) {
+                currentWeapon.setFireRate(currentWeapon.getFireRate() * event.getPowerupData().getFireRate());
+            }
         }
     };
 

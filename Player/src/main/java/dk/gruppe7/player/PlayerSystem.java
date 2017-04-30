@@ -29,6 +29,7 @@ import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.ConverterUtil;
 import dk.gruppe7.damagecommon.DamageEvent;
 import dk.gruppe7.powerupcommon.PowerupEvent;
+import dk.gruppe7.powerupcommon.PowerupType;
 
 @ServiceProvider(service = IProcess.class)
 
@@ -298,8 +299,11 @@ public class PlayerSystem implements IProcess, IRender {
     };
     
     ActionEventHandler<PowerupEvent> powerupHandler = (event, world) -> {
-        Player player = (Player) world.getEntityByID(event.getTarget());
-        player.multiplyMaxVelocity(event.getPowerupData().getBoostMaxVelocity());
+        if (event.getPowerupData().getPowerupType() == PowerupType.PLAYER) {
+            Player player = (Player) world.getEntityByID(event.getTarget());
+            player.multiplyMaxVelocity(event.getPowerupData().getBoostMaxVelocity());
+            player.setBounds(player.getBounds().mul(event.getPowerupData().getBoostBounds()));
+        }
     };
 
     private Player makePlayer() {

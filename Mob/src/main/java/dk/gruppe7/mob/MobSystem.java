@@ -52,6 +52,7 @@ public class MobSystem implements IProcess, IRender {
     Image[] framesKnight;
 
     private int screenHeight,screenWidth;
+    private int difficulty;
     
     @Override
     public void start(GameData gameData, World world) {
@@ -147,6 +148,7 @@ public class MobSystem implements IProcess, IRender {
                 Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
             }
         }
+        difficulty = world.getCurrentLevel();
     }
 
     ActionEventHandler<DamageEvent> damageHandler = (event, world) -> {
@@ -198,7 +200,7 @@ public class MobSystem implements IProcess, IRender {
     };
     
     private void spawnMobs(World world){
-        for (int i = 0; i < RandomUtil.GetRandomInteger(2, 7); i++) {
+        for (int i = 0; i < RandomUtil.GetRandomInteger(2 + (difficulty/3), 7 + (difficulty/2)); i++) {
             Entity mob = createMob(
             new Vector2(
                     RandomUtil.GetRandomInteger(100, screenWidth-100), 
@@ -219,7 +221,7 @@ public class MobSystem implements IProcess, IRender {
         mob.setCollidable(true);
         mob.setBounds(new Rectangle(64, 64));
         mob.setAnimator(new Animator(framesSkeleton, 1.f));
-        mob.setMaxVelocity(250.f);
+        mob.setMaxVelocity(250.f * 1+(difficulty/80));
         mob.setAcceleration(90);
         mob.setAttackRange((type == RANGED)?600:50);
         System.out.println(type);
