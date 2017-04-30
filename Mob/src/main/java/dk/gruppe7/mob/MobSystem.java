@@ -148,7 +148,9 @@ public class MobSystem implements IProcess, IRender {
                 Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
             }
         }
+        if(! (world.getCurrentLevel() > difficulty)){
         difficulty = world.getCurrentLevel();
+        }
     }
 
     ActionEventHandler<DamageEvent> damageHandler = (event, world) -> {
@@ -204,7 +206,7 @@ public class MobSystem implements IProcess, IRender {
             Entity mob = createMob(
             new Vector2(
                     RandomUtil.GetRandomInteger(100, screenWidth-100), 
-                    RandomUtil.GetRandomInteger(100, screenHeight-100)), 
+                    RandomUtil.GetRandomInteger(100, screenHeight-200)), 
             MobType.getRandom()
             );
             world.addEntity(mob);

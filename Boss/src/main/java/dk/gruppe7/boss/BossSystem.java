@@ -14,9 +14,12 @@ import dk.gruppe7.common.data.VirtualKeyCode;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.eventhandlers.KeyEventHandler;
 import dk.gruppe7.common.eventtypes.CollisionEvent;
+import dk.gruppe7.common.eventtypes.DisposeEvent;
 import dk.gruppe7.common.eventtypes.KeyPressedEvent;
+import dk.gruppe7.common.graphics.Color;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Image;
+import dk.gruppe7.damagecommon.DamageEvent;
 import dk.gruppe7.levelcommon.events.LevelChangedEvent;
 import dk.gruppe7.levelcommon.events.LevelGenerationEvent;
 import dk.gruppe7.playercommon.Player;
@@ -36,10 +39,15 @@ public class BossSystem implements IProcess, IRender{
     boolean bossDead = false;
     
     Image shadow;
+    private ArrayList<Boss> disposeList = new ArrayList<>();
+    
+    private int screenHeight,screenWidth;
     
     @Override
     public void start(GameData gameData, World world) {
         shadow = gameData.getResourceManager().addImage("shadow", getClass().getResourceAsStream("Shadow.png"));
+        screenHeight = gameData.getScreenHeight();
+        screenWidth = gameData.getScreenWidth();
         
         findBossRoom(world);
         //world.setCurrentRoom(currentLevelBossRoom);
@@ -47,7 +55,7 @@ public class BossSystem implements IProcess, IRender{
             Boss boss = new Dragon(gameData, world);
             boss.setTarget(world.getEntitiesByClass(Player.class).get(0));
             boss.setRoomPersistent(false);
-            boss.setPositionCentered(new Vector2(gameData.getScreenWidth()/2f, gameData.getScreenHeight()/1.5f));
+            boss.setPositionCentered(new Vector2(gameData.getScreenWidth()/2f, (gameData.getScreenHeight()-100)/2f));
             currentLevelBossRoom.getEntities().add(boss);
         }
         Dispatcher.subscribe(this);
@@ -64,12 +72,24 @@ public class BossSystem implements IProcess, IRender{
             boss.setPosition(boss.getPosition().add(boss.getVelocity().mul(gameData.getDeltaTime())));
             boss.process();
             boss.getAnimator().update(gameData);
+            if(boss.getHealthData().getHealth() <= 0){
+                bossDead=true;
+                disposeList.add(boss);
+            }
         }
         if(bossDead){
             Dispatcher.post(new LevelChangedEvent(), world);
             bossDead = false;
         }
     }
+    ActionEventHandler<DisposeEvent> disposalHandler = (event, world) -> {
+        world.removeEntities(disposeList);
+        disposeList.clear();
+    };
+    ActionEventHandler<DamageEvent> damageHandler = (event, world) -> {
+        if (world.isEntityOfClass(event.getTarget(), Boss.class))
+            world.<Boss>getEntityByID(event.getTarget()).getHealthData().decreaseHealth(event.getDamageDealt().getDamage());
+    };
 
     @Override
     public void render(Graphics g, World world) {
@@ -80,6 +100,8 @@ public class BossSystem implements IProcess, IRender{
         for(Boss boss : world.<Boss>getEntitiesByClass(Boss.class)){
             g.drawSprite(boss.getPosition().add(new Vector2(-12, -25)), new Vector2(150,100), shadow.getInputStream(), 0, -900);
             g.drawSprite(boss.getPosition().sub(new Vector2(26,0)), new Vector2(86*2,128*2), boss.getAnimator().getTexture(), 0, 0, boss.getPositionCentered().y);
+            float hp = (screenWidth/2 - 64) * boss.getHealthData().getHealth() / boss.getHealthData().getStartHealth(); 
+            g.drawRectangle(new Vector2(screenWidth/4, screenHeight-16), new Vector2(hp, 16), new Color(1f,.2f,.2f), true, 9001);
         }
     }
     

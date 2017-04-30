@@ -81,13 +81,10 @@ public class PowerupSystem implements IProcess, IRender {
             if(Math.random() <= 1) {
                 Powerup powerup = (Powerup) makePowerup();
                 double chance = Math.random();
-                if(chance <= 0.3) { // movementspeedboost
+                if(chance <= 0.5) { // movementspeedboost
                     powerup.getPowerupData().setPowerupType(PowerupType.PLAYER);
                     powerup.getPowerupData().setBoostMaxVelocity(1.5f);
-                } else if (chance >= 0.6) { // size
-                    powerup.getPowerupData().setPowerupType(PowerupType.PLAYER);
-                    powerup.getPowerupData().setBoostBounds(2);
-                } else {
+                }else {
                     powerup.getPowerupData().setPowerupType(PowerupType.WEAPON);
                     powerup.getPowerupData().setFireRate(0.5f);
                 }

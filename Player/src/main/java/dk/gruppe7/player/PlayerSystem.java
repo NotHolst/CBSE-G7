@@ -302,7 +302,6 @@ public class PlayerSystem implements IProcess, IRender {
         if (event.getPowerupData().getPowerupType() == PowerupType.PLAYER) {
             Player player = (Player) world.getEntityByID(event.getTarget());
             player.multiplyMaxVelocity(event.getPowerupData().getBoostMaxVelocity());
-            player.setBounds(player.getBounds().mul(event.getPowerupData().getBoostBounds()));
         }
     };
 

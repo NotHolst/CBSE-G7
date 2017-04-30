@@ -17,6 +17,8 @@ import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Animation;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.resources.Image;
+import dk.gruppe7.damagecommon.DamageData;
+import dk.gruppe7.damagecommon.HealthData;
 import dk.gruppe7.shootingcommon.Bullet;
 import dk.gruppe7.shootingcommon.ShootingEvent;
 
@@ -46,9 +48,10 @@ public class Dragon extends Boss{
         
         bulletTexture = gameData.getResourceManager().addImage("minotaurBullet", BossSystem.class.getResourceAsStream("bullet.png"));
         
-        sm.setState(bulletsYay);
+        sm.setState(bulletHell);
         this.setBounds(new Rectangle(120, 86));
         this.setCollidable(true);
+        this.setHealthData(new HealthData(256));
     }
     
     State chaseTarget = new State("Chase Target", new Runnable() {
@@ -71,13 +74,13 @@ public class Dragon extends Boss{
             timeLeft -= gameData.getDeltaTime();
             
             if(diff.len() < 100 || timeLeft <= 0){
-                sm.setState(bulletsYay);
+                sm.setState(bulletHell);
                 first = true;
             }
         }
     });
     
-    State bulletsYay = new State("BulletHell", new Runnable() {
+    State bulletHell = new State("BulletHell", new Runnable() {
         float timeLeft;
         float interval;
         int i;
@@ -108,6 +111,7 @@ public class Dragon extends Boss{
                         setCollidable(true);
                         setOwner(dragon.getId());
                         setTexture(bulletTexture);
+                        setDamage(new DamageData(6));
                     }}), world);
                 interval = .25f;
             }
