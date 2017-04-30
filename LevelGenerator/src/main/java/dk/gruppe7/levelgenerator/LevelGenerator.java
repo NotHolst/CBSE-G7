@@ -26,6 +26,7 @@ public class LevelGenerator implements IProcess
     public void start(GameData gameData, World world) {
         int[][] gridMap = generateGridMap(15);
         Room start = graphifyGridMap(gridMap);
+        start.setCleared(true);
         world.setCurrentRoom(start);
         Dispatcher.post(new LevelGenerationEvent(), world);
     }
@@ -123,7 +124,7 @@ public class LevelGenerator implements IProcess
             for(int y = 0; y < grid.length; y++) {
                 if(grid[x][y] == 1) {
                     Room r = new Room();
-                    r.setDistanceFromStart(x+y); // since the first room is always the start room, this distance estimate is good enough
+                    r.setDistanceFromStart(Math.abs(x+y)); // since the first room is always the start room, this distance estimate is good enough
                     roomGridMap[x][y] = r;
                 }
             }

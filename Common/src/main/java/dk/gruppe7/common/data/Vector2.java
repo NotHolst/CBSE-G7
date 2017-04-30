@@ -101,6 +101,10 @@ public class Vector2 {
         return (float) Math.toDegrees(Math.atan2(diff.y, diff.x));
     }
     
+    public static Vector2 fromAngle(float angle){
+        return new Vector2( (float)Math.cos(angle), (float)Math.sin(angle) );
+    }
+    
     @Override
     public String toString() {
         return String.format("x: %.2f | y: %.2f", this.x, this.y);

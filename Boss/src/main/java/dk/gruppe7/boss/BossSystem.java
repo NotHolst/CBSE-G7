@@ -1,6 +1,8 @@
 
 package dk.gruppe7.boss;
 
+import dk.gruppe7.boss.types.Dragon;
+import dk.gruppe7.bosscommon.Boss;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.IProcess;
@@ -11,10 +13,13 @@ import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.data.VirtualKeyCode;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.eventhandlers.KeyEventHandler;
+import dk.gruppe7.common.eventtypes.CollisionEvent;
 import dk.gruppe7.common.eventtypes.KeyPressedEvent;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.levelcommon.events.LevelChangedEvent;
 import dk.gruppe7.levelcommon.events.LevelGenerationEvent;
+import dk.gruppe7.playercommon.Player;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
@@ -30,9 +35,21 @@ public class BossSystem implements IProcess, IRender{
     Room currentLevelBossRoom;
     boolean bossDead = false;
     
+    Image shadow;
+    
     @Override
     public void start(GameData gameData, World world) {
+        shadow = gameData.getResourceManager().addImage("shadow", getClass().getResourceAsStream("Shadow.png"));
+        
         findBossRoom(world);
+        //world.setCurrentRoom(currentLevelBossRoom);
+        if(currentLevelBossRoom != null){
+            Boss boss = new Dragon(gameData, world);
+            boss.setTarget(world.getEntitiesByClass(Player.class).get(0));
+            boss.setRoomPersistent(false);
+            boss.setPositionCentered(new Vector2(gameData.getScreenWidth()/2f, gameData.getScreenHeight()/1.5f));
+            currentLevelBossRoom.getEntities().add(boss);
+        }
         Dispatcher.subscribe(this);
     }
 
@@ -43,6 +60,11 @@ public class BossSystem implements IProcess, IRender{
 
     @Override
     public void process(GameData gameData, World world) {
+        for(Boss boss : world.<Boss>getEntitiesByClass(Boss.class)){
+            boss.setPosition(boss.getPosition().add(boss.getVelocity().mul(gameData.getDeltaTime())));
+            boss.process();
+            boss.getAnimator().update(gameData);
+        }
         if(bossDead){
             Dispatcher.post(new LevelChangedEvent(), world);
             bossDead = false;
@@ -51,8 +73,14 @@ public class BossSystem implements IProcess, IRender{
 
     @Override
     public void render(Graphics g, World world) {
-        if(world.getCurrentRoom().equals(currentLevelBossRoom))
+        if(world.getCurrentRoom().equals(currentLevelBossRoom)){
             g.drawString(new Vector2(300, 300), "U IN DA BAWS RUM! PRESS ENTER TO DEFEAT THE MIGHTY  BOSS");
+        }
+        
+        for(Boss boss : world.<Boss>getEntitiesByClass(Boss.class)){
+            g.drawSprite(boss.getPosition().add(new Vector2(-12, -25)), new Vector2(150,100), shadow.getInputStream(), 0, -900);
+            g.drawSprite(boss.getPosition().sub(new Vector2(26,0)), new Vector2(86*2,128*2), boss.getAnimator().getTexture(), 0, 0, boss.getPositionCentered().y);
+        }
     }
     
     ActionEventHandler<LevelGenerationEvent> levelGenerationHandler = (event, world) -> {
@@ -105,6 +133,15 @@ public class BossSystem implements IProcess, IRender{
         @Override
         public void call(KeyPressedEvent event) {
             bossDead = true;
+        }
+    };
+    
+    ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {
+        if(world.getEntityByID(event.getOtherID()) instanceof Player && world.getEntityByID(event.getTargetID()) instanceof Boss){
+            Player player = world.getEntityByID(event.getOtherID());
+            Boss boss = world.getEntityByID(event.getTargetID());
+            
+            player.setVelocity(player.getPositionCentered().sub(boss.getPositionCentered()).normalize().mul(1337));
         }
     };
 

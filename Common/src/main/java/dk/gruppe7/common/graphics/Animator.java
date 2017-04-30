@@ -8,47 +8,58 @@ package dk.gruppe7.common.graphics;
 import dk.gruppe7.common.GameData;
 import dk.gruppe7.common.resources.Image;
 import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  *
  * @author haral
  */
 public class Animator {
-    private Image[] frames;
-    private float interval;
+    
+    private Animation animation;
     
     private float timer;
-    private int currentFrame;
     
+    public Animator(){
+        
+    }
+    
+    @Deprecated
     public Animator(Image[] frames, float interval){
-        this.frames = frames;
-        this.interval = interval;
+        animation = new Animation(frames, interval);
     }
     
     public void update(GameData gameData){
+        if(animation == null) return ;
         timer += gameData.getDeltaTime();
-        if(timer >= interval){
+        if(timer >= animation.getInterval()){
             timer = 0;
             incrementFrame();
         }
     }
     public InputStream getTexture(){
-        return frames[currentFrame].getInputStream();
+        if(animation == null) return null;
+        return animation.getFrame();
     }
 
     private void incrementFrame() {
-        currentFrame++;
-        if(currentFrame > frames.length - 1){
-            currentFrame = 0;
+        animation.incrementFrame();
+        if(animation.getCurrentFrame() > animation.length() - 1){
+            animation.setCurrentFrame(0);
         }
     }
 
     public float getInterval() {
-        return interval;
+        return animation.getInterval();
     }
 
     public void setInterval(float interval) {
-        this.interval = interval;
+        if(animation == null) return;
+        animation.setInterval(interval);
+    }
+    
+    public void play(Animation animation){
+        this.animation = animation;
     }
     
     

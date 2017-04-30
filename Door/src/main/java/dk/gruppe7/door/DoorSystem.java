@@ -50,7 +50,7 @@ public class DoorSystem implements IProcess, IRender {
     public void start(GameData gameData, World world) {
         doorPosition.put(Direction.SOUTH, new Vector2(gameData.getScreenWidth() / 2, 38));
         doorPosition.put(Direction.WEST, new Vector2(38, gameData.getScreenHeight() / 2));
-        doorPosition.put(Direction.NORTH, new Vector2(gameData.getScreenWidth() / 2, gameData.getScreenHeight() - 38));
+        doorPosition.put(Direction.NORTH, new Vector2(gameData.getScreenWidth() / 2, gameData.getScreenHeight() - 108));
         doorPosition.put(Direction.EAST, new Vector2(gameData.getScreenWidth() - 38, gameData.getScreenHeight() / 2));
 
         Dispatcher.subscribe(this);
@@ -176,7 +176,7 @@ public class DoorSystem implements IProcess, IRender {
                                 break;
                             case SOUTH:
                                 world.setCurrentRoom(currentRoom.getSouth());
-                                player.setPositionCentered(new Vector2(1280/2, 720-distFromEdge));
+                                player.setPositionCentered(new Vector2(1280/2, 720-distFromEdge-108));
                                 break;
                             case EAST:
                                 world.setCurrentRoom(currentRoom.getEast());

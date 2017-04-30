@@ -108,7 +108,7 @@ public class Game implements ApplicationListener{
     @Override
     public void render() {
         //Clear screen before drawing
-        Gdx.gl.glClearColor(.7f, .7f, .75f, 1);
+        Gdx.gl.glClearColor(.2f, .2f, .2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         
@@ -165,30 +165,11 @@ public class Game implements ApplicationListener{
                     s.setOriginCenter();
                     if(cmd.getSpriteRenderType() == DrawCommand.SpriteRenderMode.REPEAT){
                         s.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-                        s.setRegionWidth((int) (s.getWidth()/s.getTexture().getWidth()));                        
-                        s.setRegionHeight((int) (s.getTexture().getHeight()*(s.getHeight()/s.getTexture().getHeight())));                        
+                        s.setRegionWidth((int)(tex.getWidth()*repeatX));                        
+                        s.setRegionHeight((int)(tex.getHeight()*repeatY));                        
                     }
                     
                     s.draw(batch);
-                    
-//                    batch.draw(
-//                            /* Texture   */ tex, 
-//                            /* X         */ cmd.getPosition().x, 
-//                            /* Y         */ cmd.getPosition().y, 
-//                            /* originX   */ cmd.getSize().x/2f, 
-//                            /* originY   */ cmd.getSize().y/2f,
-//                            /* width     */ cmd.getSize().x, 
-//                            /* height    */ cmd.getSize().y, 
-//                            /* scaleX    */ 1.f, 
-//                            /* scaleY    */ 1.f, 
-//                            /* Rotation  */ cmd.getRotation(), 
-//                            /* srcX      */ 0, 
-//                            /* srcY      */ 0, 
-//                            /* srcWidth  */ (int)(tex.getWidth()*repeatX), 
-//                            /* srcHeight */ (int)(tex.getHeight()*repeatY), 
-//                            /* flipX     */ false, 
-//                            /* flipY     */ false
-//                    );
                     batch.end();
                     break;
                     

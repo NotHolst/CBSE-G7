@@ -17,7 +17,7 @@ public class Entity {
     private Vector2 velocity = new Vector2(0, 0); 
     private float acceleration;
     private float maxVelocity;
-    private Rectangle bounds;
+    private Rectangle bounds = new Rectangle();
     private boolean collidable;
     private InputStream inputStream;
     private boolean roomPersistent = true;

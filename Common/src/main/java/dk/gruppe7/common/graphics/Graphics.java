@@ -11,10 +11,14 @@ public class Graphics {
     private PriorityQueue<DrawCommand> drawCommands = new PriorityQueue<DrawCommand>(new DrawCommandComparator());
       
     public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation){
-        drawSprite(position, size, texture, rotation, 0);
+        drawSprite(position, size, texture, rotation, 0, 0);
     }
     
     public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation, int zIndex){
+        drawSprite(position, size, texture, rotation, zIndex, 0);
+    }
+    
+    public void drawSprite(Vector2 position, Vector2 size, InputStream texture, float rotation, int zIndex, float yPos){
         DrawCommand cmd = new DrawCommand();
         cmd.setPosition(position);
         cmd.setSize(size);
@@ -22,6 +26,7 @@ public class Graphics {
         cmd.setRotation(rotation);
         cmd.setType(DrawCommand.DrawCommandType.SPRITE);
         cmd.setzIndex(zIndex);
+        cmd.setyPos(yPos);
         drawCommands.add(cmd);
     }
     
@@ -74,12 +79,15 @@ public class Graphics {
     }
     
     public void drawRectangle(Vector2 position, Vector2 size, Color color){
-        drawRectangle(position, size, color, true, 0);
+        drawRectangle(position, size, color, true, 0, 0);
     }
     public void drawRectangle(Vector2 position, Vector2 size, Color color, boolean filled){
-        drawRectangle(position, size, color, filled, 0);
+        drawRectangle(position, size, color, filled, 0, 0);
     }
     public void drawRectangle(Vector2 position, Vector2 size, Color color, boolean filled, int zIndex){
+        drawRectangle(position, size, color, filled, zIndex, 0);
+    }
+    public void drawRectangle(Vector2 position, Vector2 size, Color color, boolean filled, int zIndex, float yPos){
         DrawCommand cmd = new DrawCommand();
         cmd.setType(DrawCommand.DrawCommandType.RECTANGLE);
         cmd.setPosition(position);
@@ -87,16 +95,20 @@ public class Graphics {
         cmd.setColor(color);
         cmd.setFilled(filled);
         cmd.setzIndex(zIndex);
+        cmd.setyPos(yPos);
         drawCommands.add(cmd);
     }
     
     public void drawCircle(Vector2 position, float radius, Color color){
-        drawCircle(position, radius, color, true, 0);
+        drawCircle(position, radius, color, true, 0, 0);
     }
     public void drawCircle(Vector2 position, float radius, Color color, boolean filled){
-        drawCircle(position, radius, color, filled, 0);
+        drawCircle(position, radius, color, filled, 0, 0);
     }
     public void drawCircle(Vector2 position, float radius, Color color, boolean filled, int zIndex){
+        drawCircle(position, radius, color, filled, zIndex, 0);
+    }
+    public void drawCircle(Vector2 position, float radius, Color color, boolean filled, int zIndex, float yPos){
         DrawCommand cmd = new DrawCommand();
         cmd.setType(DrawCommand.DrawCommandType.RECTANGLE);
         cmd.setPosition(position);
@@ -104,6 +116,7 @@ public class Graphics {
         cmd.setColor(color);
         cmd.setFilled(filled);
         cmd.setzIndex(zIndex);
+        cmd.setyPos(yPos);
         drawCommands.add(cmd);
     }
     
@@ -117,6 +130,6 @@ class DrawCommandComparator implements Comparator<DrawCommand>{
 
     @Override
     public int compare(DrawCommand o1, DrawCommand o2) {
-        return o1.getzIndex()-o2.getzIndex();
+        return (int) ((o1.getzIndex()-o1.getyPos())-(o2.getzIndex()-o2.getyPos()));
     }
 }

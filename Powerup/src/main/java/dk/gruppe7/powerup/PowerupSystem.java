@@ -48,22 +48,6 @@ public class PowerupSystem implements IProcess, IRender {
     InputStream texture = getClass().getResourceAsStream("speedBoost.png");
     UUID player = null;
     private ArrayList<Room> roomBeenIn = new ArrayList<>();
-    boolean pressingE = false;
-
-    KeyEventHandler<KeyPressedEvent> eKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_E) {
-        @Override
-        public void call(KeyPressedEvent event) {
-            
-            pressingE = event.getState();
-        }
-    };
-
-    KeyEventHandler<KeyReleasedEvent> eKeyReleasedHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_E) {
-        @Override
-        public void call(KeyReleasedEvent event) {
-            pressingE = event.getState();
-        }
-    };
 
     @Override
     public void start(GameData gameData, World world) {
@@ -100,7 +84,7 @@ public class PowerupSystem implements IProcess, IRender {
     ActionEventHandler<CollisionEvent> pickupCollisionHandler = (event, world) -> {
         Entity targetEntity = world.getEntityByID(event.getTargetID());
         // if the targetEntity is a Powerup and the "other" is the player we wanna do something
-        if (targetEntity instanceof Powerup && event.getOtherID().equals(player) && pressingE) {
+        if (targetEntity instanceof Powerup && event.getOtherID().equals(player)) {
             Powerup powerup = (Powerup) targetEntity;
             Dispatcher.post(new PowerupEvent(powerup.getPowerupData(), event.getOtherID()), world);
             listOfPowerupsToBeRemoved.add(powerup);

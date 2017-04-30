@@ -23,6 +23,7 @@ import dk.gruppe7.common.eventtypes.KeyPressedEvent;
 import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.common.resources.Audio;
+import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.RandomUtil;
 import static dk.gruppe7.data.MobType.MELEE;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
@@ -53,8 +54,9 @@ import org.openide.util.lookup.ServiceProviders;
  */
 public class WeaponSystem implements IProcess, IRender {
 
-    private InputStream textureMace = getClass().getResourceAsStream("Mace.png");
-    private InputStream textureCrossbow = getClass().getResourceAsStream("Crossbow.png");
+    private Image textureMace;
+    private Image textureCrossbow;
+    private Image textureArrow;
     private InputStream maceSwing = getClass().getResourceAsStream("MaceSwing.png");
     private Audio crossbowSound;
     private Weapon currentWeapon = null;
@@ -79,6 +81,10 @@ public class WeaponSystem implements IProcess, IRender {
 
     @Override
     public void start(GameData gameData, World world) {
+        crossbowSound = gameData.getResourceManager().addAudio("crossbowSound", getClass().getResourceAsStream("bow.wav"));
+        textureCrossbow = gameData.getResourceManager().addImage("crossbow", getClass().getResourceAsStream("Crossbow.png"));
+        textureMace = gameData.getResourceManager().addImage("mace", getClass().getResourceAsStream("Mace.png"));
+        textureArrow = gameData.getResourceManager().addImage("arrow", getClass().getResourceAsStream("arrow.png"));
 
         audioPlayer = gameData.getAudioPlayer();
 
@@ -86,7 +92,6 @@ public class WeaponSystem implements IProcess, IRender {
         Weapon addedWeapon = generateWeapon(CROSSBOW);
         world.addEntity(addedWeapon);
 
-        crossbowSound = gameData.getResourceManager().addAudio("crossbowSound", getClass().getResourceAsStream("bow.wav"));
 
         Dispatcher.subscribe(this);
     }
@@ -102,8 +107,13 @@ public class WeaponSystem implements IProcess, IRender {
         Entity owner = null;
         for (Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class)) {
             if ((owner = world.getEntityByID(weapon.getOwner())) != null) {
+                Vector2 offset = new Vector2(
+                    weapon.getOwnerOffset().x * owner.getVelocity().normalize().x,
+                    weapon.getOwnerOffset().y * (.5f+owner.getVelocity().normalize().y/2)
+                );
                 weapon.setPositionCentered(owner.getPositionCentered()
-                        .add(weapon.getOwnerOffset().rotated(owner.getRotation()))
+                    .add(weapon.getOwnerOffset().rotated(owner.getRotation())
+)
                 );
 
                 weapon.setRotation(owner.getRotation());
@@ -166,6 +176,7 @@ public class WeaponSystem implements IProcess, IRender {
                 weapon.setCooldown(weapon.getFireRate());
                 ShootingEvent sEvent = new ShootingEvent(new Bullet() {
                     {
+                        setTexture(textureArrow);
                         Vector2 directionVel = new Vector2((float) Math.cos(Math.toRadians(weapon.getRotation())), (float) Math.sin(Math.toRadians(weapon.getRotation())));
                         setOwner(weapon.getOwner());
                         setBounds(new Rectangle(weapon.getBarrelRadius(), weapon.getBarrelRadius()));
@@ -222,7 +233,8 @@ public class WeaponSystem implements IProcess, IRender {
                     /* Size        */ new Vector2(weapon.getBounds().getWidth(), weapon.getBounds().getHeight()),
                     /* InputStream */ weapon.getInputStream(),
                     /* Rotation    */ weapon.getRotation(),
-                    /* LayerHeight */ 4
+                    /* LayerHeight */ 4,
+                    weapon.getPositionCentered().y
             );
         }
     }
@@ -244,7 +256,7 @@ public class WeaponSystem implements IProcess, IRender {
                         setOwnerOffset(new Vector2(16, -8));
                         setFireRate(0.5f);
                         setCooldown(0);
-                        setInputStream(textureMace);
+                        setInputStream(textureMace.getInputStream());
                         setRoomPersistent(false);
                         break;
 
@@ -256,10 +268,10 @@ public class WeaponSystem implements IProcess, IRender {
                         setBounds(new Rectangle(48, 48));
                         setBarrelRadius(19);
                         setBarrelOffset(new Vector2(-4, 8));
-                        setOwnerOffset(new Vector2(16, -8));
+                        setOwnerOffset(new Vector2(16, 0));
                         setFireRate(0.3f);
                         setCooldown(0);
-                        setInputStream(textureCrossbow);
+                        setInputStream(textureCrossbow.getInputStream());
                         setRoomPersistent(false);
                         break;
                 }

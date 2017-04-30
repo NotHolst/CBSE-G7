@@ -1,5 +1,6 @@
 package dk.gruppe7.player;
 
+import dk.gruppe7.bosscommon.Boss;
 import dk.gruppe7.common.eventtypes.CollisionEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.data.Entity;
@@ -14,6 +15,7 @@ import dk.gruppe7.common.data.VirtualKeyCode;
 import dk.gruppe7.common.eventhandlers.KeyEventHandler;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Vector2;
+import dk.gruppe7.common.graphics.Animation;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.common.graphics.Graphics;
 import dk.gruppe7.mobcommon.MobEvent;
@@ -38,9 +40,9 @@ public class PlayerSystem implements IProcess, IRender {
     boolean north, south, west, east;
     Vector2 aimDirection = Vector2.zero;
 
-    Image texture;
-    Image[] frames;
     Image health;
+    
+    Animation walk_up, walk_down, walk_left, walk_right;
 
     UUID playerID;
 
@@ -166,37 +168,40 @@ public class PlayerSystem implements IProcess, IRender {
 
     @Override
     public void start(GameData gameData, World world) {
-
-        frames = new Image[]{
-            gameData.getResourceManager().addImage("frame0", getClass().getResourceAsStream("PlayerFeet0.png")),
-            gameData.getResourceManager().addImage("frame1", getClass().getResourceAsStream("PlayerFeet1.png")),
-            gameData.getResourceManager().addImage("frame2", getClass().getResourceAsStream("PlayerFeet2.png")),
-            gameData.getResourceManager().addImage("frame3", getClass().getResourceAsStream("PlayerFeet3.png")),
-            gameData.getResourceManager().addImage("frame4", getClass().getResourceAsStream("PlayerFeet4.png")),
-            gameData.getResourceManager().addImage("frame5", getClass().getResourceAsStream("PlayerFeet5.png")),
-            gameData.getResourceManager().addImage("frame6", getClass().getResourceAsStream("PlayerFeet6.png")),
-            gameData.getResourceManager().addImage("frame7", getClass().getResourceAsStream("PlayerFeet7.png")),
-            gameData.getResourceManager().addImage("frame8", getClass().getResourceAsStream("PlayerFeet8.png")),
-            gameData.getResourceManager().addImage("frame9", getClass().getResourceAsStream("PlayerFeet9.png")),
-            gameData.getResourceManager().addImage("frame10", getClass().getResourceAsStream("PlayerFeet10.png")),
-            gameData.getResourceManager().addImage("frame11", getClass().getResourceAsStream("PlayerFeet11.png")),
-            gameData.getResourceManager().addImage("frame12", getClass().getResourceAsStream("PlayerFeet12.png"))
-
-        };
+        
+        walk_up = new Animation(new Image[]{
+            gameData.getResourceManager().addImage("walk_up1", getClass().getResourceAsStream("U1.png")),
+            gameData.getResourceManager().addImage("walk_up2", getClass().getResourceAsStream("U2.png")),
+            gameData.getResourceManager().addImage("walk_up3", getClass().getResourceAsStream("U3.png")),
+            gameData.getResourceManager().addImage("walk_up4", getClass().getResourceAsStream("U4.png")),
+        }, .1f);
+        walk_down = new Animation(new Image[]{
+            gameData.getResourceManager().addImage("walk_down1", getClass().getResourceAsStream("D1.png")),
+            gameData.getResourceManager().addImage("walk_down2", getClass().getResourceAsStream("D2.png")),
+            gameData.getResourceManager().addImage("walk_down3", getClass().getResourceAsStream("D3.png")),
+            gameData.getResourceManager().addImage("walk_down4", getClass().getResourceAsStream("D4.png")),
+        }, .1f);
+        walk_left = new Animation(new Image[]{
+            gameData.getResourceManager().addImage("walk_left1", getClass().getResourceAsStream("L1.png")),
+            gameData.getResourceManager().addImage("walk_left2", getClass().getResourceAsStream("L2.png")),
+            gameData.getResourceManager().addImage("walk_left3", getClass().getResourceAsStream("L3.png")),
+            gameData.getResourceManager().addImage("walk_left4", getClass().getResourceAsStream("L4.png")),
+        }, .1f);
+        walk_right = new Animation(new Image[]{
+            gameData.getResourceManager().addImage("walk_right1", getClass().getResourceAsStream("R1.png")),
+            gameData.getResourceManager().addImage("walk_right2", getClass().getResourceAsStream("R2.png")),
+            gameData.getResourceManager().addImage("walk_right3", getClass().getResourceAsStream("R3.png")),
+            gameData.getResourceManager().addImage("walk_right4", getClass().getResourceAsStream("R4.png")),
+        }, .1f);
+        
         health = gameData.getResourceManager().addImage("healthBar", getClass().getResourceAsStream("healthGreen.png"));
         
         Player temp = makePlayer();
         playerID = temp.getId();
-        temp.setAnimator(
-                new Animator(frames, .1f)
-        );
-        world.addEntity(temp);
+        temp.getAnimator().play(walk_down);
+        temp.getAnimator().update(gameData);
 
-        texture = gameData.getResourceManager().addImage("torso", getClass().getResourceAsStream("player.png"));
-        //String torso = "torso";
-        //InputStream stream = getClass().getResourceAsStream("player.png");
-        //Image image = new Image(stream);
-        //texture = 
+        world.addEntity(temp);
 
         Dispatcher.subscribe(this);
     }
@@ -230,15 +235,24 @@ public class PlayerSystem implements IProcess, IRender {
                     )
                     .mul(.9f)
             );
-
+            
+            
 
             if (!aimDirection.equals(Vector2.zero)) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(aimDirection.y, aimDirection.x)));
                 Dispatcher.post(new WeaponEvent(playerID), world);
+                if(aimDirection == Vector2.up) playerEntity.getAnimator().play(walk_up);
+                else if(aimDirection == Vector2.down) playerEntity.getAnimator().play(walk_down);
+                else if(aimDirection == Vector2.left) playerEntity.getAnimator().play(walk_left);
+                else if(aimDirection == Vector2.right) playerEntity.getAnimator().play(walk_right);
             } else if (playerEntity.getVelocity().len() > 50f) {
                 playerEntity.setRotation((float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)));
-                
+                if(north) playerEntity.getAnimator().play(walk_up);
+                else if(south) playerEntity.getAnimator().play(walk_down);
+                else if(west) playerEntity.getAnimator().play(walk_left);
+                else if(east) playerEntity.getAnimator().play(walk_right);
             }
+
             if(playerEntity.getVelocity().len() > .1f){
                 playerEntity.getAnimator().setInterval(15*1.0f/playerEntity.getVelocity().len());
                 playerEntity.getAnimator().update(gameData);
@@ -258,7 +272,7 @@ public class PlayerSystem implements IProcess, IRender {
     };
     
     ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {
-        if(Obstacle.class.isInstance(world.getEntityByID(event.getOtherID())) && event.getTargetID().equals(playerID)){ 
+        if(( Obstacle.class.isInstance(world.getEntityByID(event.getOtherID())) ) && event.getTargetID().equals(playerID)){ 
             Entity targetEntity = world.getEntityByID(event.getTargetID());
             Entity otherEntity = world.getEntityByID(event.getOtherID());
 
@@ -295,7 +309,7 @@ public class PlayerSystem implements IProcess, IRender {
                 setMaxVelocity(300.f);
                 setAcceleration(100.f);
                 setCollidable(true);
-                setBounds(new Rectangle(64, 64));
+                setBounds(new Rectangle(48, 38));
                 setRoomPersistent(true);
             }
         };
@@ -304,21 +318,14 @@ public class PlayerSystem implements IProcess, IRender {
     @Override
     public void render(Graphics g, World world) {
         Player playerEntity = (Player) world.getEntityByID(playerID);
-
-        g.drawSprite(
-                /* Position    */playerEntity.getPosition(),
-                /* Size        */ new Vector2(playerEntity.getBounds().getWidth(), playerEntity.getBounds().getHeight()),
-                /* InputStream */ texture.getInputStream(),
-                /* Rotation    */ playerEntity.getRotation(),
-                /* LayerHeight */ 2
-        );
         
         g.drawSprite(
                 /* Position    */playerEntity.getPosition(),
-                /* Size        */ new Vector2(playerEntity.getBounds().getWidth(), playerEntity.getBounds().getHeight()),
+                /* Size        */ new Vector2(playerEntity.getBounds().getWidth(), playerEntity.getBounds().getWidth()*1.7f),
                 /* InputStream */ playerEntity.getAnimator().getTexture(),
-                /* Rotation    */ (float) Math.toDegrees(Math.atan2(playerEntity.getVelocity().y, playerEntity.getVelocity().x)),
-                /* LayerHeight */ 1
+                /* Rotation    */ 0,
+                /* LayerHeight */ 1,
+                playerEntity.getPositionCentered().y
         );
         
         g.drawString(new Vector2(50, 670), String.format("Score : %d", playerEntity.getScore()));

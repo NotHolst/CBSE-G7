@@ -27,6 +27,7 @@ import java.util.UUID;
 
 public class ObstacleSystem implements IProcess, IRender {
     private InputStream boundsTexture = getClass().getResourceAsStream("roomBound.png");
+    private InputStream wallTexture = getClass().getResourceAsStream("obstacle.png");
     private ArrayList<UUID> listOfBoundsIDs = new ArrayList<>();
 
     private final int boundsWidth = 25;
@@ -64,8 +65,8 @@ public class ObstacleSystem implements IProcess, IRender {
         bounds[3] = new Obstacle() {
             {
                 setCollidable(true);
-                setPosition(new Vector2(boundsWidth, gameData.getScreenHeight() - boundsWidth));
-                setBounds(new Rectangle(gameData.getScreenWidth() - 2 * boundsWidth, boundsWidth));
+                setPosition(new Vector2(boundsWidth, gameData.getScreenHeight() - boundsWidth - 70));
+                setBounds(new Rectangle(gameData.getScreenWidth() - 2 * boundsWidth, boundsWidth+100));
             }
         };
         
@@ -99,11 +100,13 @@ public class ObstacleSystem implements IProcess, IRender {
     public void render(Graphics g, World world) {
         for (UUID uuid : listOfBoundsIDs) {
             Entity bound = world.getEntityByID(uuid);
+            InputStream tex = (bound.getBounds().getWidth() >= bound.getBounds().getHeight())?wallTexture:boundsTexture;
             g.drawRepeatedSprite(
                     /* Position    */bound.getPosition(),
                     /* Size        */ new Vector2(bound.getBounds().getWidth(), bound.getBounds().getHeight()),
-                    /* InputStream */ boundsTexture,
-                    /* Rotation    */ bound.getRotation()
+                    /* InputStream */ tex,
+                    /* Rotation    */ bound.getRotation(),
+                    /* zIndex      */ -5000
             );
         }
     }

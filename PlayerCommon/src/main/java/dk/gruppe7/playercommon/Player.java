@@ -15,7 +15,7 @@ import dk.gruppe7.damagecommon.HealthData;
  */
 public class Player extends Entity {
     
-    private Animator animator;
+    private Animator animator = new Animator();
 
     private HealthData healthData = new HealthData(100);
     private int score = 0;

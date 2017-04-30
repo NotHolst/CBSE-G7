@@ -35,11 +35,14 @@ public class BulletSystem implements IProcess, IRender
     List<Bullet> listOfBulletsToRemove = new ArrayList<>();
     
     Image textureCrossbowBolt;
+    
+    Image shadow;
 
     @Override
     public void start(GameData gameData, World world)
     {
         textureCrossbowBolt = gameData.getResourceManager().addImage("bolt", getClass().getResourceAsStream("CrossbowBolt.png"));
+        shadow = gameData.getResourceManager().addImage("shadow", getClass().getResourceAsStream("Shadow.png"));
 
         Dispatcher.subscribe(this);
     }
@@ -88,7 +91,8 @@ public class BulletSystem implements IProcess, IRender
     @Override
     public void render(Graphics g, World world) {
         for(Bullet bullet : world.<Bullet>getEntitiesByClass(Bullet.class)) {
-            g.drawSprite(bullet.getPosition(), new Vector2(17,3), textureCrossbowBolt.getInputStream(), bullet.getRotation(), 5);
+            g.drawSprite(bullet.getPosition(), new Vector2(16,16), shadow.getInputStream(), bullet.getRotation(), 0, bullet.getPositionCentered().y);
+            g.drawSprite(bullet.getPosition().add(0,30), new Vector2(16,16), bullet.getTexture().getInputStream(), bullet.getRotation(), 0, bullet.getPositionCentered().y);
         }
     }
 }

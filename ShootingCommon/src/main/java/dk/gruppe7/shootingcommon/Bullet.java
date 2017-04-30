@@ -6,6 +6,7 @@
 package dk.gruppe7.shootingcommon;
 
 import dk.gruppe7.common.data.Entity;
+import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.damagecommon.DamageData;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ public class Bullet extends Entity {
     private DamageData damage = new DamageData(1);
     private UUID owner;
     private float despawnTimer = 10;
+    private Image texture;
 
     public UUID getOwner()
     {
@@ -57,5 +59,14 @@ public class Bullet extends Entity {
     public void setDespawnTimer(float despawnTimer) {
         this.despawnTimer = despawnTimer;
     }
+
+    public Image getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Image texture) {
+        this.texture = texture;
+    }
+    
 
 }
