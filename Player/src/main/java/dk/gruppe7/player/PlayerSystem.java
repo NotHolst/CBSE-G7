@@ -1,6 +1,5 @@
 package dk.gruppe7.player;
 
-import dk.gruppe7.bosscommon.Boss;
 import dk.gruppe7.common.eventtypes.CollisionEvent;
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.data.Entity;
@@ -30,8 +29,12 @@ import dk.gruppe7.common.utils.ConverterUtil;
 import dk.gruppe7.damagecommon.DamageEvent;
 import dk.gruppe7.powerupcommon.PowerupEvent;
 import dk.gruppe7.powerupcommon.PowerupType;
+import org.openide.util.lookup.ServiceProviders;
 
-@ServiceProvider(service = IProcess.class)
+@ServiceProviders(value = {
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
+})
 
 /**
  *

@@ -18,12 +18,16 @@ import org.openide.util.lookup.ServiceProvider;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  *
  * @author pc4
  */
-@ServiceProvider(service = IProcess.class)
+@ServiceProviders(value ={
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
+})
 
 public class ObstacleSystem implements IProcess, IRender {
     private InputStream boundsTexture = getClass().getResourceAsStream("roomBound.png");

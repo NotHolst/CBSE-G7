@@ -25,8 +25,8 @@ import org.openide.util.lookup.ServiceProviders;
  * @author haral
  */
 @ServiceProviders(value = {
-    @ServiceProvider(service = IProcess.class)
-    , @ServiceProvider(service = IRender.class)
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
 })
 
 public class BackgroundSystem implements IProcess, IRender{

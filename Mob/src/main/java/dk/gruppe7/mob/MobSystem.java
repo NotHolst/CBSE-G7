@@ -34,12 +34,16 @@ import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  *
  * @author benjaminmlynek
  */
-@ServiceProvider(service = IProcess.class)
+@ServiceProviders(value = {
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
+})
 public class MobSystem implements IProcess, IRender {
 
     ArrayList<Mob> listOfMobsToBeRemoved = new ArrayList<>();

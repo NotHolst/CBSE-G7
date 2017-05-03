@@ -22,13 +22,18 @@ import dk.gruppe7.shootingcommon.ShootingEvent;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 
 /**
  *
  * @author Mathies H
  */
-@ServiceProvider (service = IProcess.class) 
+
+@ServiceProviders(value ={
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
+})
  
 public class BulletSystem implements IProcess, IRender
 {

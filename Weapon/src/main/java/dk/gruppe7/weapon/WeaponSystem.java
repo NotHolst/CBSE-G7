@@ -47,8 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 @ServiceProviders(value = {
-    @ServiceProvider(service = IProcess.class)
-    , @ServiceProvider(service = IRender.class)
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
 })
 /**
  *

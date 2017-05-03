@@ -27,12 +27,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  *
  * @author pc4
  */
-@ServiceProvider(service = IProcess.class)
+@ServiceProviders(value ={
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
+})
 
 public class DoorSystem implements IProcess, IRender {
 

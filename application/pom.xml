@@ -135,6 +135,11 @@
             <artifactId>MiniMap</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SilentUpdater</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
     </dependencies>
 
     <build>
@@ -149,6 +154,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.2</version>
                 <configuration>
+                    <skipTests>true</skipTests>
                     <systemPropertyVariables>
                         <all.clusters>${all.clusters}</all.clusters>
                         <branding.token>${brandingToken}</branding.token>
@@ -171,8 +177,8 @@
                                 <id>extra</id>
                                 <goals>
                                     <goal>autoupdate</goal>
-                                    <goal>webstart-app</goal>
-                                    <goal>build-installers</goal>
+                                    <!--<goal>webstart-app</goal>
+                                    <goal>build-installers</goal>-->
                                 </goals>
                             </execution>
                         </executions>

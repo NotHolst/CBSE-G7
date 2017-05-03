@@ -39,8 +39,8 @@ import org.openide.util.lookup.ServiceProviders;
  * @author JOnes
  */
 @ServiceProviders(value = {
-    @ServiceProvider(service = IProcess.class)
-    , @ServiceProvider(service = IRender.class)
+    @ServiceProvider(service = IProcess.class),
+    @ServiceProvider(service = IRender.class)
 })
 
 public class PowerupSystem implements IProcess, IRender {
