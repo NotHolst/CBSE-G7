@@ -1,5 +1,6 @@
 package dk.gruppe7.core;
 
+import dk.gruppe7.common.GameInputProcessor;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -117,10 +118,8 @@ public class Game implements ApplicationListener{
         //update entities
         update();
         //render entities
-        batch.enableBlending();
+        batch.enableBlending(); // Holst Skal den her være her?
         drawGraphics();
-
-        gameData.incrementTickCount();
     }
     
     public void update(){
@@ -219,7 +218,7 @@ public class Game implements ApplicationListener{
                     processors.add(us);
                 }
             }
-
+            
             // Stop and remove module
             for (IProcess gs : processors) {
                 if (!updated.contains(gs)) {

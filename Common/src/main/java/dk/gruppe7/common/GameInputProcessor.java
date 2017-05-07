@@ -1,4 +1,4 @@
-package dk.gruppe7.core;
+package dk.gruppe7.common;
 
 import dk.gruppe7.common.Dispatcher;
 import dk.gruppe7.common.GameData;
