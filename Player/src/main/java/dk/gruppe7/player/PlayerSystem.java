@@ -27,6 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 import dk.gruppe7.common.resources.Image;
 import dk.gruppe7.common.utils.ConverterUtil;
 import dk.gruppe7.damagecommon.DamageEvent;
+import dk.gruppe7.levelcommon.events.LevelChangedEvent;
 import dk.gruppe7.powerupcommon.PowerupEvent;
 import dk.gruppe7.powerupcommon.PowerupType;
 import org.openide.util.lookup.ServiceProviders;
@@ -222,7 +223,7 @@ public class PlayerSystem implements IProcess, IRender {
     public void process(GameData gameData, World world) {
         Player playerEntity = (Player) world.getEntityByID(playerID);
 
-        if (playerEntity != null && playerEntity.getHealthData().getHealth() > 0) {
+        if (playerEntity != null) {
             playerEntity.setPosition(playerEntity.getPosition()
                 .add(playerEntity.getVelocity()
                         .mul(gameData.getDeltaTime())
@@ -272,7 +273,20 @@ public class PlayerSystem implements IProcess, IRender {
     
     ActionEventHandler<DamageEvent> damageHandler = (event, world) -> {
         if(event.getTarget().equals(playerID))
-            world.<Player>getEntityByID(playerID).getHealthData().decreaseHealth(event.getDamageDealt().getDamage());
+        {
+            Player player =  world.getEntityByID(playerID);
+            player.getHealthData().decreaseHealth(event.getDamageDealt().getDamage());
+            
+            if(player.getHealthData().getHealth() <= 0)
+            {
+                Dispatcher.post(new LevelChangedEvent(), world);
+                player.resetScore();
+                player.getHealthData().setHealth(player.getHealthData().getStartHealth());
+            }
+            
+        }
+        
+        
     };
     
     ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {

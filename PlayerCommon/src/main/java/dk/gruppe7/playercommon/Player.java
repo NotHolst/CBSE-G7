@@ -29,6 +29,11 @@ public class Player extends Entity {
         this.score += score;
     }
     
+    public void resetScore()
+    {
+        this.score = 0;
+    }
+    
     public int getScore() {
         return score;
     }
