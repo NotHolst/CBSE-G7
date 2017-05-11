@@ -14,6 +14,7 @@ import dk.gruppe7.common.IRender;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.eventhandlers.ActionEventHandler;
 import dk.gruppe7.common.data.Direction;
+import dk.gruppe7.common.data.Door;
 import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;

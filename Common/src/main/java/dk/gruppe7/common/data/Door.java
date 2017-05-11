@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dk.gruppe7.door;
+package dk.gruppe7.common.data;
 
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.data.Direction;

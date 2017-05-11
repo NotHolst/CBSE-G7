@@ -6,6 +6,7 @@ import java.io.IOException;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Paths.get;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static junit.framework.TestCase.assertEquals;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -17,9 +18,10 @@ import org.openide.util.Lookup;
 public class ApplicationTest extends NbTestCase {
     
     // Add your own path.
-    private static final String ADD_ALL_MODULES = "PATH/updates_all.xml";
-    private static final String REMOVE_MOB_UPDATES_FILE = "PATH/updates_noMob.xml";
-    private static final String UPDATES_FILE = "PATH/updates.xml";
+    private static final String COMMONS_ONLY = "CBSE-G7/application/src/test/resources/xmledit/updates_commons.xml";
+    private static final String COMMONS_WITH_MOB = "CBSE-G7/application/src/test/resources/xmledit/updates_commons_mob.xml";
+    private static final String ALL = "CBSE-G7/application/src/test/resources/xmledit/updates_all";
+    private static final String CURRENT_UPDATES_FILE = "ligger i CBSE-G7/application/src/test/resources/xmledit/updates_all";
 
     public static Test suite() {
         return NbModuleSuite.createConfiguration(ApplicationTest.class).
@@ -45,50 +47,42 @@ public class ApplicationTest extends NbTestCase {
         // Setup
         List<IProcess> processors = new CopyOnWriteArrayList<>();
         List<IRender> renders = new CopyOnWriteArrayList<>();
-        waitForUpdate(processors, renders);
-        
-        // Pre asserts
-        // Size should be 0 because no modules installed
-        assertEquals("No processors", 0, processors.size());
-        assertEquals("No renders", 0, renders.size());
-        
-        // Test
-        // Load all modules via Update Center
-        copy(get(ADD_ALL_MODULES), get(UPDATES_FILE), REPLACE_EXISTING);
+        //Loading only commons
+        copy(get(COMMONS_ONLY), get(CURRENT_UPDATES_FILE), REPLACE_EXISTING);
         waitForUpdate(processors, renders);
         
         // Assert
-        // The amount of IProcess in the lookup should be 13 when all the modules are loaded.
-        // The amoount of IRender in the lookup should be 11 when all the modules are loaded.
-        assertEquals("13 processors", 13, processors.size());
-        assertEquals("11 renders", 11, renders.size());
+        // The amount of IProcess in the lookup should be 0 
+        // The amoount of IRender in the lookup should be 0 
+        assertEquals("0 processors", 0, processors.size());
+        assertEquals("0 renders", 0, renders.size());
         
-        // Test
-        // Unload Mob module via Update Center
-        copy(get(REMOVE_MOB_UPDATES_FILE), get(UPDATES_FILE), REPLACE_EXISTING);
+        //Loading Mob alone
+        copy(get(COMMONS_WITH_MOB), get(CURRENT_UPDATES_FILE), REPLACE_EXISTING);
         waitForUpdate(processors, renders);
         
         // Assert
-        // The amount of IProcess and IRender should now be 12 and 10, because the Mob module has been unloaded.
-        assertEquals("12 processors", 12, processors.size());
-        assertEquals("10 renders", 10, renders.size());
+        // The amount of IProcess in the lookup should be 1 
+        // The amoount of IRender in the lookup should be 1 
+        assertEquals("1 processors", 1, processors.size());
+        assertEquals("1 renders", 1, renders.size());
         
-        // Test
-        // Load all modules via Update Center
-        copy(get(ADD_ALL_MODULES), get(UPDATES_FILE), REPLACE_EXISTING);
+        //Unloading Mob
+        copy(get(COMMONS_ONLY), get(CURRENT_UPDATES_FILE), REPLACE_EXISTING);
         waitForUpdate(processors, renders);
         
         // Assert
-        // The amount of IProcess in the lookup should be 13 when all the modules are loaded.
-        // The amoount of IRender in the lookup should be 11 when all the modules are loaded.
-        assertEquals("No processors", 0, processors.size());
-        assertEquals("No renders", 0, renders.size());
+        // The amount of IProcess in the lookup should be 0 
+        // The amoount of IRender in the lookup should be 0 
+        assertEquals("0 processors", 0, processors.size());
+        assertEquals("0 renders", 0, renders.size());
+        
         
     }
     
     private void waitForUpdate(List<IProcess> processors, List<IRender> renders) throws InterruptedException {
         // Needs time for SilentUpdate to install all modules.
-        Thread.sleep(10000);
+        Thread.sleep(8000);
         
         processors.clear();
         renders.clear();

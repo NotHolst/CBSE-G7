@@ -60,12 +60,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>MobCommon</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>MobCommon</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        </dependency>        
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
