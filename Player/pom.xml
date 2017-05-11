@@ -94,7 +94,7 @@
         <dependency>
             <groupId>dk.gruppe7</groupId>
             <artifactId>LevelCommon</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
     </dependencies>
