@@ -45,8 +45,8 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
-            <version>RELEASE68</version>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE82</version>
             <type>jar</type>
         </dependency>
     </dependencies>
