@@ -9,6 +9,7 @@ import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.damagecommon.HealthData;
 import dk.gruppe7.data.MobType;
+import java.util.UUID;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Mob extends Entity {
     private MobType type;
     private HealthData health = new HealthData(5);
     private Animator animator;
-    private Entity target;
+    private UUID target;
     private float attackRange;
 
     public HealthData getHealthData()
@@ -43,11 +44,11 @@ public class Mob extends Entity {
         this.animator = animator;
     }
 
-    public Entity getTarget() {
+    public UUID getTarget() {
         return target;
     }
 
-    public void setTarget(Entity target) {
+    public void setTarget(UUID target) {
         this.target = target;
     }
 

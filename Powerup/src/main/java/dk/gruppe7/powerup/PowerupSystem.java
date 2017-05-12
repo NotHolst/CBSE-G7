@@ -58,7 +58,7 @@ public class PowerupSystem implements IProcess, IRender {
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
-        world.removeEntities(world.<Powerup>getEntitiesByClass(Powerup.class));
+        world.removeEntitiesByClassRecursively(Powerup.class);
     }
 
     @Override

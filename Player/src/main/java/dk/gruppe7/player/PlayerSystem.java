@@ -215,8 +215,7 @@ public class PlayerSystem implements IProcess, IRender {
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
 
-        world.removeEntity(world.getEntityByID(playerID));
-        playerID = null;
+        world.removeEntitiesByClassRecursively(Player.class);
     }
 
     @Override
@@ -338,6 +337,10 @@ public class PlayerSystem implements IProcess, IRender {
     @Override
     public void render(Graphics g, World world) {
         Player playerEntity = (Player) world.getEntityByID(playerID);
+        
+        if(playerEntity == null) {
+            return;
+        }
         
         g.drawSprite(
                 /* Position    */playerEntity.getPosition(),

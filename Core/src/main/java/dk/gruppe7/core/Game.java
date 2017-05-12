@@ -63,6 +63,7 @@ public class Game implements ApplicationListener{
     
     @Override
     public void create() {
+
         
         interpreter  = new LibGDXGraphicsInterpreter();
         
@@ -80,7 +81,7 @@ public class Game implements ApplicationListener{
 
         
         processorsResult = lookup.lookupResult(IProcess.class);
-        processorsResult.addLookupListener(lookupListener);
+        processorsResult.addLookupListener(lookupIProcessListener);
         processorsResult.allItems();
         
         for(IProcess processor : lookup.lookupAll(IProcess.class)){
@@ -89,7 +90,7 @@ public class Game implements ApplicationListener{
         }
         
         renderersResult = lookup.lookupResult(IRender.class);
-        renderersResult.addLookupListener(lookupListener);
+        renderersResult.addLookupListener(lookupIRenderListener);
         renderersResult.allItems();
         
         for(IRender renderer : lookup.lookupAll(IRender.class)){
@@ -152,7 +153,7 @@ public class Game implements ApplicationListener{
         //TODO:
     }
     
-    private final LookupListener lookupListener = new LookupListener() {
+    private final LookupListener lookupIProcessListener = new LookupListener() {
         @Override
         public void resultChanged(LookupEvent le) {
 
@@ -174,7 +175,27 @@ public class Game implements ApplicationListener{
                 }
             }
         }
-
     };
     
+    private final LookupListener lookupIRenderListener = new LookupListener() {
+        @Override
+        public void resultChanged(LookupEvent le) {
+
+            Collection<? extends IRender> updated = renderersResult.allInstances();
+
+            for (IRender us : updated) {
+                // Newly installed modules
+                if(!renderers.contains(us)) {
+                    renderers.add(us);
+                }
+            }
+            
+            // Stop and remove module
+            for(IRender gs : renderers) {
+                if(!updated.contains(gs)) {
+                    renderers.remove(gs);
+                }
+            }
+        }
+    };
 }

@@ -32,6 +32,7 @@ import dk.gruppe7.obstaclecommon.Obstacle;
 import dk.gruppe7.playercommon.Player;
 import dk.gruppe7.weaponcommon.WeaponEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -120,17 +121,18 @@ public class MobSystem implements IProcess, IRender {
                 mob.getAnimator().update(gameData);
             }
 
-            if (mob.getTarget() != null) {
+            
+            if (world.<Player>getEntityByID(mob.getTarget()) != null) {
                 //The mob has a target, follow it
-                Vector2 newVel = mob.getTarget().getPositionCentered()
+                Vector2 newVel = world.<Player>getEntityByID(mob.getTarget()).getPositionCentered()
                         .sub(mob.getPositionCentered())
                         .normalize().mul(mob.getMaxVelocity());
                 //if the player is within the mobs attack range, stop moving
-                if (mob.getPositionCentered().distance(mob.getTarget().getPositionCentered()) < mob.getAttackRange()) {
+                if (mob.getPositionCentered().distance(world.<Player>getEntityByID(mob.getTarget()).getPositionCentered()) < mob.getAttackRange()) {
                     newVel = Vector2.zero;
                 }
                 mob.setVelocity(newVel);
-                mob.setRotation(mob.getPositionCentered().getAngleTowards(mob.getTarget().getPositionCentered()));
+                mob.setRotation(mob.getPositionCentered().getAngleTowards(world.<Player>getEntityByID(mob.getTarget()).getPositionCentered()));
 
                 //shoot if they feel like it
                 if (Math.random() < 0.1f) {
@@ -138,12 +140,11 @@ public class MobSystem implements IProcess, IRender {
                 }
 
             } else {
-                Player p = world.<Player>getEntitiesByClass(Player.class).get(0);
-                if (p != null) {
-                    //set the target of the mob as the player entity
-                    mob.setTarget(p);
+                List<Player> listPlayer = world.<Player>getEntitiesByClass(Player.class);
+                
+                if(listPlayer.size() > 0) {
+                    mob.setTarget(listPlayer.get(0).getId());
                 }
-
             }
 
             mob.setPosition(mob.getPosition().add(mob.getVelocity().mul(gameData.getDeltaTime())));

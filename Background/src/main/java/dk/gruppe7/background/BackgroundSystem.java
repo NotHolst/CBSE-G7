@@ -52,8 +52,12 @@ public class BackgroundSystem implements IProcess, IRender{
         screenHeight = gameData.getScreenHeight();
         screenWidth = gameData.getScreenWidth();
         
-        backgroundSound = gameData.getResourceManager().addAudio("backgroundSound", getClass().getResourceAsStream("background.wav"));
-        gameData.getAudioPlayer().play(backgroundSound, .65f);
+        try {
+            backgroundSound = gameData.getResourceManager().addAudio("backgroundSound", getClass().getResourceAsStream("background.wav"));
+            gameData.getAudioPlayer().play(backgroundSound, .65f);
+        } catch (OutOfMemoryError err) {
+            System.out.println("Music could not be loaded!!!");
+        }
         
         Dispatcher.subscribe(this);
     }
@@ -61,6 +65,8 @@ public class BackgroundSystem implements IProcess, IRender{
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
+        
+        gameData.getResourceManager().getAudio("backgroundSound").getAudioClip().stop();
     }
 
     @Override
@@ -79,8 +85,8 @@ public class BackgroundSystem implements IProcess, IRender{
         int tilesX = screenWidth/(tileSize+padding);
         int tilesY = screenHeight/(tileSize+padding);
         
-        for (int x = 0; x < tilesX; x++) {
-            for (int y = 0; y < tilesY; y++) {
+        for (int x = 0; x <= tilesX; x++) {
+            for (int y = 0; y <= tilesY; y++) {
                 g.drawSprite(
                         new Vector2(x*(tileSize+padding), y*(tileSize+padding)),
                         new Vector2(tileSize, tileSize),

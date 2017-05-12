@@ -101,7 +101,7 @@ public class WeaponSystem implements IProcess, IRender {
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
-        world.removeEntities(world.<Weapon>getEntitiesByClass(Weapon.class));
+        world.removeEntitiesByClassRecursively(Weapon.class);
     }
 
     @Override
@@ -125,7 +125,8 @@ public class WeaponSystem implements IProcess, IRender {
         }
 
         // drops the currentWeapon if you have one and i pressing g.
-        if (currentWeapon != null && pressingG) {
+        if (currentWeapon != null && pressingG ||
+            currentWeapon != null && world.<Player>getEntityByID(currentWeapon.getOwner()) == null) {
             currentWeapon.setOwner(null);
             currentWeapon.setCollidable(true);
             currentWeapon.setRoomPersistent(false);
@@ -163,12 +164,14 @@ public class WeaponSystem implements IProcess, IRender {
     };
 
     ActionEventHandler<CollisionEvent> weaponPickupHandler = (event, world) -> {
-        if (world.isEntityOfClass(event.getTargetID(), Player.class) && world.isEntityOfClass(event.getOtherID(), Weapon.class) && currentWeapon == null) {
-            Weapon weapon = world.<Weapon>getEntityByID(event.getOtherID());
-            weapon.setOwner(event.getTargetID());
-            weapon.setCollidable(false);
-            weapon.setRoomPersistent(true);
-            currentWeapon = weapon;
+        if (world.isEntityOfClass(event.getTargetID(), Player.class) && world.isEntityOfClass(event.getOtherID(), Weapon.class)) {
+            if(currentWeapon == null || world.getEntityByID(currentWeapon.getOwner()) == null) {
+                Weapon weapon = world.<Weapon>getEntityByID(event.getOtherID());
+                weapon.setOwner(event.getTargetID());
+                weapon.setCollidable(false);
+                weapon.setRoomPersistent(true);
+                currentWeapon = weapon;   
+            }
         }
     };
 

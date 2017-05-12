@@ -94,7 +94,7 @@ public class BossSystem implements IProcess, IRender{
     @Override
     public void render(Graphics g, World world) {
         if(world.getCurrentRoom().equals(currentLevelBossRoom)){
-            g.drawString(new Vector2(300, 300), "U IN DA BAWS RUM! PRESS ENTER TO DEFEAT THE MIGHTY  BOSS");
+            // g.drawString(new Vector2(300, 300), "U IN DA BAWS RUM! PRESS ENTER TO DEFEAT THE MIGHTY  BOSS");
         }
         
         for(Boss boss : world.<Boss>getEntitiesByClass(Boss.class)){

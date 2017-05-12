@@ -143,7 +143,7 @@ public class DoorSystem implements IProcess, IRender {
     ActionEventHandler<CollisionEvent> collisionHandler = new ActionEventHandler<CollisionEvent>() {
         @Override
         public void call(CollisionEvent event, World world) {
-            if (world.getEntitiesByClass(Mob.class).size() > 0) {
+            if (world.getEntitiesByClass(Mob.class).size() > 0 || currentRoom == null) {
                 return;
             }
             
