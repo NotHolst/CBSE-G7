@@ -93,7 +93,6 @@
         <module>Background</module>
         <module>Boss</module>
         <module>DebugTools</module>
-        <module>MiniMap</module>
         <module>BossCommon</module>
     </modules>
 

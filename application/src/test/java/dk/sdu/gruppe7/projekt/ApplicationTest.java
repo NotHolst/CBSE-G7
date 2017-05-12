@@ -17,9 +17,10 @@ import org.openide.util.Lookup;
 public class ApplicationTest extends NbTestCase {
     
     // Add your own path.
-    private static final String ADD_ALL_MODULES = "PATH/updates_all.xml";
-    private static final String REMOVE_MOB_UPDATES_FILE = "PATH/updates_noMob.xml";
-    private static final String UPDATES_FILE = "PATH/updates.xml";
+    private static final String ALL_MODULES_FILE = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates_w_all.xml";
+    private static final String NO_MODULES_FILE = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates_w_none.xml";
+    private static final String MOB_MODULE_FILE = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates_w_mob.xml";
+    private static final String UPDATES_XML_LOCATION = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates.xml";
 
     public static Test suite() {
         return NbModuleSuite.createConfiguration(ApplicationTest.class).
@@ -35,55 +36,29 @@ public class ApplicationTest extends NbTestCase {
         super(n);
     }
 
-    public void testApplication() throws InterruptedException, IOException {
+    public void testLoadingAndUnloading() throws InterruptedException, IOException {
         // pass if there are merely no warnings/exceptions
         /* Example of using Jelly Tools (additional test dependencies required) with gui(true):
         new ActionNoBlock("Help|About", null).performMenu();
         new NbDialogOperator("About").closeByButton();
          */
         
-        //// Setup
-        //List<IProcess> processors = new CopyOnWriteArrayList<>();
-        //List<IRender> renders = new CopyOnWriteArrayList<>();
-        //waitForUpdate(processors, renders);
-        //
-        //// Pre asserts
-        //// Size should be 0 because no modules installed
-        //assertEquals("No processors", 0, processors.size());
-        //assertEquals("No renders", 0, renders.size());
-        //
-        //// Test
-        //// Load all modules via Update Center
-        //copy(get(ADD_ALL_MODULES), get(UPDATES_FILE), REPLACE_EXISTING);
-        //waitForUpdate(processors, renders);
-        //
-        //// Assert
-        //// The amount of IProcess in the lookup should be 13 when all the modules are loaded.
-        //// The amoount of IRender in the lookup should be 11 when all the modules are loaded.
-        //assertEquals("13 processors", 13, processors.size());
-        //assertEquals("11 renders", 11, renders.size());
-        //
-        //// Test
-        //// Unload Mob module via Update Center
-        //copy(get(REMOVE_MOB_UPDATES_FILE), get(UPDATES_FILE), REPLACE_EXISTING);
-        //waitForUpdate(processors, renders);
-        //
-        //// Assert
-        //// The amount of IProcess and IRender should now be 12 and 10, because the Mob module has been unloaded.
-        //assertEquals("12 processors", 12, processors.size());
-        //assertEquals("10 renders", 10, renders.size());
-        //
-        //// Test
-        //// Load all modules via Update Center
-        //copy(get(ADD_ALL_MODULES), get(UPDATES_FILE), REPLACE_EXISTING);
-        //waitForUpdate(processors, renders);
-        //
-        //// Assert
-        //// The amount of IProcess in the lookup should be 13 when all the modules are loaded.
-        //// The amoount of IRender in the lookup should be 11 when all the modules are loaded.
-        //assertEquals("No processors", 0, processors.size());
-        //assertEquals("No renders", 0, renders.size());
+        List<IProcess> processors = new CopyOnWriteArrayList<>();
+        List<IRender> renders = new CopyOnWriteArrayList<>();
         
+        copy(get(ALL_MODULES_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
+        waitForUpdate(processors, renders);
+        
+        System.out.println(processors.size());
+        System.out.println(renders.size());
+        
+        copy(get(MOB_MODULE_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
+        waitForUpdate(processors, renders);
+        
+        System.out.println(processors.size());
+        System.out.println(renders.size());
+        
+        assertEquals(true, true);
     }
     
     private void waitForUpdate(List<IProcess> processors, List<IRender> renders) throws InterruptedException {
