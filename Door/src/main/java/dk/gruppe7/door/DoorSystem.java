@@ -142,6 +142,7 @@ public class DoorSystem implements IProcess, IRender {
     }
     
     ActionEventHandler<LevelGenerationEvent> levelGeneration = (event, world) -> {
+        currentRoom = world.getCurrentRoom();
         RoomChange(world.getCurrentRoom(), world);
     };
 
