@@ -103,12 +103,7 @@ public class World {
         ArrayList<Entity> list = new ArrayList<>();
         
         for(Entity e : entities) {
-            if(e.getClass().equals(entityClass)) {
-                list.add(e);
-                continue;
-            }
-            
-            if(e.getClass().getSuperclass().equals(entityClass)) {
+            if(entityClass.isAssignableFrom(e.getClass())) {
                 list.add(e);
             }
         }
