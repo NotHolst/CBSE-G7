@@ -53,7 +53,7 @@ public class BossSystem implements IProcess, IRender{
         //world.setCurrentRoom(currentLevelBossRoom);
         if(currentLevelBossRoom != null){
             Boss boss = new Dragon(gameData, world);
-            boss.setTarget(world.getEntitiesByClass(Player.class).get(0));
+            boss.setTarget(world.getEntitiesByClass(Player.class).get(0).getId());
             boss.setRoomPersistent(false);
             boss.setPositionCentered(new Vector2(gameData.getScreenWidth()/2f, (gameData.getScreenHeight()-100)/2f));
             currentLevelBossRoom.getEntities().add(boss);
@@ -99,7 +99,7 @@ public class BossSystem implements IProcess, IRender{
         
         for(Boss boss : world.<Boss>getEntitiesByClass(Boss.class)){
             g.drawSprite(boss.getPosition().add(new Vector2(-12, -25)), new Vector2(150,100), shadow.getInputStream(), 0, -900);
-            g.drawSprite(boss.getPosition().sub(new Vector2(26,0)), new Vector2(86*2,128*2), boss.getAnimator().getTexture(), 0, 0, boss.getPositionCentered().y);
+            g.drawSprite(boss.getPosition().sub(new Vector2(26,-boss.getHeight())), new Vector2(86*2,128*2), boss.getAnimator().getTexture(), 0, 0, boss.getPositionCentered().y+boss.getHeight());
             float hp = (screenWidth/2 - 64) * boss.getHealthData().getHealth() / boss.getHealthData().getStartHealth(); 
             g.drawRectangle(new Vector2(screenWidth/4, screenHeight-16), new Vector2(hp, 16), new Color(1f,.2f,.2f), true, 9001);
         }

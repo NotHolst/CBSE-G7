@@ -3,11 +3,14 @@ package dk.gruppe7.bosscommon;
 import dk.gruppe7.common.data.Entity;
 import dk.gruppe7.common.graphics.Animator;
 import dk.gruppe7.damagecommon.HealthData;
+import dk.gruppe7.mobcommon.Mob;
 
-public abstract class Boss extends Entity{
+public abstract class Boss extends Mob{
     protected HealthData healthData = new HealthData(5);
     protected Animator animator = new Animator();
-    protected Entity target;
+    protected boolean invulnerable = false;
+    
+    protected float height;
 
     public HealthData getHealthData() {
         return healthData;
@@ -24,13 +27,13 @@ public abstract class Boss extends Entity{
     public void setAnimator(Animator animator) {
         this.animator = animator;
     }
-
-    public Entity getTarget() {
-        return target;
+    
+    public float getHeight(){
+        return this.height;
     }
-
-    public void setTarget(Entity target) {
-        this.target = target;
+    
+    public void setHeight(float height){
+        this.height = height;
     }
     
     public abstract void process();

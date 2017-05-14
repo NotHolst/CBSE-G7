@@ -18,6 +18,7 @@ import dk.gruppe7.common.data.Rectangle;
 import dk.gruppe7.common.data.Room;
 import dk.gruppe7.common.data.Vector2;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.levelcommon.events.LevelGenerationEvent;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.playercommon.Player;
@@ -139,6 +140,10 @@ public class DoorSystem implements IProcess, IRender {
             world.getCurrentRoom().getEntities().remove(i);
         }
     }
+    
+    ActionEventHandler<LevelGenerationEvent> levelGeneration = (event, world) -> {
+        RoomChange(world.getCurrentRoom(), world);
+    };
 
     ActionEventHandler<CollisionEvent> collisionHandler = new ActionEventHandler<CollisionEvent>() {
         @Override

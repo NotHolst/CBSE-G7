@@ -6,7 +6,10 @@ import dk.gruppe7.common.IProcess;
 import dk.gruppe7.common.World;
 import dk.gruppe7.common.data.Point;
 import dk.gruppe7.common.data.Room;
+import dk.gruppe7.common.eventhandlers.ActionEventHandler;
+import dk.gruppe7.levelcommon.events.LevelChangedEvent;
 import dk.gruppe7.levelcommon.events.LevelGenerationEvent;
+import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import org.openide.util.lookup.ServiceProvider;
@@ -22,18 +25,33 @@ public class LevelGenerator implements IProcess
         add(new Point(0, -1));
     }};
     
-    @Override
-    public void start(GameData gameData, World world) {
+    private void generateLevel(World world){
         int[][] gridMap = generateGridMap(15);
         Room start = graphifyGridMap(gridMap);
         start.setCleared(true);
         world.setCurrentRoom(start);
         Dispatcher.post(new LevelGenerationEvent(), world);
     }
+    
+    @Override
+    public void start(GameData gameData, World world) {
+        generateLevel(world);
+        
+        Dispatcher.subscribe(this);
+    }
+    
+    ActionEventHandler<LevelChangedEvent> levelChangedHandler = (event, world) -> {
+        generateLevel(world);
+        Dispatcher.post(new RoomChangedEvent(world.getCurrentRoom()), world);
+        System.out.println("NEW LEVEL");
+    };
+    
 
     @Override
     public void stop(GameData gameData, World world) {
         // Clean-up relevant ?
+        
+        Dispatcher.unsubscribe(this);
     }
 
     @Override

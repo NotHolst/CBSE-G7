@@ -241,8 +241,13 @@ public class WeaponSystem implements IProcess, IRender {
     public void render(Graphics g, World world) {
         for (Weapon weapon : world.<Weapon>getEntitiesByClass(Weapon.class
         )) {
+            
+            Vector2 ownerOffset = new Vector2(0,
+                (weapon.getOwner() != null)?25:0
+            );
+            
             g.drawSprite(
-                    /* Position    */weapon.getPosition(),
+                    /* Position    */weapon.getPosition().add(ownerOffset),
                     /* Size        */ new Vector2(weapon.getBounds().getWidth(), weapon.getBounds().getHeight()),
                     /* InputStream */ weapon.getInputStream(),
                     /* Rotation    */ weapon.getRotation(),
