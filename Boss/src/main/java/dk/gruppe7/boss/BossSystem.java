@@ -51,16 +51,21 @@ public class BossSystem implements IProcess, IRender{
         
         findBossRoom(world);
         //world.setCurrentRoom(currentLevelBossRoom);
-        if(currentLevelBossRoom != null){
+        spawnBoss(gameData, world);
+        
+        Dispatcher.subscribe(this);
+    }
+
+    private void spawnBoss(GameData gameData, World world){
+         if(currentLevelBossRoom != null){
             Boss boss = new Dragon(gameData, world);
             boss.setTarget(world.getEntitiesByClass(Player.class).get(0).getId());
             boss.setRoomPersistent(false);
             boss.setPositionCentered(new Vector2(gameData.getScreenWidth()/2f, (gameData.getScreenHeight()-100)/2f));
             currentLevelBossRoom.getEntities().add(boss);
         }
-        Dispatcher.subscribe(this);
     }
-
+    
     @Override
     public void stop(GameData gameData, World world) {
         Dispatcher.unsubscribe(this);
@@ -151,12 +156,6 @@ public class BossSystem implements IProcess, IRender{
         return result;
     }
     
-    KeyEventHandler<KeyPressedEvent> enterKeyHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_ENTER) {
-        @Override
-        public void call(KeyPressedEvent event) {
-            bossDead = true;
-        }
-    };
     
     ActionEventHandler<CollisionEvent> obstacleCollisionHandler = (event, world) -> {
         if(world.getEntityByID(event.getOtherID()) instanceof Player && world.getEntityByID(event.getTargetID()) instanceof Boss){

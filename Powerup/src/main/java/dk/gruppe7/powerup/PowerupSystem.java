@@ -83,10 +83,10 @@ public class PowerupSystem implements IProcess, IRender {
                 double chance = Math.random();
                 if(chance <= 0.5) { // movementspeedboost
                     powerup.getPowerupData().setPowerupType(PowerupType.PLAYER);
-                    powerup.getPowerupData().setBoostMaxVelocity(1.5f);
+                    powerup.getPowerupData().setBoostMaxVelocity(1.1f);
                 }else {
                     powerup.getPowerupData().setPowerupType(PowerupType.WEAPON);
-                    powerup.getPowerupData().setFireRate(0.5f);
+                    powerup.getPowerupData().setFireRate(0.9f);
                 }
                 world.addEntity(powerup);
             }
