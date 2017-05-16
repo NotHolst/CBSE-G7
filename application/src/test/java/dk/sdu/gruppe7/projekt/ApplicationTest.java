@@ -17,10 +17,10 @@ import org.openide.util.Lookup;
 public class ApplicationTest extends NbTestCase {
     
     // Add your own path.
-    private static final String ALL_MODULES_FILE = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates_w_all.xml";
-    private static final String NO_MODULES_FILE = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates_w_none.xml";
-    private static final String MOB_MODULE_FILE = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates_w_mob.xml";
-    private static final String UPDATES_XML_LOCATION = "C:\\Users\\Mikkel\\Documents\\CBSE-G7\\application\\src\\test\\resources\\updates.xml";
+    private static final String ALL_MODULES_FILE = "/Users/benjaminmlynek/CBSE-G7/application/src/test/resources/updates_w_all.xml";
+    private static final String NO_MODULES_FILE = "/Users/benjaminmlynek/CBSE-G7/application/src/test/resources/updates_w_none.xml";
+    private static final String MOB_MODULE_FILE = "/Users/benjaminmlynek/CBSE-G7/application/src/test/resources/updates_w_mob.xml";
+    private static final String UPDATES_XML_LOCATION = "/Users/benjaminmlynek/CBSE-G7/application/src/test/resources/updates.xml";
 
     public static Test suite() {
         return NbModuleSuite.createConfiguration(ApplicationTest.class).

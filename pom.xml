@@ -94,6 +94,7 @@
         <module>Boss</module>
         <module>DebugTools</module>
         <module>BossCommon</module>
+        <module>MiniMap</module>
     </modules>
 
     <properties>

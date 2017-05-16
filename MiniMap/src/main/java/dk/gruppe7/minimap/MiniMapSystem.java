@@ -20,6 +20,8 @@ import dk.gruppe7.common.eventtypes.KeyPressedEvent;
 import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.common.graphics.Color;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.levelcommon.events.LevelChangedEvent;
+import dk.gruppe7.levelcommon.events.LevelGenerationEvent;
 import dk.gruppe7.levelcommon.events.RoomChangedEvent;
 import java.util.HashSet;
 import org.openide.util.lookup.ServiceProvider;
@@ -92,6 +94,10 @@ public class MiniMapSystem implements IProcess, IRender {
         }
         
         oldRoom = newRoom;
+    };
+    
+    ActionEventHandler<LevelChangedEvent> levelChangedHandler = (event, world) -> {
+        roomMapping.clear();
     };
     
     KeyEventHandler<KeyPressedEvent> mKeyPressedHandler = new KeyEventHandler<KeyPressedEvent>(VirtualKeyCode.VC_M) {

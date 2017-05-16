@@ -14,6 +14,7 @@ import dk.gruppe7.common.eventtypes.KeyPressedEvent;
 import dk.gruppe7.common.eventtypes.KeyReleasedEvent;
 import dk.gruppe7.common.graphics.Color;
 import dk.gruppe7.common.graphics.Graphics;
+import dk.gruppe7.levelcommon.events.LevelChangedEvent;
 import dk.gruppe7.mobcommon.Mob;
 import dk.gruppe7.mobcommon.MobEvent;
 import dk.gruppe7.mobcommon.MobEventType;
@@ -39,6 +40,7 @@ public class DebugToolsSystem implements IProcess, IRender {
     //Options
     boolean collisionBounds = false;
     boolean killAllMobs = false;
+    boolean changeLevel = false;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -59,6 +61,11 @@ public class DebugToolsSystem implements IProcess, IRender {
                 Dispatcher.post(new MobEvent(mob, MobEventType.DEATH), world);
             }
         }
+        
+        if(changeLevel) {
+            Dispatcher.post(new LevelChangedEvent(), world);
+            changeLevel = !changeLevel;
+        }
     }
 
     @Override
@@ -70,6 +77,7 @@ public class DebugToolsSystem implements IProcess, IRender {
             g.drawString(menuPos.add(menuSize).sub(new Vector2(40, 20)), collisionBounds ? "ON" : "OFF", collisionBounds ? on : off, menuZindex + 1);
             g.drawString(menuPos.add(menuSize).sub(new Vector2(menuSize.x - 10, 40)), "2. Kill all mobs", new Color(1, 1, 1), menuZindex + 1);
             g.drawString(menuPos.add(menuSize).sub(new Vector2(40, 40)), killAllMobs ? "ON" : "OFF", killAllMobs ? on : off, menuZindex + 1);
+            g.drawString(menuPos.add(menuSize).sub(new Vector2(menuSize.x - 10, 60)), "3. Change level", new Color(1, 1, 1), menuZindex + 1);
 
         }
 
@@ -113,6 +121,16 @@ public class DebugToolsSystem implements IProcess, IRender {
                 return;
             }
             killAllMobs = !killAllMobs;
+        }
+    };
+    
+    KeyEventHandler<KeyReleasedEvent> ThreeKeyHandler = new KeyEventHandler<KeyReleasedEvent>(VirtualKeyCode.VC_3) {
+        @Override
+        public void call(KeyReleasedEvent event) {
+            if (!menuActive) {
+                return;
+            }
+            changeLevel = !changeLevel;
         }
     };
 
