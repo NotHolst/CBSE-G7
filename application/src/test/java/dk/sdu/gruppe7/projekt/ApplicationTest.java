@@ -46,19 +46,36 @@ public class ApplicationTest extends NbTestCase {
         List<IProcess> processors = new CopyOnWriteArrayList<>();
         List<IRender> renders = new CopyOnWriteArrayList<>();
         
-        copy(get(ALL_MODULES_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
+        copy(get(NO_MODULES_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
         waitForUpdate(processors, renders);
         
-        System.out.println(processors.size());
-        System.out.println(renders.size());
+        assertEquals(0, processors.size());
+        assertEquals(0, renders.size());
         
         copy(get(MOB_MODULE_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
         waitForUpdate(processors, renders);
         
-        System.out.println(processors.size());
-        System.out.println(renders.size());
+        assertEquals(1, processors.size());
+        assertEquals(1, renders.size());
         
-        assertEquals(true, true);
+        copy(get(ALL_MODULES_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
+        waitForUpdate(processors, renders);
+        
+        assertEquals(13, processors.size());
+        assertEquals(11, renders.size());
+        
+        copy(get(MOB_MODULE_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
+        waitForUpdate(processors, renders);
+        
+        assertEquals(1, processors.size());
+        assertEquals(1, renders.size());
+        
+        copy(get(NO_MODULES_FILE), get(UPDATES_XML_LOCATION), REPLACE_EXISTING);
+        waitForUpdate(processors, renders);
+        
+        assertEquals(0, processors.size());
+        assertEquals(0, renders.size());
+        
     }
     
     private void waitForUpdate(List<IProcess> processors, List<IRender> renders) throws InterruptedException {
